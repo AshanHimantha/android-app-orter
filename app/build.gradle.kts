@@ -50,7 +50,9 @@ dependencies {
     androidTestImplementation(libs.espresso.core)
     implementation ("com.github.bumptech.glide:glide:4.16.0")
     implementation ("com.github.bumptech.glide:okhttp3-integration:4.16.0")
+    annotationProcessor ("com.github.bumptech.glide:compiler:4.12.0")
     implementation ("pl.droidsonroids.gif:android-gif-drawable:1.2.27")
+    implementation("com.makeramen:roundedimageview:2.3.0")
 
     implementation(platform("com.google.firebase:firebase-bom:33.8.0"))
     implementation("com.google.firebase:firebase-auth")
