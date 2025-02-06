@@ -1,0 +1,42 @@
+<resources>
+    <string name="app_name">ORTER</string>
+    <string name="gs_text1">NOSTALGIA</string>
+    <string name="gs_text2">NEVER</string>
+    <string name="gs_text3">LOOKED SO</string>
+    <string name="gs_text4">STYLISH</string>
+    <string name="text1">Find the perfect look, shop with ease, </string>
+    <string name="text2">and stay ahead of the trends.</string>
+    <string name="text3">Ready? Tap "Get Started"!</string>
+    <string name="get_started">Get Started</string>
+    <string name="welcome">Welcome Back!</string>
+    <string name="welcome2">Sign in to Continue shopping!</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="login">Login</string>
+    <string name="dont_have_account">Don\'t have an account?</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="or">OR</string>
+    <string name="continue_with_google">Continue with Google</string>
+    <string name="continue_with_facebook">Continue with Facebook</string>
+    <string name="continue_with_apple">Continue with Apple</string>
+    <string name="orter_logo">Orter</string>
+
+    <string name="facebook_app_id">587676464144086</string>
+    <string name="fb_login_protocol_scheme">fb587676464144086</string>
+    <string name="facebook_client_token">b2af91b1d1f1918ca148f9df15766ad5</string>
+    <string name="default_web_client_id">AIzaSyAmtWqW_OmUWvpAaP_VUaqaV0D1otBhW5U</string>
+
+
+    <string name="full_name">Full Name</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="create_account">Create Account</string>
+    <string name="signup_welcome">Sign up to continue</string>
+    <string name="already_have_account">Already have an account?</string>
+    <string name="title_activity_home">HomeActivity</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="title_activity_main">MainActivity</string>
+
+</resources>
