@@ -50,7 +50,9 @@
                     android:layout_weight="1"
                     android:fontFamily="@font/inter_semibold"
                     android:gravity="start"
-                    android:text="@string/latest" />
+                    android:text="@string/latest"
+                    android:textColor="#000000"
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/textView8"

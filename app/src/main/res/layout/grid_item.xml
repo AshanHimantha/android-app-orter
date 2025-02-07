@@ -16,7 +16,7 @@
         android:layout_height="230dp"
         android:background="#FFFFFF"
         android:scaleType="centerCrop"
-        app:riv_corner_radius="5dp" />
+        app:riv_corner_radius="3dp" />
 
     <TextView
         android:id="@+id/productName"
@@ -24,14 +24,18 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/inter"
         android:gravity="start"
+        android:paddingStart="2dp"
         android:paddingTop="5dp"
+        android:paddingEnd="2dp"
         android:textColor="#000"
         android:textSize="12sp" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingStart="2dp"
+        android:paddingEnd="2dp">
 
         <TextView
             android:id="@+id/productPrice"
@@ -47,10 +51,10 @@
             android:id="@+id/collection"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="clip_horizontal"
+            android:layout_gravity="center_vertical"
             android:layout_weight="1"
             android:background="@drawable/collection_bg"
-            android:gravity="center|top"
+            android:gravity="center|center_vertical"
             android:padding="1dp"
             android:text="TextView"
             android:textColor="#424242"
