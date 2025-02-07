@@ -4,9 +4,11 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 
@@ -15,7 +17,7 @@ import java.util.List;
 import lk.jiat.orter.R;
 import lk.jiat.orter.model.Product;
 
-public class ProductAdapter extends BaseAdapter {
+public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder> {
     private Context context;
     private List<Product> productList;
 
@@ -24,38 +26,39 @@ public class ProductAdapter extends BaseAdapter {
         this.productList = productList;
     }
 
+    @NonNull
     @Override
-    public int getCount() {
+    public ProductViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(context).inflate(R.layout.grid_item, parent, false);
+        return new ProductViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull ProductViewHolder holder, int position) {
+        Product product = productList.get(position);
+        holder.nameTextView.setText(product.getName());
+        holder.priceTextView.setText("Rs." + product.getPrice());
+        holder.collectionTextView.setText(product.getCollection());
+        Glide.with(context).load(product.getImageUrl()).into(holder.imageView);
+    }
+
+    @Override
+    public int getItemCount() {
         return productList.size();
     }
 
-    @Override
-    public Object getItem(int position) {
-        return productList.get(position);
-    }
+    public static class ProductViewHolder extends RecyclerView.ViewHolder {
+        ImageView imageView;
+        TextView nameTextView;
+        TextView priceTextView;
 
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        if (convertView == null) {
-            convertView = LayoutInflater.from(context).inflate(R.layout.grid_item, parent, false);
+        TextView collectionTextView;
+        public ProductViewHolder(@NonNull View itemView) {
+            super(itemView);
+            imageView = itemView.findViewById(R.id.productImage);
+            nameTextView = itemView.findViewById(R.id.productName);
+            priceTextView = itemView.findViewById(R.id.productPrice);
+            collectionTextView = itemView.findViewById(R.id.collection);
         }
-
-        ImageView imageView = convertView.findViewById(R.id.productImage);
-        TextView nameTextView = convertView.findViewById(R.id.productName);
-        TextView priceTextView = convertView.findViewById(R.id.productPrice);
-
-        Product product = productList.get(position);
-
-        nameTextView.setText(product.getName());
-        priceTextView.setText("$" + product.getPrice());
-
-        Glide.with(context).load(product.getImageUrl()).into(imageView);
-
-        return convertView;
     }
 }

@@ -1,5 +1,6 @@
 package lk.jiat.orter.ui.home;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -13,6 +14,8 @@ import android.widget.GridView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 
@@ -38,7 +41,7 @@ public class HomeFragment extends Fragment {
     );
 
     private Animation fadeIn;
-    private GridView gridView;
+    private RecyclerView recyclerView;
     private List<Product> productList;
     private ProductAdapter productAdapter;
 
@@ -53,8 +56,8 @@ public class HomeFragment extends Fragment {
         // Load the fade-in animation
         fadeIn = AnimationUtils.loadAnimation(getContext(), R.anim.fade_in);
 
-        // Initialize GridView
-        gridView = binding.getRoot().findViewById(R.id.gridView);
+        // Initialize RecyclerView
+        recyclerView = binding.getRoot().findViewById(R.id.recyclerView);
         productList = new ArrayList<>();
 
         // Load Sample Products
@@ -62,7 +65,11 @@ public class HomeFragment extends Fragment {
 
         // Set Adapter
         productAdapter = new ProductAdapter(getContext(), productList);
-        gridView.setAdapter(productAdapter);
+        recyclerView.setAdapter(productAdapter);
+        int orientation = getResources().getConfiguration().orientation;
+        int spanCount = (orientation == Configuration.ORIENTATION_LANDSCAPE) ? 4 : 2;
+
+        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), spanCount));
 
         // Image Slider Handler
         handler = new Handler(Looper.getMainLooper());
@@ -90,18 +97,18 @@ public class HomeFragment extends Fragment {
     }
 
     private void loadProducts() {
-        productList.add(new Product("Techno Demon Tee", "https://orterclothing.com/assets/div10.jpg", 25.99));
-        productList.add(new Product("Oversized Hoodie", "https://orterclothing.com/assets/div8.jpg", 39.99));
-        productList.add(new Product("Minimalist T-Shirt", "https://orterclothing.com/assets/div10.jpg", 19.99));
-        productList.add(new Product("Urban Joggers", "https://orterclothing.com/assets/div8.jpg", 29.99));
-        productList.add(new Product("Techno Demon Tee", "https://orterclothing.com/assets/div10.jpg", 25.99));
-        productList.add(new Product("Oversized Hoodie", "https://orterclothing.com/assets/div8.jpg", 39.99));
-        productList.add(new Product("Minimalist T-Shirt", "https://orterclothing.com/assets/div10.jpg", 19.99));
-        productList.add(new Product("Urban Joggers", "https://orterclothing.com/assets/div8.jpg", 29.99));
-        productList.add(new Product("Techno Demon Tee", "https://orterclothing.com/assets/div10.jpg", 25.99));
-        productList.add(new Product("Oversized Hoodie", "https://orterclothing.com/assets/div8.jpg", 39.99));
-        productList.add(new Product("Minimalist T-Shirt", "https://orterclothing.com/assets/div10.jpg", 19.99));
-        productList.add(new Product("Urban Joggers", "https://orterclothing.com/assets/div8.jpg", 29.99));
+        productList.add(new Product("Techno Demon Tee", "https://orterclothing.com/assets/div10.jpg", 2599, "Techno Demon"));
+        productList.add(new Product("Oversized Hoodie", "https://orterclothing.com/assets/div8.jpg", 3999, "Techno Demon"));
+        productList.add(new Product("Minimalist T-Shirt", "https://orterclothing.com/assets/div10.jpg", 1999, "Techno Demon"));
+        productList.add(new Product("Urban Joggers", "https://orterclothing.com/assets/div8.jpg", 2999, "Techno Demon"));
+        productList.add(new Product("Techno Demon Tee", "https://orterclothing.com/assets/div10.jpg", 2599, "Techno Demon"));
+        productList.add(new Product("Oversized Hoodie", "https://orterclothing.com/assets/div8.jpg", 3999, "Techno Demon"));
+        productList.add(new Product("Minimalist T-Shirt", "https://orterclothing.com/assets/div10.jpg", 1999, "Techno Demon"));
+        productList.add(new Product("Urban Joggers", "https://orterclothing.com/assets/div8.jpg", 2999, "Techno Demon"));
+        productList.add(new Product("Techno Demon Tee", "https://orterclothing.com/assets/div10.jpg", 2599, "Techno Demon"));
+        productList.add(new Product("Oversized Hoodie", "https://orterclothing.com/assets/div8.jpg", 3999, "Techno Demon"));
+        productList.add(new Product("Minimalist T-Shirt", "https://orterclothing.com/assets/div10.jpg", 1999, "Techno Demon"));
+        productList.add(new Product("Urban Joggers", "https://orterclothing.com/assets/div8.jpg", 2999, "Techno Demon"));
     }
 
     @Override
