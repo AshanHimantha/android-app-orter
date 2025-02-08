@@ -12,14 +12,24 @@
         tools:layout="@layout/fragment_home" />
 
     <fragment
-        android:id="@+id/navigation_dashboard"
-        android:name="lk.jiat.orter.ui.dashboard.DashboardFragment"
-        android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
+        android:id="@+id/navigation_cart"
+        android:name="lk.jiat.orter.ui.cart.CartFragment"
+        android:label="@string/cart"
+        tools:layout="@layout/fragment_cart" />
 
     <fragment
-        android:id="@+id/navigation_notifications"
-        android:name="lk.jiat.orter.ui.notifications.NotificationsFragment"
-        android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_notifications" />
+        android:id="@+id/navigation_explore"
+        android:name="lk.jiat.orter.ui.explore.ExploreFragment"
+        android:label="@string/explore"
+        tools:layout="@layout/fragment_explore" />
+    <fragment
+        android:id="@+id/orders_nav"
+        android:name="lk.jiat.orter.ui.order.OrderFragment"
+        android:label="@string/order"
+        tools:layout="@layout/fragment_order" />
+    <fragment
+        android:id="@+id/profile_nav"
+        android:name="lk.jiat.orter.ui.profile.ProfileFragment"
+        android:label="@string/profile"
+        tools:layout="@layout/fragment_profile" />
 </navigation>

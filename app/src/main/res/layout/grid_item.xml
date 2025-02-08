@@ -35,7 +35,8 @@
         android:layout_height="match_parent"
         android:orientation="horizontal"
         android:paddingStart="2dp"
-        android:paddingEnd="2dp">
+        android:paddingEnd="2dp"
+        android:paddingBottom="5dp">
 
         <TextView
             android:id="@+id/productPrice"

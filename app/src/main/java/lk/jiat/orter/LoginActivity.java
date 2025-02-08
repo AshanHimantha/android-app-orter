@@ -53,7 +53,7 @@ public class LoginActivity extends AppCompatActivity {
 
         // Initialize the Facebook SDK BEFORE setContentView
         FacebookSdk.sdkInitialize(getApplicationContext());
-        setContentView(R.layout.activity_main); //Make sure this layout exist
+        setContentView(R.layout.activity_login); //Make sure this layout exist
 
         TextView signUpButton = findViewById(R.id.signUp);
         signUpButton.setOnClickListener(new View.OnClickListener() {
