@@ -1,5 +1,6 @@
 package lk.jiat.orter.ui.home;
 
+// HomeViewModel.java
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -17,6 +18,6 @@ public class HomeViewModel extends ViewModel {
     }
 
     public void setProductList(List<Product> products) {
-        productList.setValue(products);
+        productList.postValue(products);
     }
 }

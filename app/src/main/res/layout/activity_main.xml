@@ -34,8 +34,8 @@
 
     <LinearLayout
         android:layout_width="0dp"
-        android:layout_height="70dp"
-        android:background="#FBFBFB"
+        android:layout_height="90dp"
+        android:background="@drawable/header_border"
         android:gravity="center"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
@@ -48,6 +48,8 @@
             android:layout_height="36dp"
             android:layout_gravity="center_horizontal|center_vertical"
             app:srcCompat="@drawable/orterlogo" />
+
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

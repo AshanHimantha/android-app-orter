@@ -1,3 +1,4 @@
+// HomeFragment.java
 package lk.jiat.orter.ui.home;
 
 import android.content.res.Configuration;
@@ -10,10 +11,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -27,8 +30,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import lk.jiat.orter.CategoryAdapter;
 import lk.jiat.orter.R;
 import lk.jiat.orter.databinding.FragmentHomeBinding;
+import lk.jiat.orter.model.Category;
 import lk.jiat.orter.model.Product;
 import lk.jiat.orter.ProductAdapter; // Import the adapter
 import okhttp3.Call;
@@ -37,6 +42,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
+import androidx.lifecycle.ViewModelProvider;
 
 public class HomeFragment extends Fragment {
 
@@ -52,9 +58,13 @@ public class HomeFragment extends Fragment {
 
     private Animation fadeIn;
     private RecyclerView recyclerView;
-    private List<Product> productList;
     private ProductAdapter productAdapter;
+    private HomeViewModel homeViewModel;
     private static final String API_URL = "http://10.0.2.2:8000/api/stock-list";
+    private RecyclerView categoryRecyclerView;
+    private CategoryAdapter categoryAdapter;
+    private List<Category> categoryList;
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -67,21 +77,28 @@ public class HomeFragment extends Fragment {
 
         // Initialize RecyclerView
         recyclerView = binding.getRoot().findViewById(R.id.recyclerView);
-        productList = new ArrayList<>();
 
-        // Load Sample Products
-        loadProducts();
+        // Initialize ViewModel
+        homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
 
         // Set Adapter
-        productAdapter = new ProductAdapter(getContext(), productList);
+        productAdapter = new ProductAdapter(getContext(), new ArrayList<>());
         recyclerView.setAdapter(productAdapter);
         int orientation = getResources().getConfiguration().orientation;
         int spanCount = (orientation == Configuration.ORIENTATION_LANDSCAPE) ? 4 : 2;
 
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), spanCount));
 
-        // Notify adapter of data changes
-        productAdapter.notifyDataSetChanged();
+        // Observe product list
+        homeViewModel.getProductList().observe(getViewLifecycleOwner(), products -> {
+            productAdapter.setProductList(products);
+            productAdapter.notifyDataSetChanged();
+        });
+
+        // Load products if not already loaded
+        if (homeViewModel.getProductList().getValue().isEmpty()) {
+            loadProducts();
+        }
 
         // Image Slider Handler
         handler = new Handler(Looper.getMainLooper());
@@ -96,8 +113,39 @@ public class HomeFragment extends Fragment {
 
         binding.imageView6.setOnClickListener(v -> loadImageWithAnimation());
 
+        categoryRecyclerView = binding.getRoot().findViewById(R.id.recyclerView2);
+
+        // Create a list of categories (replace with your actual data)
+        categoryList = new ArrayList<>();
+        categoryList.add(new Category(R.drawable.tshirt, "T-Shirts"));
+        categoryList.add(new Category(R.drawable.trousers, "Pants"));
+        categoryList.add(new Category(R.drawable.hoodie, "Hoodies"));
+        categoryList.add(new Category(R.drawable.sneakers, "Shoes"));
+        categoryList.add(new Category(R.drawable.bag, "Bags"));
+        categoryList.add(new Category(R.drawable.tshirt, "T-Shirts"));
+        categoryList.add(new Category(R.drawable.trousers, "Pants"));
+        categoryList.add(new Category(R.drawable.hoodie, "Hoodies"));
+        categoryList.add(new Category(R.drawable.sneakers, "Shoes"));
+        categoryList.add(new Category(R.drawable.bag, "Bags"));
+        categoryList.add(new Category(R.drawable.trousers, "Pants"));
+        categoryList.add(new Category(R.drawable.hoodie, "Hoodies"));
+        categoryList.add(new Category(R.drawable.sneakers, "Shoes"));
+        categoryList.add(new Category(R.drawable.bag, "Bags"));
+
+        // Create the adapter
+        categoryAdapter = new CategoryAdapter(categoryList);
+
+        // Set the layout manager (horizontal)
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+
+        categoryRecyclerView.setLayoutManager(layoutManager);
+
+        // Set the adapter
+        categoryRecyclerView.setAdapter(categoryAdapter);
+
         return root;
     }
+
     private void loadImageWithAnimation() {
         currentIndex = (currentIndex + 1) % imageUrls.size();
         Glide.with(this)
@@ -108,10 +156,9 @@ public class HomeFragment extends Fragment {
     }
 
     private void loadProducts() {
-        productList.add(new Product("Techno Demon Tee", "https://orterclothing.com/assets/div10.jpg", 2599, "Techno Demon"));
+        List<Product> productList = new ArrayList<>();
 
         OkHttpClient client = new OkHttpClient();
-
 
         Request request = new Request.Builder()
                 .url(API_URL)
@@ -134,32 +181,28 @@ public class HomeFragment extends Fragment {
                     JsonObject jsonObject = gson.fromJson(responseBody, JsonObject.class);
 
                     if (jsonObject.get("status").getAsBoolean()) {
-
                         JsonArray dataArray = jsonObject.getAsJsonArray("data");
-
 
                         // Loop through API data
                         for (JsonElement item : dataArray) {
                             JsonObject productObject = item.getAsJsonObject();
 
+                            String id = productObject.get("id").getAsString();
                             String productName = productObject.get("product_name").getAsString();
                             String imageUrl = productObject.get("main_image").getAsString();
                             int price = (int) Double.parseDouble(productObject.get("price").getAsString());
                             String collectionName = productObject.get("collection_name").getAsString();
 
-                            productList.add(new Product(productName, imageUrl, price, collectionName));
+                            productList.add(new Product(id, productName, imageUrl, price, collectionName));
                         }
 
-
+                        // Update ViewModel with new product list
+                        homeViewModel.setProductList(productList);
                     }
                 }
             }
         });
-
-
     }
-
-
 
     @Override
     public void onDestroyView() {

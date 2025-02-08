@@ -1,17 +1,22 @@
 package lk.jiat.orter;
 
+import android.widget.Toast;
+
 class Product {
     String id;
     String product_name;
     String main_image;
-    int price;
+    String price;
     String collection_name;
-    int total_quantity; // if needed
+    int total_quantity;
 
-    public Product(String product_name, String main_image, int price, String collection_name) {
+    public Product(String id,String product_name, String main_image, String price, String collection_name) {
         this.product_name = product_name;
         this.main_image = main_image;
         this.price = price;
         this.collection_name = collection_name;
+
     }
+
+
 }

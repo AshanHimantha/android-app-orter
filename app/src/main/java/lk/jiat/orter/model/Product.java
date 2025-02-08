@@ -16,7 +16,7 @@ public class Product {
     @SerializedName("collection_name")
     private String collection;
 
-    public Product(String name, String imageUrl, double price, String collection) {
+    public Product(String id, String name, String imageUrl, double price, String collection) {
         this.name = name;
         this.imageUrl = imageUrl;
         this.price = price;
