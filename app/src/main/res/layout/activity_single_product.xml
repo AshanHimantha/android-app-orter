@@ -1,10 +1,281 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
+    style="@android:style/Widget.Material.ScrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".SingleProductActivity">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Image Gallery -->
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.makeramen.roundedimageview.RoundedImageView
+                android:id="@+id/imageView6"
+                android:layout_width="0dp"
+                android:layout_height="400dp"
+                android:scaleType="center"
+                android:src="@drawable/div7"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <Button
+                android:id="@+id/button3"
+                style="@style/com_facebook_button"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:backgroundTint="#FF0000"
+                app:icon="@drawable/back"
+                android:backgroundTintMode="src_over"
+                app:iconGravity="textEnd"
+                app:iconPadding="0dp"
+                app:iconSize="22dp"
+                app:iconTint="@color/white"
+                app:iconTintMode="multiply"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="SpeakableTextPresentCheck" />
+
+            <!--            <HorizontalScrollView-->
+            <!--                android:layout_width="wrap_content"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:layout_gravity="center|center_horizontal|center_vertical"-->
+            <!--                android:layout_marginTop="345dp"-->
+            <!--                app:layout_constraintEnd_toEndOf="parent"-->
+            <!--                app:layout_constraintStart_toStartOf="parent"-->
+            <!--                app:layout_constraintTop_toTopOf="parent">-->
+
+            <LinearLayout
+                android:id="@+id/image_gallery"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="340dp"
+                android:background="@drawable/collection_bg"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <!-- Sample Image Views - Replace with your actual images -->
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginEnd="4dp"
+                    android:layout_marginBottom="4dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/div2" />
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginEnd="4dp"
+                    android:layout_marginBottom="4dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/div2" />
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginEnd="4dp"
+                    android:layout_marginBottom="4dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/div7" />
+
+            </LinearLayout>
+            <!--            </HorizontalScrollView>-->
+
+            <Button
+                android:id="@+id/button8"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:backgroundTint="#FAF9F9"
+                app:icon="@drawable/share"
+                app:iconGravity="textEnd"
+                app:iconPadding="0dp"
+                app:iconSize="18dp"
+                app:iconTint="#090909"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="SpeakableTextPresentCheck" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- Product Information -->
+        <TextView
+            android:id="@+id/product_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:text="Introvert Oversized Tee"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/product_price"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:text="Rs. 2600.00"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/product_description_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:text="Description"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/product_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="16dp"
+            android:text="Experience ultimate comfort and style with our graphic oversized tee, crafted from 100% pure cotton fabric. This tee features a relaxed fit, bold graphics, and soft, breathable material perfect for anycasual occasion. Elevate your wardrobe with this must-have staple that combines effortless cool with premium quality." />
+
+        <!-- Size Selection -->
+        <TextView
+            android:id="@+id/size_selection_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:text="Select Size"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <!-- Size Buttons -->
+            <Button
+                android:id="@+id/size_xs"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_margin="2dp"
+                android:background="@drawable/collection_bg"
+                android:backgroundTint="#B3B2B2"
+                android:text="XS"
+                android:textSize="10sp" />
+
+            <Button
+                android:id="@+id/size_s"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginEnd="2dp"
+                android:background="@drawable/collection_bg"
+                android:backgroundTint="#B3B2B2"
+                android:backgroundTintMode="src_over"
+                android:hapticFeedbackEnabled="false"
+                android:text="S"
+                android:textSize="10sp" />
+
+            <Button
+                android:id="@+id/size_m"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginEnd="2dp"
+                android:background="@drawable/collection_bg"
+                android:backgroundTint="#B3B2B2"
+                android:backgroundTintMode="src_over"
+                android:hapticFeedbackEnabled="false"
+                android:text="M"
+                android:textSize="10sp" />
+
+            <Button
+                android:id="@+id/size_l"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginEnd="2dp"
+                android:background="@drawable/collection_bg"
+                android:backgroundTint="#B3B2B2"
+                android:backgroundTintMode="src_over"
+                android:hapticFeedbackEnabled="false"
+                android:text="L"
+                android:textSize="10sp" />
+
+            <Button
+                android:id="@+id/size_xl"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginEnd="2dp"
+                android:background="@drawable/collection_bg"
+                android:backgroundTint="#B3B2B2"
+                android:backgroundTintMode="src_over"
+                android:hapticFeedbackEnabled="false"
+                android:text="XL"
+                android:textSize="10sp" />
+
+            <Button
+                android:id="@+id/size_xxl"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginEnd="2dp"
+                android:background="@drawable/collection_bg"
+                android:hapticFeedbackEnabled="false"
+                android:text="XXL"
+                android:textSize="10sp" />
+
+        </LinearLayout>
+
+        <!-- Material Information -->
+        <TextView
+            android:id="@+id/material_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:text="Material"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/material_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="16dp"
+            android:text="Single jersey 210 gsm" />
+
+        <!-- Add to Cart Button -->
+        <Button
+            android:id="@+id/add_to_cart_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:background="@android:color/black"
+            android:padding="16dp"
+            android:text="Add to Cart"
+            android:textColor="@android:color/white"
+            android:textSize="18sp" />
+
+    </LinearLayout>
+
+</ScrollView>

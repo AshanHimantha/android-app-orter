@@ -2,6 +2,7 @@ package lk.jiat.orter;
 
 // ProductAdapter.java
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -54,7 +55,10 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("ProductAdapter", "Product clicked: " + product.getName());
+ Intent intent = new Intent(context, SingleProductActivity.class);
+ intent.putExtra("product", product.getId());
+ context.startActivity(intent);
+
             }
         });
     }

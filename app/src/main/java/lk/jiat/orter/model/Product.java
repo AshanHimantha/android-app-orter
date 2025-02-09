@@ -3,7 +3,8 @@ package lk.jiat.orter.model;
 import com.google.gson.annotations.SerializedName;
 
 public class Product {
-
+    @SerializedName("id")
+    private final String id;
     @SerializedName("product_name")
     private String name;
 
@@ -21,6 +22,7 @@ public class Product {
         this.imageUrl = imageUrl;
         this.price = price;
         this.collection = collection;
+        this.id = id;
     }
 
     public String getName() {
@@ -38,4 +40,10 @@ public class Product {
     public String getCollection() {
         return collection;
     }
+
+    public String getId() {
+        return id;
+    }
+
+
 }

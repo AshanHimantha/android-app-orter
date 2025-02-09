@@ -15,6 +15,7 @@ class Product {
         this.main_image = main_image;
         this.price = price;
         this.collection_name = collection_name;
+        this.id = id;
 
     }
 
