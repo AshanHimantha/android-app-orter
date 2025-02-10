@@ -33,10 +33,21 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GetTokenResult;
 import com.google.firebase.auth.GoogleAuthProvider;
+
+import java.io.IOException;
+import java.net.URL;
 import java.util.Arrays;
 
-public class LoginActivity extends AppCompatActivity {
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
+public class LoginActivity extends AppCompatActivity {
+    private final OkHttpClient client = new OkHttpClient();
     private static final String TAG = "EmailPassword";
     private static final int RC_SIGN_IN = 9001;
     private FirebaseAuth mAuth;
@@ -97,7 +108,6 @@ public class LoginActivity extends AppCompatActivity {
         // Initialize UI elements
         TextInputLayout emailInputLayout = findViewById(R.id.emailField);
         TextInputLayout passwordInputLayout = findViewById(R.id.passwordField);
-
 
         if (emailInputLayout != null) {
             emailField = emailInputLayout.getEditText();
@@ -175,7 +185,7 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onError(@NonNull FacebookException exception) {
                         Log.w(TAG, "facebookAuthWithFacebook:failure", exception);
-                        updateUI(null);
+
                     }
                 });
     }
@@ -189,12 +199,12 @@ public class LoginActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-                            updateUI(user);
+
                         } else {
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
                             Toast.makeText(LoginActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
-                            updateUI(null);
+
                         }
                     }
                 });
@@ -223,7 +233,7 @@ public class LoginActivity extends AppCompatActivity {
 //                startActivity(intent);
             } catch (ApiException e) {
                 Log.w(TAG, "Google sign in failed", e);
-                updateUI(null);
+
             }
         } else {
             callbackManager.onActivityResult(requestCode, resultCode, data);
@@ -239,7 +249,7 @@ public class LoginActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-                            updateUI(user);
+
 
                             Intent intent = new Intent(LoginActivity.this,MainActivity.class);
                             startActivity(intent);
@@ -247,7 +257,7 @@ public class LoginActivity extends AppCompatActivity {
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
                             Toast.makeText(LoginActivity.this, "Authentication failed.",  // Use LoginActivity.this
                                     Toast.LENGTH_SHORT).show();
-                            updateUI(null);
+
                         }
                     }
                 });
@@ -258,7 +268,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onStart();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
-            reload();
+
         }
     }
 
@@ -270,39 +280,50 @@ public class LoginActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             Log.d(TAG, "createUserWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-                            updateUI(user);
+
                         } else {
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
                             Toast.makeText(LoginActivity.this, "Authentication failed.",  // Use LoginActivity.this
                                     Toast.LENGTH_SHORT).show();
-                            updateUI(null);
+
                         }
                     }
                 });
     }
 
-   private void signIn(String email, String password) {
-       if (email == null || email.isEmpty() || password == null || password.isEmpty()) {
-           Toast.makeText(LoginActivity.this, "Email and password must not be empty.", Toast.LENGTH_SHORT).show();
-           return;
-       }
+    private void signIn(String email, String password) {
+        if (email == null || email.isEmpty() || password == null || password.isEmpty()) {
+            Toast.makeText(LoginActivity.this, "Email and password must not be empty.", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-       mAuth.signInWithEmailAndPassword(email, password)
-               .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                   @Override
-                   public void onComplete(@NonNull Task<AuthResult> task) {
-                       if (task.isSuccessful()) {
-                           Log.d(TAG, "signInWithEmail:success");
-                           FirebaseUser user = mAuth.getCurrentUser();
-                           updateUI(user);
-                       } else {
-                           Log.w(TAG, "signInWithEmail:failure", task.getException());
-                           Toast.makeText(LoginActivity.this, "Sign failed.", Toast.LENGTH_SHORT).show();
-                           updateUI(null);
-                       }
-                   }
-               });
-   }
+        mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            Log.d(TAG, "signInWithEmail:success");
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            if (user != null) {
+                                user.getIdToken(true).addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<GetTokenResult> task) {
+                                        if (task.isSuccessful()) {
+                                            String idToken = task.getResult().getToken();
+                                            verifyUser(idToken);
+                                        } else {
+                                            Log.w(TAG, "Failed to get token", task.getException());
+                                        }
+                                    }
+                                });
+                            }
+                        } else {
+                            Log.w(TAG, "signInWithEmail:failure", task.getException());
+                            Toast.makeText(LoginActivity.this, "Sign in failed.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+    }
 
     private void sendEmailVerification() {
         final FirebaseUser user = mAuth.getCurrentUser();
@@ -315,17 +336,36 @@ public class LoginActivity extends AppCompatActivity {
                 });
     }
 
-    private void reload() {
+    private void verifyUser(String idToken) {
+        new Thread(() -> {
+            try {
+                URL url = new URL("http://10.0.2.2:8000/api/verify");
+                RequestBody body = RequestBody.create("{}", MediaType.get("application/json; charset=utf-8"));
+                Request request = new Request.Builder()
+                        .url(url)
+                        .post(body)
+                        .addHeader("Content-Type", "application/json; utf-8")
+                        .addHeader("Authorization", "Bearer " + idToken)
+                        .build();
+
+                client.newCall(request).enqueue(new Callback() {
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+                        Log.e("SplashActivity", "Error verifying user", e);
+                    }
+
+                    @Override
+                    public void onResponse(Call call, Response response) throws IOException {
+                        if (response.isSuccessful()) {
+                            Log.d("SplashActivity", "User verified successfully");
+                        } else {
+                            Log.d("SplashActivity", "User verification failed with response code: " + response.code());
+                        }
+                    }
+                });
+            } catch (Exception e) {
+                Log.e("SplashActivity", "Error verifying user", e);
+            }
+        }).start();
     }
-
-    private void updateUI(FirebaseUser user) {
-
-
-    }
-
-    private void navigate() {
-
-    }
-
-
 }
