@@ -51,9 +51,9 @@ public class HomeFragment extends Fragment {
     private Runnable runnable;
     private int currentIndex = 0;
     private List<String> imageUrls = Arrays.asList(
-            "https://scontent.fcmb2-2.fna.fbcdn.net/v/t39.30808-6/412629477_923051502766690_5664355034986246408_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=cc71e4&_nc_ohc=pczP4xlnuMwQ7kNvgEWQ3M6&_nc_oc=AdiVix3atZWbJZBUWGhHN-LcNO6ZXZ5NPgwBGVz3Nq6s3kckRKGHXyvc9FNqe37PjR0&_nc_zt=23&_nc_ht=scontent.fcmb2-2.fna&_nc_gid=AREN9WQks-EYPzZRdiOaXHP&oh=00_AYBxvNBqmJJLIIG5t17lWk6C6-wpT0ls3JwRmaqDSVrl9A&oe=67AD9507",
-            "https://orterclothing.com/assets/div8.jpg",
-            "https://orterclothing.com/assets/collection/Techno Demon Oversized tee_cover_66476d9f32dd3.jpg"
+            "https://firebasestorage.googleapis.com/v0/b/orter-6f205.firebasestorage.app/o/banner.jpg?alt=media&token=8206f03d-9058-44ae-a25a-65af98b71bbd",
+            "https://firebasestorage.googleapis.com/v0/b/orter-6f205.firebasestorage.app/o/div10.jpg?alt=media&token=990d55f7-cbd2-45e0-8c02-90d55b05e11f",
+            "https://firebasestorage.googleapis.com/v0/b/orter-6f205.firebasestorage.app/o/div8.jpg?alt=media&token=e68239b5-02a4-48e9-b4ab-1b5abfd3b827"
     );
 
     private Animation fadeIn;
@@ -148,9 +148,9 @@ public class HomeFragment extends Fragment {
 
     private void loadImageWithAnimation() {
         currentIndex = (currentIndex + 1) % imageUrls.size();
-        Glide.with(this)
-                .load(imageUrls.get(currentIndex))
-                .into(binding.imageView6);
+Glide.with(this)
+    .load(imageUrls.get(currentIndex))
+    .into(binding.imageView6);
 
         binding.imageView6.startAnimation(fadeIn);
     }

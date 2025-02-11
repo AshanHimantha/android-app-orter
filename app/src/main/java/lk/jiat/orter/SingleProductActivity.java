@@ -20,6 +20,8 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,8 +30,10 @@ import java.io.IOException;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class SingleProductActivity extends AppCompatActivity {
@@ -166,9 +170,11 @@ public class SingleProductActivity extends AppCompatActivity {
 
         Button addToCartButton = findViewById(R.id.add_to_cart_button);
         addToCartButton.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
-                displayStockIdAndSize();
+                AddToCart();
+
             }
         });
 
@@ -225,15 +231,27 @@ public class SingleProductActivity extends AppCompatActivity {
                                 productDescriptionTextView.setText(description);
                                 materialDescriptionTextView.setText(material);
 
-                                // Load image using Glide
-                                Glide.with(SingleProductActivity.this)
-                                        .load(mainImageUrl)
-                                        .into(productImageView);
 
-                                //Load other images
-                                Glide.with(SingleProductActivity.this).load(image1Url).into(image1);
-                                Glide.with(SingleProductActivity.this).load(image2Url).into(image2);
-                                Glide.with(SingleProductActivity.this).load(mainImageUrl).into(image3); // Use main image for image3 if there is no third image
+                                        Glide.with(SingleProductActivity.this)
+                                                .load(mainImageUrl)
+                                                .into(productImageView);
+
+                                        // Load other images with placeholders
+                                        Glide.with(SingleProductActivity.this)
+                                                .load(image1Url)
+                                                .into(image1);
+
+                                        Glide.with(SingleProductActivity.this)
+                                                .load(image2Url)
+                                                .into(image2);
+
+                                        Glide.with(SingleProductActivity.this)
+                                                .load(mainImageUrl)
+                                                .into(image3);
+
+
+
+
 
                                 // Set onClickListeners for changing main image
                                 image1.setOnClickListener(new View.OnClickListener() {
@@ -370,8 +388,104 @@ public class SingleProductActivity extends AppCompatActivity {
         button.setTextColor(ContextCompat.getColor(this, R.color.white)); // Or whatever color you want
     }
 
-    private void displayStockIdAndSize() {
-        String message = "Stock ID: " + productId + ", Size: " + selectedSize;
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    private void AddToCart() {
+        if (selectedSize == null) {
+            Toast.makeText(this, "Please select a size.", Toast.LENGTH_SHORT).show();
+            return;
+        }else {
+
+            Button addToCartButton = findViewById(R.id.add_to_cart_button);
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    addToCartButton.setEnabled(false);
+                    addToCartButton.setText("Adding to cart...");
+                    addToCartButton.setBackgroundColor(Color.GRAY);
+
+                }
+            });
+
+            FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+            String url = "http://10.0.2.2:8000/api/carts";
+            JSONObject jsonObject = new JSONObject();
+            try {
+
+                jsonObject.put("firebase_uid", currentUser.getUid());
+                jsonObject.put("stock_id", productId);
+                jsonObject.put("size", selectedSize);
+                jsonObject.put("quantity", "1");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            RequestBody body = RequestBody.create(jsonObject.toString(), MediaType.parse("application/json; charset=utf-8"));
+            Request request = new Request.Builder()
+                    .url(url)
+                    .post(body)
+                    .header("Authorization", "Bearer " + currentUser.getIdToken(false).getResult().getToken())
+                    .build();
+
+            client.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    Log.e("SingleProductActivity", "OkHttp error: " + e.getMessage());
+                    mainHandler.post(() ->
+                            Toast.makeText(SingleProductActivity.this, "Failed to add to cart.", Toast.LENGTH_SHORT).show());
+
+                    Button addToCartButton = findViewById(R.id.add_to_cart_button);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            addToCartButton.setEnabled(true);
+                            addToCartButton.setText("Adding to cart...");
+                            addToCartButton.setBackgroundColor(Color.BLACK);
+
+
+                        }
+                    });
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    if (response.isSuccessful()) {
+                        mainHandler.post(() ->
+                                Toast.makeText(SingleProductActivity.this, "Added to cart successfully.", Toast.LENGTH_SHORT).show());
+                        Button addToCartButton = findViewById(R.id.add_to_cart_button);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                addToCartButton.setEnabled(true);
+                                addToCartButton.setText("Adding to cart");
+                                addToCartButton.setBackgroundColor(Color.BLACK);
+
+
+                            }
+                        });
+                    } else {
+                        Log.e("SingleProductActivity", "HTTP error: " + response.code());
+                        Log.e("SingleProductActivity", "Response: " + response.body().string());
+                        mainHandler.post(() ->
+                                Toast.makeText(SingleProductActivity.this, "Failed to add to cart (HTTP " + response.code() + ").", Toast.LENGTH_SHORT).show());
+
+                        Button addToCartButton = findViewById(R.id.add_to_cart_button);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                addToCartButton.setEnabled(true);
+                                addToCartButton.setText("Adding to cart");
+                                addToCartButton.setBackgroundColor(Color.BLACK);
+
+
+                            }
+                        });
+
+
+
+                    }
+                }
+            });
+
+        }
     }
 }

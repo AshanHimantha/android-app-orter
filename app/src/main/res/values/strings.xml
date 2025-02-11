@@ -46,5 +46,13 @@
     <string name="order">Orders</string>
     <string name="explore">Explore</string>
     <string name="category">Category</string>
+    <string name="size_chart">Size Chart</string>
+    <string name="care">Care instructions ? we got you</string>
+    <string name="mwash">Machine Wash with Care:</string>
+    <string name="shopping">Shopping Cart</string>
+    <string name="checkout">Checkout</string>
+<string name="subtotal">Subtotal</string>
+    <string name="total">Total</string>
+    <string name="items">Items</string>
 
 </resources>

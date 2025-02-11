@@ -3,10 +3,15 @@ package lk.jiat.orter;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
+import android.app.ActivityManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,14 +23,18 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.io.IOException;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
 
 import okhttp3.*;
 
 public class SplashActivity extends AppCompatActivity {
+
     private final OkHttpClient client = new OkHttpClient();
+    private final String BACKEND_URL = "http://10.0.2.2:8000/api/verify";
+    private static final String TAG = "SplashActivity"; //For easy Log filtering
+
+    private boolean authenticationCheckStarted = false;  //Tracking Variable
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,80 +52,133 @@ public class SplashActivity extends AppCompatActivity {
         progressBar.setMax(100);
 
         ValueAnimator animator = ValueAnimator.ofInt(0, 100);
-        animator.setDuration(1000); // 2000 milliseconds = 2 seconds
+        animator.setDuration(2000); // Adjust duration as needed
         animator.addUpdateListener(animation -> {
             int progress = (int) animation.getAnimatedValue();
             progressBar.setProgress(progress);
         });
-        animator.start();
 
         animator.addListener(new AnimatorListenerAdapter() {
             @Override
+            public void onAnimationStart(Animator animation) {
+                Log.d(TAG, "Animation Started");
+            }
+
+            @Override
             public void onAnimationEnd(Animator animation) {
-                Log.d("SplashActivity", "Progress completed successfully");
-                checkUserAuthentication();
+                Log.d(TAG, "Animation Ended");
+                bringAppToForeground();
+                new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                    Log.d(TAG, "Calling checkUserAuthentication after delay");
+                    checkUserAuthentication();
+                }, 200); // Small delay after the animation
             }
         });
+        animator.start(); //Start the animation here
+
+    }
+
+    private void bringAppToForeground() {
+        ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        if (activityManager != null) {
+            List<ActivityManager.AppTask> tasks = activityManager.getAppTasks();
+            if (tasks != null && !tasks.isEmpty()) {
+                tasks.get(0).moveToFront();
+            }
+        }
     }
 
     private void checkUserAuthentication() {
+        if(authenticationCheckStarted){
+            Log.w(TAG, "checkUserAuthentication called more than once!");
+            return; //Prevent multiple calls
+        }
+        authenticationCheckStarted = true;
+        Log.d(TAG, "Starting checkUserAuthentication...");
+
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser != null) {
+            Log.d(TAG, "User is signed in. Getting ID Token...");
             currentUser.getIdToken(true).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     String idToken = task.getResult().getToken();
-
-                    Log.d("SplashActivity", "ID token: " + idToken);
-                    Log.d("SplashActivity", "ID token result: " + currentUser.getUid());
-
-                    // User is signed in, navigate to MainActivity
-                    Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+                    Log.d(TAG, "ID token: " + idToken);
+                    Log.d(TAG, "User ID: " + currentUser.getUid());
                     verifyUser(idToken);
-                    startActivity(intent);
                 } else {
-                    Log.e("SplashActivity", "Error getting ID token", task.getException());
-                    // Handle error
+                    Log.e(TAG, "Error getting ID token", task.getException());
+                    runOnUiThread(() -> {
+                        Toast.makeText(SplashActivity.this, "Authentication error.", Toast.LENGTH_SHORT).show();
+                        navigateToGetStarted();
+                    });
                 }
             });
         } else {
-            // No user is signed in, navigate to GetStartedActivity
-            Intent intent = new Intent(SplashActivity.this, GetStartedActivity.class);
-            startActivity(intent);
+            Log.d(TAG, "No user signed in. Navigating to GetStartedActivity.");
+            navigateToGetStarted();
         }
+    }
+
+    private void navigateToGetStarted() {
+        Log.d(TAG, "Navigating to GetStartedActivity");
+        Intent intent = new Intent(SplashActivity.this, GetStartedActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    private void navigateToHomeActivity() {
+        Log.d(TAG, "Navigating to HomeActivity");
+        Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+        startActivity(intent);
         finish();
     }
 
     private void verifyUser(String idToken) {
+        Log.d(TAG, "Verifying user with backend...");
         new Thread(() -> {
             try {
-                URL url = new URL("http://10.0.2.2:8000/api/verify");
-                RequestBody body = RequestBody.create("{}", MediaType.get("application/json; charset=utf-8"));
+                URL url = new URL(BACKEND_URL);
+                RequestBody body = RequestBody.create("{}".getBytes(), MediaType.parse("application/json; charset=utf-8"));
+
                 Request request = new Request.Builder()
                         .url(url)
                         .post(body)
-                        .addHeader("Content-Type", "application/json; utf-8")
-                        .addHeader("Authorization", "Bearer " + idToken)
+                        .header("Content-Type", "application/json; charset=utf-8")
+                        .header("Authorization", "Bearer " + idToken)
                         .build();
 
                 client.newCall(request).enqueue(new Callback() {
                     @Override
                     public void onFailure(Call call, IOException e) {
-                        Log.e("SplashActivity", "Error verifying user", e);
+                        Log.e(TAG, "Error verifying user", e);
+                        runOnUiThread(() -> {
+                            Toast.makeText(SplashActivity.this, "Network error verifying user.", Toast.LENGTH_SHORT).show();
+                            navigateToGetStarted();
+                        });
                     }
 
                     @Override
                     public void onResponse(Call call, Response response) throws IOException {
                         if (response.isSuccessful()) {
-                            Log.d("SplashActivity", "User verified successfully");
+                            Log.d(TAG, "User verified successfully");
+                            runOnUiThread(() -> navigateToHomeActivity());
                         } else {
-                            Log.d("SplashActivity", "User verification failed with response code: " + response.code());
+                            String responseBody = response.body() != null ? response.body().string() : "No body";
+                            Log.e(TAG, "User verification failed. Response code: " + response.code() + ", Body: " + responseBody);
+                            runOnUiThread(() -> {
+                                Toast.makeText(SplashActivity.this, "User verification failed.", Toast.LENGTH_SHORT).show();
+                                navigateToGetStarted();
+                            });
                         }
                     }
                 });
             } catch (Exception e) {
-                Log.e("SplashActivity", "Error verifying user", e);
+                Log.e(TAG, "Error during verification process", e);
+                runOnUiThread(() -> {
+                    Toast.makeText(SplashActivity.this, "Error during verification process.", Toast.LENGTH_SHORT).show();
+                    navigateToGetStarted();
+                });
             }
         }).start();
     }
 }
-
