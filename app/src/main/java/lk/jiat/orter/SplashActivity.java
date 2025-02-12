@@ -30,8 +30,7 @@ import okhttp3.*;
 
 public class SplashActivity extends AppCompatActivity {
 
-    private final OkHttpClient client = new OkHttpClient();
-    private final String BACKEND_URL = "http://10.0.2.2:8000/api/verify";
+
     private static final String TAG = "SplashActivity"; //For easy Log filtering
 
     private boolean authenticationCheckStarted = false;  //Tracking Variable
@@ -67,7 +66,7 @@ public class SplashActivity extends AppCompatActivity {
             @Override
             public void onAnimationEnd(Animator animation) {
                 Log.d(TAG, "Animation Ended");
-                bringAppToForeground();
+
                 new Handler(Looper.getMainLooper()).postDelayed(() -> {
                     Log.d(TAG, "Calling checkUserAuthentication after delay");
                     checkUserAuthentication();
@@ -78,15 +77,7 @@ public class SplashActivity extends AppCompatActivity {
 
     }
 
-    private void bringAppToForeground() {
-        ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        if (activityManager != null) {
-            List<ActivityManager.AppTask> tasks = activityManager.getAppTasks();
-            if (tasks != null && !tasks.isEmpty()) {
-                tasks.get(0).moveToFront();
-            }
-        }
-    }
+
 
     private void checkUserAuthentication() {
         if(authenticationCheckStarted){
@@ -104,81 +95,33 @@ public class SplashActivity extends AppCompatActivity {
                     String idToken = task.getResult().getToken();
                     Log.d(TAG, "ID token: " + idToken);
                     Log.d(TAG, "User ID: " + currentUser.getUid());
-                    verifyUser(idToken);
+                    Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
+
                 } else {
                     Log.e(TAG, "Error getting ID token", task.getException());
                     runOnUiThread(() -> {
                         Toast.makeText(SplashActivity.this, "Authentication error.", Toast.LENGTH_SHORT).show();
-                        navigateToGetStarted();
+
+
+                        Intent intent = new Intent(SplashActivity.this, GetStartedActivity.class);
+                        startActivity(intent);
+                        finish();
                     });
                 }
             });
         } else {
             Log.d(TAG, "No user signed in. Navigating to GetStartedActivity.");
-            navigateToGetStarted();
+            Intent intent = new Intent(SplashActivity.this, GetStartedActivity.class);
+            startActivity(intent);
+            finish();
         }
     }
 
-    private void navigateToGetStarted() {
-        Log.d(TAG, "Navigating to GetStartedActivity");
-        Intent intent = new Intent(SplashActivity.this, GetStartedActivity.class);
-        startActivity(intent);
-        finish();
-    }
 
-    private void navigateToHomeActivity() {
-        Log.d(TAG, "Navigating to HomeActivity");
-        Intent intent = new Intent(SplashActivity.this, MainActivity.class);
-        startActivity(intent);
-        finish();
-    }
 
-    private void verifyUser(String idToken) {
-        Log.d(TAG, "Verifying user with backend...");
-        new Thread(() -> {
-            try {
-                URL url = new URL(BACKEND_URL);
-                RequestBody body = RequestBody.create("{}".getBytes(), MediaType.parse("application/json; charset=utf-8"));
 
-                Request request = new Request.Builder()
-                        .url(url)
-                        .post(body)
-                        .header("Content-Type", "application/json; charset=utf-8")
-                        .header("Authorization", "Bearer " + idToken)
-                        .build();
 
-                client.newCall(request).enqueue(new Callback() {
-                    @Override
-                    public void onFailure(Call call, IOException e) {
-                        Log.e(TAG, "Error verifying user", e);
-                        runOnUiThread(() -> {
-                            Toast.makeText(SplashActivity.this, "Network error verifying user.", Toast.LENGTH_SHORT).show();
-                            navigateToGetStarted();
-                        });
-                    }
 
-                    @Override
-                    public void onResponse(Call call, Response response) throws IOException {
-                        if (response.isSuccessful()) {
-                            Log.d(TAG, "User verified successfully");
-                            runOnUiThread(() -> navigateToHomeActivity());
-                        } else {
-                            String responseBody = response.body() != null ? response.body().string() : "No body";
-                            Log.e(TAG, "User verification failed. Response code: " + response.code() + ", Body: " + responseBody);
-                            runOnUiThread(() -> {
-                                Toast.makeText(SplashActivity.this, "User verification failed.", Toast.LENGTH_SHORT).show();
-                                navigateToGetStarted();
-                            });
-                        }
-                    }
-                });
-            } catch (Exception e) {
-                Log.e(TAG, "Error during verification process", e);
-                runOnUiThread(() -> {
-                    Toast.makeText(SplashActivity.this, "Error during verification process.", Toast.LENGTH_SHORT).show();
-                    navigateToGetStarted();
-                });
-            }
-        }).start();
-    }
 }

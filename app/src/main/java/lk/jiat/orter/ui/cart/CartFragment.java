@@ -5,11 +5,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -47,6 +49,8 @@ public class CartFragment extends Fragment {
     private TextView shippingText;
     private ProgressBar progressBar;
 
+    private Button checkoutButton;
+
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -55,19 +59,25 @@ public class CartFragment extends Fragment {
         binding = FragmentCartBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        recyclerView = binding.recyclerView;
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
-        // Initialize cart item list and adapter
-        cartItemList = new ArrayList<>();
-        cartAdapter = new CartAdapter(cartItemList);
-        recyclerView.setAdapter(cartAdapter);
-
         totalText = root.findViewById(R.id.textView20);
         subtotalText = root.findViewById(R.id.textView15);
         itemCountText = root.findViewById(R.id.textView18);
         shippingText = root.findViewById(R.id.textView30);
         progressBar = root.findViewById(R.id.progressBar);
+        checkoutButton = root.findViewById(R.id.button4);
+
+        recyclerView = binding.recyclerView;
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        // Initialize cart item list and adapter
+        cartItemList = new ArrayList<>();
+        cartAdapter = new CartAdapter(cartItemList, totalText, subtotalText, itemCountText, shippingText,checkoutButton);
+
+        recyclerView.setAdapter(cartAdapter);
+        recyclerView.setAdapter(cartAdapter);
+
+        checkoutButton.setEnabled(false);
+        checkoutButton.setBackgroundColor(ContextCompat.getColor(checkoutButton.getContext(), R.color.gray));
 
 
 
@@ -149,7 +159,6 @@ private void makeApiRequest(String token) {
                     String shipping = jsonObject.get("courier_charge").getAsString();
 
 
-
                     if (jsonObject.get("status").getAsBoolean()) {
                         JsonArray dataArray = jsonObject.getAsJsonArray("data");
                         List<CartItem> newCartItemList = new ArrayList<>(); // Store parsed data
@@ -181,13 +190,23 @@ private void makeApiRequest(String token) {
                             getActivity().runOnUiThread(() -> {
                                 cartItemList.clear(); // Clear old data
                                 cartItemList.addAll(newCartItemList); // Add new data
-                                totalText.setText("Rs."+total);
                                 subtotalText.setText(subtotal);
                                 itemCountText.setText(itemCount);
-                                shippingText.setText(shipping);
-
                                 cartAdapter.notifyDataSetChanged();
                                 progressBar.setVisibility(View.GONE);
+
+                                if (Integer.parseInt(itemCount) == 0) {
+                                    checkoutButton.setEnabled(false);
+                                    checkoutButton.setBackgroundColor(ContextCompat.getColor(checkoutButton.getContext(), R.color.gray));
+                                    shippingText.setText("0");
+                                    totalText.setText("0");
+
+                                } else {
+                                    totalText.setText("Rs."+total);
+                                    shippingText.setText(shipping);
+                                    checkoutButton.setEnabled(true);
+                                    checkoutButton.setBackgroundColor(ContextCompat.getColor(checkoutButton.getContext(), R.color.black));
+                                }
 
 
                             });

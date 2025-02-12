@@ -2,6 +2,7 @@
 package lk.jiat.orter.ui.home;
 
 import android.content.res.Configuration;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -20,12 +21,15 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -38,8 +42,10 @@ import lk.jiat.orter.model.Product;
 import lk.jiat.orter.ProductAdapter; // Import the adapter
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 import androidx.lifecycle.ViewModelProvider;
@@ -64,6 +70,9 @@ public class HomeFragment extends Fragment {
     private RecyclerView categoryRecyclerView;
     private CategoryAdapter categoryAdapter;
     private List<Category> categoryList;
+
+    private final OkHttpClient client = new OkHttpClient();
+    private final String BACKEND_URL = "http://10.0.2.2:8000/api/verify";
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -143,6 +152,21 @@ public class HomeFragment extends Fragment {
         // Set the adapter
         categoryRecyclerView.setAdapter(categoryAdapter);
 
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser != null) {
+            currentUser.getIdToken(true).addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    String idToken = task.getResult().getToken();
+                    verifyUser(idToken);
+                } else {
+                    Log.e("auth", "Error getting ID token", task.getException());
+                    getActivity().runOnUiThread(() -> {
+                        Toast.makeText(getContext(), "Authentication error.", Toast.LENGTH_SHORT).show();
+                    });
+                }
+            });
+        }
+
         return root;
     }
 
@@ -204,10 +228,66 @@ Glide.with(this)
         });
     }
 
+
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         handler.removeCallbacks(runnable);
         binding = null;
     }
+
+
+
+    // HomeFragment.java
+    private void verifyUser(String idToken) {
+        Log.d("auth", "Verifying user with backend...");
+        new Thread(() -> {
+            try {
+                URL url = new URL(BACKEND_URL);
+                RequestBody body = RequestBody.create("{}".getBytes(), MediaType.parse("application/json; charset=utf-8"));
+
+                Request request = new Request.Builder()
+                        .url(url)
+                        .post(body)
+                        .header("Content-Type", "application/json; charset=utf-8")
+                        .header("Authorization", "Bearer " + idToken)
+                        .build();
+
+                client.newCall(request).enqueue(new Callback() {
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+                        Log.e("auth", "Error verifying user", e);
+                        getActivity().runOnUiThread(() -> {
+                            Toast.makeText(getContext(), "Network error verifying user.", Toast.LENGTH_SHORT).show();
+                        });
+                    }
+
+                    @Override
+                    public void onResponse(Call call, Response response) throws IOException {
+                        if (response.isSuccessful()) {
+                            Log.d("auth", "User verified successfully");
+                            getActivity().runOnUiThread(() -> {
+                                // Handle successful verification
+                            });
+                        } else {
+                            String responseBody = response.body() != null ? response.body().string() : "No body";
+                            Log.e("auth", "User verification failed. Response code: " + response.code() + ", Body: " + responseBody);
+                            getActivity().runOnUiThread(() -> {
+                                Toast.makeText(getContext(), "User verification failed.", Toast.LENGTH_SHORT).show();
+                            });
+                        }
+                    }
+                });
+            } catch (Exception e) {
+                Log.e("auth", "Error during verification process", e);
+                getActivity().runOnUiThread(() -> {
+                    Toast.makeText(getContext(), "Error during verification process.", Toast.LENGTH_SHORT).show();
+                });
+            }
+        }).start();
+    }
+
+
 }
+
