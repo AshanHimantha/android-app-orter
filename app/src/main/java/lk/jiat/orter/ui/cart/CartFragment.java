@@ -51,6 +51,8 @@ public class CartFragment extends Fragment {
 
     private Button checkoutButton;
 
+    private TextView EmptyCartText;
+
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -65,17 +67,21 @@ public class CartFragment extends Fragment {
         shippingText = root.findViewById(R.id.textView30);
         progressBar = root.findViewById(R.id.progressBar);
         checkoutButton = root.findViewById(R.id.button4);
+        EmptyCartText = root.findViewById(R.id.textView14);
+
+
 
         recyclerView = binding.recyclerView;
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         // Initialize cart item list and adapter
         cartItemList = new ArrayList<>();
-        cartAdapter = new CartAdapter(cartItemList, totalText, subtotalText, itemCountText, shippingText,checkoutButton);
+        cartAdapter = new CartAdapter(cartItemList, totalText, subtotalText, itemCountText, shippingText,checkoutButton, EmptyCartText);
 
         recyclerView.setAdapter(cartAdapter);
         recyclerView.setAdapter(cartAdapter);
 
+        EmptyCartText.setVisibility(View.GONE);
         checkoutButton.setEnabled(false);
         checkoutButton.setBackgroundColor(ContextCompat.getColor(checkoutButton.getContext(), R.color.gray));
 
@@ -195,12 +201,13 @@ private void makeApiRequest(String token) {
                                 cartAdapter.notifyDataSetChanged();
                                 progressBar.setVisibility(View.GONE);
 
+
                                 if (Integer.parseInt(itemCount) == 0) {
                                     checkoutButton.setEnabled(false);
                                     checkoutButton.setBackgroundColor(ContextCompat.getColor(checkoutButton.getContext(), R.color.gray));
                                     shippingText.setText("0");
                                     totalText.setText("0");
-
+                                    EmptyCartText.setVisibility(View.VISIBLE);
                                 } else {
                                     totalText.setText("Rs."+total);
                                     shippingText.setText(shipping);

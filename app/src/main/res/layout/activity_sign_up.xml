@@ -97,7 +97,8 @@ tools:context=".SignUpActivity">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/nameEditText"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="50dp"
+                    android:background="@drawable/light_border"
                     android:drawableStart="@drawable/person"
                     android:fontFamily="@font/inter"
                     android:hint="@string/full_name"
@@ -129,7 +130,8 @@ tools:context=".SignUpActivity">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/emailEditText"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="50dp"
+                    android:background="@drawable/light_border"
                     android:drawableStart="@drawable/mail"
                     android:fontFamily="@font/inter"
                     android:hint="@string/email"
@@ -162,7 +164,8 @@ tools:context=".SignUpActivity">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="50dp"
+                    android:background="@drawable/light_border"
                     android:drawableStart="@drawable/lock"
                     android:fontFamily="@font/inter"
                     android:hint="@string/password"
@@ -193,7 +196,8 @@ tools:context=".SignUpActivity">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="50dp"
+                    android:background="@drawable/light_border"
                     android:drawableStart="@drawable/lock"
                     android:fontFamily="@font/inter"
                     android:hint="@string/confirm_password"

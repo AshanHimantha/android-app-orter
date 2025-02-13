@@ -153,6 +153,7 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:background="@drawable/light_border"
                         android:drawableStart="@drawable/lock"
                         android:fontFamily="@font/inter"
                         android:hint="@string/password" />
@@ -221,6 +222,8 @@
                         android:id="@+id/icon"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:background="@drawable/light_border"
+
                         android:drawableStart="@drawable/mail"
 
                         android:fontFamily="@font/inter"

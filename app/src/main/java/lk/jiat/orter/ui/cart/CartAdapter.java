@@ -40,10 +40,12 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
     private TextView shippingText;
     private Button checkoutButton; // Add checkout button reference
 
+    private TextView emptyCartText; // Add empty cart text reference
+
     // Flag to prevent rapid UI updates
     private boolean isUpdating = false;
 
-    public CartAdapter(List<CartItem> cartItemList, TextView totalText, TextView subtotalText, TextView itemCountText, TextView shippingText, Button checkoutButton) {
+    public CartAdapter(List<CartItem> cartItemList, TextView totalText, TextView subtotalText, TextView itemCountText, TextView shippingText, Button checkoutButton ,TextView emptyCartText) {
         this.cartItemList = cartItemList;
         this.client = new okhttp3.OkHttpClient();
         this.totalText = totalText;
@@ -51,6 +53,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
         this.itemCountText = itemCountText;
         this.shippingText = shippingText;
         this.checkoutButton = checkoutButton; // Initialize the checkout button
+        this.emptyCartText = emptyCartText; // Initialize the empty cart text
     }
 
     @NonNull
@@ -250,8 +253,9 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
             shippingText.setText(String.valueOf(shippingFee));
 
             // Disable checkout button if cart is empty
-           checkoutButton.setEnabled(itemCount > 0);
+             checkoutButton.setEnabled(itemCount > 0);
             checkoutButton.setBackgroundColor(itemCount > 0 ? ContextCompat.getColor(checkoutButton.getContext(), R.color.black) : ContextCompat.getColor(checkoutButton.getContext(), R.color.gray));
+            emptyCartText.setVisibility(itemCount > 0 ? View.GONE : View.VISIBLE);
         } catch (JSONException e) {
             Log.e("JSON_ERROR", "Failed to parse JSON: " + e.getMessage());
             new Handler(Looper.getMainLooper()).post(() -> {

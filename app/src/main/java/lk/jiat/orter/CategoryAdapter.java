@@ -1,4 +1,5 @@
 package lk.jiat.orter;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +31,21 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
         Category category = categoryList.get(position);
         holder.categoryIcon.setImageResource(category.getIconResourceId());
         holder.categoryName.setText(category.getName());
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(v.getContext(), CategoryViewActivity.class);
+                intent.putExtra("category_name", category.getName());
+                intent.putExtra("category_id", category.getId());
+                intent.putExtra("description", category.getDescription());
+
+                v.getContext().startActivity(intent);
+
+
+            }
+        });
     }
 
     @Override
@@ -45,6 +61,8 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
             super(itemView);
             categoryIcon = itemView.findViewById(R.id.category_icon);
             categoryName = itemView.findViewById(R.id.category_name_item);
+
+
         }
     }
 }

@@ -126,20 +126,17 @@ public class HomeFragment extends Fragment {
 
         // Create a list of categories (replace with your actual data)
         categoryList = new ArrayList<>();
-        categoryList.add(new Category(R.drawable.tshirt, "T-Shirts"));
-        categoryList.add(new Category(R.drawable.trousers, "Pants"));
-        categoryList.add(new Category(R.drawable.hoodie, "Hoodies"));
-        categoryList.add(new Category(R.drawable.sneakers, "Shoes"));
-        categoryList.add(new Category(R.drawable.bag, "Bags"));
-        categoryList.add(new Category(R.drawable.tshirt, "T-Shirts"));
-        categoryList.add(new Category(R.drawable.trousers, "Pants"));
-        categoryList.add(new Category(R.drawable.hoodie, "Hoodies"));
-        categoryList.add(new Category(R.drawable.sneakers, "Shoes"));
-        categoryList.add(new Category(R.drawable.bag, "Bags"));
-        categoryList.add(new Category(R.drawable.trousers, "Pants"));
-        categoryList.add(new Category(R.drawable.hoodie, "Hoodies"));
-        categoryList.add(new Category(R.drawable.sneakers, "Shoes"));
-        categoryList.add(new Category(R.drawable.bag, "Bags"));
+        categoryList.add(new Category(R.drawable.tshirt, "T-Shirts", "Unisex T-Shirts Collection", "16"));
+        categoryList.add(new Category(R.drawable.shirt, "Shirts", "Men's Shirts Collection", "2"));
+        categoryList.add(new Category(R.drawable.trousers, "Pants", "Men's Pants Collection", "3"));
+        categoryList.add(new Category(R.drawable.dress, "Dresses", "Women's Dresses Collection", "6"));
+        categoryList.add(new Category(R.drawable.womensshirt, "Tops", "Women's Tops Collection", "7"));
+        categoryList.add(new Category(R.drawable.skirt, "Skirts", "Women's Skirts Collection", "8"));
+        categoryList.add(new Category(R.drawable.hoodie, "Hoodies", "Unisex Hoodies Collection", "11"));
+        categoryList.add(new Category(R.drawable.coat, "Jackets", "Unisex Jackets Collection", "12"));
+        categoryList.add(new Category(R.drawable.bag, "Bags", "Unisex Bags Collection", "14"));
+        categoryList.add(new Category(R.drawable.bracelet, "Accessories", "Unisex Accessories Collection", "15"));
+
 
         // Create the adapter
         categoryAdapter = new CategoryAdapter(categoryList);
