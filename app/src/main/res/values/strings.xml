@@ -71,6 +71,13 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="latest_product">Latest Product</string>
     <string name="explore_latest">Explore the latest products</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="contact_info">Contact Information</string>
+    <string name="update_email">Update Email</string>
+    <string name="update_mobile">Update Mobile</string>
+    <string name="change_display">Change Display Name</string>
+    <string name="change_phone">Change Contact Number</string>
+    <string name="logout">Logout</string>
 
 
 
