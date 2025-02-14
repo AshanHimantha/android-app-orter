@@ -25,6 +25,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Orter"
+rootProject.name = "Orter Clothing"
 include(":app")
  
