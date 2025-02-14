@@ -1,6 +1,8 @@
 // HomeFragment.java
 package lk.jiat.orter.ui.home;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.nfc.Tag;
 import android.os.Bundle;
@@ -154,7 +156,16 @@ public class HomeFragment extends Fragment {
             currentUser.getIdToken(true).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     String idToken = task.getResult().getToken();
-                    verifyUser(idToken);
+
+                    SharedPreferences sharedPreferences = getContext().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+                    boolean isVerified = sharedPreferences.getBoolean("is_verified", false);
+
+                   if (!isVerified) {
+                        verifyUser(idToken);
+                    }else {
+                        Log.d("auth", "User already verified");
+                    }
+
                 } else {
                     Log.e("auth", "Error getting ID token", task.getException());
                     getActivity().runOnUiThread(() -> {
@@ -263,10 +274,15 @@ Glide.with(this)
                     @Override
                     public void onResponse(Call call, Response response) throws IOException {
                         if (response.isSuccessful()) {
+
+
                             Log.d("auth", "User verified successfully");
-                            getActivity().runOnUiThread(() -> {
-                                // Handle successful verification
-                            });
+                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+                            sharedPreferences.edit().putBoolean("is_verified", true).apply();
+
+                            Log.d("shared", "is_verified set to true");
+                            Log.e("shared", sharedPreferences.getBoolean("is_verified", false) + "");
+
                         } else {
                             String responseBody = response.body() != null ? response.body().string() : "No body";
                             Log.e("auth", "User verification failed. Response code: " + response.code() + ", Body: " + responseBody);

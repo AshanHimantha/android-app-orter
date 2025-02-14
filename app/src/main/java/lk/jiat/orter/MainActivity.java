@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId(); // Correct way to get the item ID
 
         if (id == R.id.test1) {
-            // Handle home action
+            startActivity(new Intent(this, LatestProductActivity.class));
         } else if (id == R.id.test2) {
             startActivity(new Intent(this, CategoryViewActivity.class));
         } else if (id == R.id.test3) {
@@ -91,12 +91,5 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
-    @Override
-    public void onBackPressed() {
-        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            drawerLayout.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }
+
 }

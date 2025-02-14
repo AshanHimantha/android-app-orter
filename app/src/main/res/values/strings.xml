@@ -69,6 +69,9 @@
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="latest_product">Latest Product</string>
+    <string name="explore_latest">Explore the latest products</string>
+
 
 
 </resources>

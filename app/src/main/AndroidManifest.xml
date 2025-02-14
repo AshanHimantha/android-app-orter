@@ -18,6 +18,9 @@
         android:theme="@style/Theme.Orter"
         tools:targetApi="31">
         <activity
+            android:name=".LatestProductActivity"
+            android:exported="false" />
+        <activity
             android:name=".CategoryViewActivity"
             android:exported="false"
             android:label="@string/title_activity_category_view"
@@ -27,6 +30,7 @@
             android:exported="false" />
         <activity
             android:name=".MainActivity"
+            android:exported="false"
             android:label="@string/title_activity_main" />
         <activity
             android:name=".SignUpActivity"
