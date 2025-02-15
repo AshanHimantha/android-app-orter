@@ -78,6 +78,12 @@
     <string name="change_display">Change Display Name</string>
     <string name="change_phone">Change Contact Number</string>
     <string name="logout">Logout</string>
+    <string name="add_address">Add Address</string>
+    <string name="address_display_name">Address Display Name</string>
+    <string name="owner_name">Owner Name</string>
+    <string name="address_line1">Address Line 1</string>
+    <string name="address_line2">Address Line 2</string>
+    <string name="zip_code">Zip Code</string>
 
 
 

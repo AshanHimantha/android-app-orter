@@ -22,8 +22,9 @@
         app:srcCompat="@drawable/icon" />
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_weight="8"
         android:orientation="vertical">
 
         <TextView
@@ -33,6 +34,13 @@
             android:fontFamily="@font/inter_semibold"
             android:text="Home"
             android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/textView44"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Ashan Himantha"
+            android:textColor="#737373" />
 
         <TextView
             android:id="@+id/textView46"
@@ -52,5 +60,13 @@
             android:textColor="#737373"
             android:textSize="12sp" />
     </LinearLayout>
+
+    <ImageView
+        android:id="@+id/imageView12"
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        android:layout_gravity="top|end"
+        android:layout_weight="1"
+        app:srcCompat="@drawable/close" />
 
 </LinearLayout>

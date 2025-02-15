@@ -57,10 +57,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         WindowInsetsControllerCompat windowInsetsController = WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView());
         if (windowInsetsController != null) {
-            windowInsetsController.setAppearanceLightStatusBars(true); // true for dark text, false for light text
+            windowInsetsController.setAppearanceLightStatusBars(true);
         }
 
-        // Find the TextView with ID textView39
+
         TextView textView39 = findViewById(R.id.textView39);
         if (textView39 != null) {
             textView39.setOnClickListener(new View.OnClickListener() {

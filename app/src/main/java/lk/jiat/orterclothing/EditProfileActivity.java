@@ -1,5 +1,6 @@
 package lk.jiat.orterclothing;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -45,9 +46,11 @@ public class EditProfileActivity extends AppCompatActivity {
         contact = findViewById(R.id.editTextText2);
         back = findViewById(R.id.button12);
 
+
+
+
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
-
 
 
         back.setOnClickListener(new View.OnClickListener() {
@@ -82,28 +85,28 @@ public class EditProfileActivity extends AppCompatActivity {
                     HashMap<String, Object> data = new HashMap<>();
                     data.put("mobile", contact.getText().toString());
                     data.put("uid", user.getUid());
-db.collection("user").document(user.getUid()).set(data).addOnSuccessListener(new OnSuccessListener<Void>() {
-    @Override
-    public void onSuccess(Void aVoid) {
+                    db.collection("user").document(user.getUid()).set(data).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
 
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(EditProfileActivity.this, "Profile updated", Toast.LENGTH_SHORT).show();
-                contact.setText("");
-                name.setText("");
-                finish();
-            }
-        });
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(EditProfileActivity.this, "Profile updated", Toast.LENGTH_SHORT).show();
+                                    contact.setText("");
+                                    name.setText("");
+                                    finish();
+                                }
+                            });
 
 
-    }
-}).addOnFailureListener(new OnFailureListener() {
-    @Override
-    public void onFailure(@NonNull Exception e) {
-        Log.w("TAG", "Error writing document", e);
-    }
-});
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.w("TAG", "Error writing document", e);
+                        }
+                    });
                 }
             }
         });

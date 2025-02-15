@@ -1,9 +1,12 @@
 package lk.jiat.orterclothing.ui.profile;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -33,8 +36,33 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AdressVi
 
         UserAddress address = addressList.get(position);
         holder.addressName.setText(address.getAddressName());
+        holder.owner.setText(address.getOwner());
         holder.addressLine1.setText(address.getAddressLine1());
         holder.addressLine2.setText(address.getAddressLine2());
+        holder.delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int currentPosition = holder.getAdapterPosition();
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setTitle("Delete Address");
+                builder.setMessage("Are you sure you want to delete this address?");
+                builder.setPositiveButton("Yes", (dialog, which) -> {
+                    addressList.remove(currentPosition);
+                    notifyItemRemoved(currentPosition);
+                    notifyItemRangeChanged(currentPosition, addressList.size());
+
+                    SQLiteDatabase db = context.openOrCreateDatabase("address.db", Context.MODE_PRIVATE, null);
+                    db.delete("addresses", "display_name = ? AND owner_name = ? AND address1 = ? AND address2 = ?", new String[]{address.getAddressName(), address.getOwner(), address.getAddressLine1(), address.getAddressLine2()});
+                    db.close();
+
+                });
+                builder.setNegativeButton("No", (dialog, which) -> {
+                    dialog.dismiss();
+                });
+                builder.create().show();
+            }
+        });
+
 
     }
 
@@ -46,14 +74,19 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AdressVi
     static class AdressViewholder extends RecyclerView.ViewHolder{
 
         private TextView addressName;
+
+        private TextView owner;
         private TextView addressLine1;
         private TextView addressLine2;
-
+        private ImageView delete;
         public AdressViewholder(@NonNull View itemView) {
             super(itemView);
             addressName = itemView.findViewById(R.id.textView45);
+            owner = itemView.findViewById(R.id.textView44);
             addressLine1 = itemView.findViewById(R.id.textView46);
             addressLine2 = itemView.findViewById(R.id.textView47);
+            delete = itemView.findViewById(R.id.imageView12);
+
         }
 
 

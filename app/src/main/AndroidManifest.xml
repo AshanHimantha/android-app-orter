@@ -6,7 +6,6 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
-
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -19,25 +18,28 @@
         android:theme="@style/Theme.Orter"
         tools:targetApi="31">
         <activity
-            android:name="lk.jiat.orterclothing.EditProfileActivity"
+            android:name=".AddAddressActivity"
             android:exported="false" />
         <activity
-            android:name="lk.jiat.orterclothing.LatestProductActivity"
+            android:name=".EditProfileActivity"
             android:exported="false" />
         <activity
-            android:name="lk.jiat.orterclothing.CategoryViewActivity"
+            android:name=".LatestProductActivity"
+            android:exported="false" />
+        <activity
+            android:name=".CategoryViewActivity"
             android:exported="false"
             android:label="@string/title_activity_category_view"
             android:theme="@style/Theme.Orter" />
         <activity
-            android:name="lk.jiat.orterclothing.SingleProductActivity"
+            android:name=".SingleProductActivity"
             android:exported="false" />
         <activity
-            android:name="lk.jiat.orterclothing.MainActivity"
+            android:name=".MainActivity"
             android:exported="false"
             android:label="@string/title_activity_main" />
         <activity
-            android:name="lk.jiat.orterclothing.SignUpActivity"
+            android:name=".SignUpActivity"
             android:exported="false" />
 
         <meta-data
@@ -48,10 +50,10 @@
             android:value="@string/facebook_client_token" />
 
         <activity
-            android:name="lk.jiat.orterclothing.GetStartedActivity"
+            android:name=".GetStartedActivity"
             android:exported="false" />
         <activity
-            android:name="lk.jiat.orterclothing.SplashActivity"
+            android:name=".SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -59,7 +61,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="lk.jiat.orterclothing.LoginActivity" />
+        <activity android:name=".LoginActivity" />
 
         <meta-data
             android:name="preloaded_fonts"

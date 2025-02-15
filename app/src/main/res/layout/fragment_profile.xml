@@ -185,7 +185,7 @@
                     android:layout_marginEnd="24dp"
                     android:layout_marginBottom="132dp"
                     android:backgroundTint="#090909"
-                    android:text="Button"
+                    android:text="@string/add_address"
                     app:cornerRadius="10dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
