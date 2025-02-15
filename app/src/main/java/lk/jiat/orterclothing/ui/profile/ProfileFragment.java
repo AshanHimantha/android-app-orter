@@ -97,7 +97,7 @@ public class ProfileFragment extends Fragment {
 
         addressList = new ArrayList<>();
         SQLiteDatabase sqdb = getActivity().openOrCreateDatabase("address.db", Context.MODE_PRIVATE, null);
-        Cursor cursor = sqdb.rawQuery("SELECT display_name, owner_name, address1, address2 FROM addresses", null);
+        Cursor cursor = sqdb.rawQuery("SELECT display_name, owner_name, address1, address2, zip FROM addresses", null);
 
         if (cursor.moveToFirst()) {
             do {
@@ -105,6 +105,9 @@ public class ProfileFragment extends Fragment {
                 String owner = cursor.getString(1);
                 String addressLine1 = cursor.getString(2);
                 String addressLine2 = cursor.getString(3);
+                String zip = cursor.getString(4);
+
+                addressLine2 = addressLine2 + ", " + zip;
                 UserAddress address = new UserAddress(addressName, owner, addressLine1, addressLine2);
                 addressList.add(address);
             } while (cursor.moveToNext());
@@ -119,8 +122,6 @@ public class ProfileFragment extends Fragment {
         recyclerView.setLayoutManager(linearLayoutManager);
 
         recyclerView.setAdapter(addressAdapter);
-
-
 
 
 

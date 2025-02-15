@@ -1,5 +1,6 @@
 package lk.jiat.orterclothing.ui.cart;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -26,6 +27,8 @@ import com.google.gson.JsonObject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import lk.jiat.orterclothing.CheckoutActivity;
 import lk.jiat.orterclothing.R;
 import lk.jiat.orterclothing.databinding.FragmentCartBinding;
 import okhttp3.Call;
@@ -86,6 +89,13 @@ public class CartFragment extends Fragment {
         checkoutButton.setBackgroundColor(ContextCompat.getColor(checkoutButton.getContext(), R.color.gray));
 
 
+        checkoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getContext(), CheckoutActivity.class);
+                startActivity(intent);
+            }
+        });
 
         return root;
     }
