@@ -1,5 +1,6 @@
-// AddressAdapter.java
 package lk.jiat.orterclothing.ui.profile;
+
+
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -21,14 +22,12 @@ import java.util.List;
 public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AdressViewholder> {
     private Context context;
     private List<UserAddress> addressList;
-    private int selectedPosition = -1; // Variable to keep track of the selected position
+    private int selectedPosition = -1;
 
     public AddressAdapter(Context context, List<UserAddress> addressList) {
         this.context = context;
         this.addressList = addressList;
     }
-
-
 
     @NonNull
     @Override
@@ -41,52 +40,50 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AdressVi
     public void onBindViewHolder(@NonNull AdressViewholder holder, int position) {
         UserAddress address = addressList.get(position);
         holder.addressName.setText(address.getAddressName());
-        holder.owner.setText(address.getOwner());
+        holder.owner.setText(address.getFullName()); // Using the new getFullName() method
         holder.addressLine1.setText(address.getAddressLine1());
         holder.addressLine2.setText(address.getAddressLine2());
         holder.contact.setText(address.getContact());
 
-        // Update the background based on the selected position
         if (position == selectedPosition) {
             holder.itemView.setBackgroundResource(R.drawable.blackborder);
         } else {
             holder.itemView.setBackgroundResource(R.drawable.light_border);
         }
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Update the selected position and notify the adapter
-                selectedPosition = holder.getAdapterPosition();
-                notifyDataSetChanged();
-            }
+        holder.itemView.setOnClickListener(v -> {
+            selectedPosition = holder.getAdapterPosition();
+            notifyDataSetChanged();
         });
 
         if (context instanceof CheckoutActivity) {
             holder.delete.setVisibility(View.GONE);
         }
 
-        holder.delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int currentPosition = holder.getAdapterPosition();
-                AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                builder.setTitle("Delete Address");
-                builder.setMessage("Are you sure you want to delete this address?");
-                builder.setPositiveButton("Yes", (dialog, which) -> {
-                    addressList.remove(currentPosition);
-                    notifyItemRemoved(currentPosition);
-                    notifyItemRangeChanged(currentPosition, addressList.size());
+        holder.delete.setOnClickListener(v -> {
+            int currentPosition = holder.getAdapterPosition();
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setTitle("Delete Address");
+            builder.setMessage("Are you sure you want to delete this address?");
+            builder.setPositiveButton("Yes", (dialog, which) -> {
+                addressList.remove(currentPosition);
+                notifyItemRemoved(currentPosition);
+                notifyItemRangeChanged(currentPosition, addressList.size());
 
-                    SQLiteDatabase db = context.openOrCreateDatabase("address.db", Context.MODE_PRIVATE, null);
-                    db.delete("addresses", "display_name = ? AND owner_name = ? AND address1 = ? AND address2 = ?", new String[]{address.getAddressName(), address.getOwner(), address.getAddressLine1(), address.getAddressLine2()});
-                    db.close();
-                });
-                builder.setNegativeButton("No", (dialog, which) -> {
-                    dialog.dismiss();
-                });
-                builder.create().show();
-            }
+                SQLiteDatabase db = context.openOrCreateDatabase("address.db", Context.MODE_PRIVATE, null);
+                db.delete("addresses",
+                        "display_name = ? AND f_name = ? AND l_name = ? AND address1 = ? AND address2 = ?",
+                        new String[]{
+                                address.getAddressName(),
+                                address.getFName(),
+                                address.getLName(),
+                                address.getAddressLine1(),
+                                address.getAddressLine2()
+                        });
+                db.close();
+            });
+            builder.setNegativeButton("No", (dialog, which) -> dialog.dismiss());
+            builder.create().show();
         });
     }
 

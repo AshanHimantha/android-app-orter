@@ -37,7 +37,8 @@ public class AddAddressActivity extends AppCompatActivity {
         btnBack.setOnClickListener(v -> finish());
 
         EditText displayName = findViewById(R.id.editTextText);
-        EditText ownerName = findViewById(R.id.editTextText2);
+        EditText f_name = findViewById(R.id.editTextText3);
+        EditText l_name = findViewById(R.id.editTextText2);
         EditText address1 = findViewById(R.id.editTextText5);
         EditText address2 = findViewById(R.id.editTextText6);
         EditText zip = findViewById(R.id.editTextText7);
@@ -46,13 +47,14 @@ public class AddAddressActivity extends AppCompatActivity {
         Button btnSave = findViewById(R.id.button9);
         btnSave.setOnClickListener(v -> {
             String displayNameText = displayName.getText().toString();
-            String ownerNameText = ownerName.getText().toString();
+            String fNameText = f_name.getText().toString();
+            String lNameText = l_name.getText().toString();
             String address1Text = address1.getText().toString();
             String address2Text = address2.getText().toString();
             String zipText = zip.getText().toString();
             String contactText = contact.getText().toString();
 
-         if (displayNameText.isEmpty() || ownerNameText.isEmpty() || address1Text.isEmpty() || address2Text.isEmpty() || zipText.isEmpty() || contactText.isEmpty()) {
+         if (displayNameText.isEmpty() || fNameText.isEmpty() || address1Text.isEmpty() || address2Text.isEmpty() || zipText.isEmpty() || contactText.isEmpty() || lNameText.isEmpty()) {
              Toast.makeText(this, "All fields are required", Toast.LENGTH_SHORT).show();
              return;
          }
@@ -66,7 +68,7 @@ public class AddAddressActivity extends AppCompatActivity {
             }
             cursor.close();
 
-            dbHelper.insertAddress(displayNameText, ownerNameText, address1Text, address2Text, zipText, contactText);
+            dbHelper.insertAddress(displayNameText, fNameText, lNameText, address1Text, address2Text, zipText, contactText);
             Toast.makeText(this, "Address saved", Toast.LENGTH_SHORT).show();
             finish();
         });

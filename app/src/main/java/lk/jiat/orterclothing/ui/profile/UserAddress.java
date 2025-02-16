@@ -5,13 +5,16 @@ public class UserAddress {
     private String addressName;
     private String addressLine1;
     private String addressLine2;
-    private String owner;
+    private String fname;
+
+    private String lname;
 
     private String contact;
 
-    public UserAddress( String addressName,String owner, String addressLine1, String addressLine2 , String contact) {
+    public UserAddress( String addressName,String fname ,String lname, String addressLine1, String addressLine2 , String contact) {
         this.addressName = addressName;
-        this.owner = owner;
+        this.fname = fname;
+        this.lname = lname;
         this.addressLine1 = addressLine1;
         this.addressLine2 = addressLine2;
         this.contact = contact;
@@ -41,12 +44,24 @@ public class UserAddress {
         this.addressLine2 = addressLine2;
     }
 
-    public String getOwner() {
-        return owner;
+    public String getFullName() {
+        return fname + " " + lname;
     }
 
-    public void setOwner(String owner) {
-        this.owner = owner;
+    public String getFName() {
+        return fname;
+    }
+
+    public void setFName(String fname) {
+        this.fname = fname;
+    }
+
+    public String getLName() {
+        return lname;
+    }
+
+    public void setLName(String lname) {
+        this.lname = lname;
     }
 
     public String getContact() {

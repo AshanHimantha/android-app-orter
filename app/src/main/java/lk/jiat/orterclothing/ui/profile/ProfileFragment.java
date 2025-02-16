@@ -107,22 +107,23 @@ public class ProfileFragment extends Fragment {
         SQLiteDatabase sqdb = dbHelper.getReadableDatabase(); // Get readable database
 
         // Updated query to include the contact column
-        Cursor cursor = sqdb.rawQuery("SELECT display_name, owner_name, address1, address2, zip, contact FROM addresses", null);
+       Cursor cursor = sqdb.rawQuery("SELECT display_name, f_name, l_name, address1, address2, zip, contact FROM addresses", null);
 
-        if (cursor.moveToFirst()) {
-            do {
-                String addressName = cursor.getString(0);
-                String owner = cursor.getString(1);
-                String addressLine1 = cursor.getString(2);
-                String addressLine2 = cursor.getString(3);
-                String zip = cursor.getString(4);
-                String contact = cursor.getString(5);  // Now safely getting the contact
+       if (cursor.moveToFirst()) {
+           do {
+               String addressName = cursor.getString(0);
+               String firstName = cursor.getString(1);
+               String lastName = cursor.getString(2);
+               String addressLine1 = cursor.getString(3);
+               String addressLine2 = cursor.getString(4);
+               String zip = cursor.getString(5);
+               String contact = cursor.getString(6);
 
-                addressLine2 = addressLine2 + ", " + zip;
-                UserAddress address = new UserAddress(addressName, owner, addressLine1, addressLine2, contact);
-                addressList.add(address);
-            } while (cursor.moveToNext());
-        }
+               addressLine2 = addressLine2 + ", " + zip;
+               UserAddress address = new UserAddress(addressName, firstName, lastName, addressLine1, addressLine2, contact);
+               addressList.add(address);
+           } while (cursor.moveToNext());
+       }
 
         cursor.close();
         sqdb.close();  // Close the database
