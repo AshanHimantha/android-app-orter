@@ -28,6 +28,8 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AdressVi
         this.addressList = addressList;
     }
 
+
+
     @NonNull
     @Override
     public AdressViewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -91,6 +93,10 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AdressVi
     @Override
     public int getItemCount() {
         return addressList.size();
+    }
+
+    public int getSelectedPosition() {
+        return selectedPosition;
     }
 
     static class AdressViewholder extends RecyclerView.ViewHolder {

@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lk.jiat.orterclothing.CheckoutActivity;
+import lk.jiat.orterclothing.LoginActivity;
 import lk.jiat.orterclothing.R;
 import lk.jiat.orterclothing.databinding.FragmentCartBinding;
 import okhttp3.Call;
@@ -93,7 +94,14 @@ public class CartFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getContext(), CheckoutActivity.class);
+                intent.putExtra("total", totalText.getText().toString());
+                intent.putExtra("itemCount", itemCountText.getText().toString());
+                intent.putExtra("shipping", shippingText.getText().toString());
+                intent.putExtra("subtotal", subtotalText.getText().toString());
+
+
                 startActivity(intent);
+
             }
         });
 
@@ -124,16 +132,19 @@ public class CartFragment extends Fragment {
 
                                 Toast.makeText(getContext(), "Failed to get authentication token.", Toast.LENGTH_SHORT).show());
                     }
-                    // Optionally, handle the error (e.g., display a message to the user)
+
                 }
             });
         } else {
             Log.e("AUTH_ERROR", "User is not authenticated");
             if (getActivity() != null) {
-                getActivity().runOnUiThread(() ->
-                        Toast.makeText(getContext(), "User is not authenticated.", Toast.LENGTH_SHORT).show());
+
+
+                           Intent intent2 = new Intent(getContext(), LoginActivity.class);
+                           startActivity(intent2);
+
             }
-            // Optionally, handle the error (e.g., redirect to login)
+
         }
     }
 

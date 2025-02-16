@@ -80,11 +80,14 @@
     <string name="logout">Logout</string>
     <string name="add_address">Add Address</string>
     <string name="address_display_name">Address Display Name</string>
-    <string name="owner_name">Owner Name</string>
+    <string name="f_name">First Name</string>
+    <string name="l_name">Last Name</string>
     <string name="address_line1">Address Line 1</string>
     <string name="address_line2">Address Line 2</string>
     <string name="zip_code">Zip Code</string>
     <string name="contact_number">Contact Number</string>
+    <string name="Confirm">Confirm</string>
+    <string name="warning_address">Enter the correct delivery address to ensure smooth delivery.</string>
 
 
 </resources>
