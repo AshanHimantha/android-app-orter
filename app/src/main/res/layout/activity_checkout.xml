@@ -8,6 +8,124 @@
     android:background="#FFFFFF"
     tools:context=".CheckoutActivity">
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
+        android:layout_width="0dp"
+        android:layout_height="223dp"
+        android:background="@drawable/header_border"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+
+        <Button
+            android:id="@+id/button4"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginBottom="24dp"
+            android:backgroundTint="#1F1F1F"
+            android:fontFamily="@font/inter_semibold"
+            android:text="@string/checkout"
+            app:cornerRadius="6dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/textView12"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginBottom="112dp"
+            android:fontFamily="@font/inter_medium"
+            android:text="@string/subtotal"
+            android:textColor="#BDBDBD"
+            app:layout_constraintBottom_toTopOf="@+id/button4"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/textView15"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="32dp"
+            android:layout_marginBottom="112dp"
+            android:fontFamily="@font/inter_medium"
+            android:textColor="#BDBDBD"
+            app:layout_constraintBottom_toTopOf="@+id/button4"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <TextView
+            android:id="@+id/textView17"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginBottom="85dp"
+            android:fontFamily="@font/inter_medium"
+            android:text="@string/items"
+            android:textColor="#BDBDBD"
+            app:layout_constraintBottom_toTopOf="@+id/button4"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/textView29"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginBottom="55dp"
+            android:fontFamily="@font/inter_medium"
+            android:text="@string/shipping"
+            android:textColor="#BDBDBD"
+            app:layout_constraintBottom_toTopOf="@+id/button4"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/textView18"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="32dp"
+            android:layout_marginBottom="85dp"
+            android:fontFamily="@font/inter_medium"
+            android:textColor="#BDBDBD"
+            app:layout_constraintBottom_toTopOf="@+id/button4"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <TextView
+            android:id="@+id/textView30"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="32dp"
+            android:layout_marginBottom="55dp"
+            android:fontFamily="@font/inter_medium"
+            android:textColor="#BDBDBD"
+            app:layout_constraintBottom_toTopOf="@+id/button4"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <TextView
+            android:id="@+id/textView19"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginBottom="16dp"
+            android:fontFamily="@font/inter_semibold"
+            android:text="@string/total"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toTopOf="@+id/button4"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/textView20"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="32dp"
+            android:layout_marginBottom="16dp"
+            android:fontFamily="@font/inter_semibold"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toTopOf="@+id/button4"
+            app:layout_constraintEnd_toEndOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
     <ImageView
         android:id="@+id/imageView13"
         android:layout_width="0dp"
@@ -92,7 +210,6 @@
         android:id="@+id/chipGroup"
         android:layout_width="wrap_content"
         android:layout_height="60dp"
-        android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView13"
@@ -106,11 +223,16 @@
             android:gravity="center"
             android:text="Deliver"
             android:textAlignment="center"
-            app:checkedIconVisible="false"
+            app:checkedIcon="@drawable/wdelivery"
+            app:checkedIconVisible="true"
             app:chipBackgroundColor="@color/chip_background_selector"
-            app:chipIconVisible="false"
+            app:chipIcon="@drawable/delivery"
+            app:chipIconVisible="true"
             app:chipStrokeColor="#EBEBEB"
-            app:chipStrokeWidth="1dp" />
+            app:chipStrokeWidth="1dp"
+            app:closeIconEndPadding="0dp"
+            app:iconEndPadding="-25dp"
+            app:iconStartPadding="30dp" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chip3"
@@ -119,8 +241,14 @@
             android:checkable="true"
             android:text="Store Pickup"
             android:textAlignment="center"
+            app:checkedIcon="@drawable/wstore"
+            app:checkedIconVisible="true"
             app:chipBackgroundColor="@color/chip_background_selector"
-            app:chipStrokeColor="#EBEBEB" />
+            app:chipIcon="@drawable/store"
+            app:chipStrokeColor="#EBEBEB"
+            app:closeIconVisible="false"
+            app:iconEndPadding="-10dp"
+            app:iconStartPadding="10dp" />
     </com.google.android.material.chip.ChipGroup>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

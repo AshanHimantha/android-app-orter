@@ -41,6 +41,7 @@ public class AddAddressActivity extends AppCompatActivity {
         EditText address1 = findViewById(R.id.editTextText5);
         EditText address2 = findViewById(R.id.editTextText6);
         EditText zip = findViewById(R.id.editTextText7);
+        EditText contact = findViewById(R.id.editTextContact);
 
         Button btnSave = findViewById(R.id.button9);
         btnSave.setOnClickListener(v -> {
@@ -49,8 +50,9 @@ public class AddAddressActivity extends AppCompatActivity {
             String address1Text = address1.getText().toString();
             String address2Text = address2.getText().toString();
             String zipText = zip.getText().toString();
+            String contactText = contact.getText().toString();
 
-         if (displayNameText.isEmpty() || ownerNameText.isEmpty() || address1Text.isEmpty() || address2Text.isEmpty() || zipText.isEmpty()) {
+         if (displayNameText.isEmpty() || ownerNameText.isEmpty() || address1Text.isEmpty() || address2Text.isEmpty() || zipText.isEmpty() || contactText.isEmpty()) {
              Toast.makeText(this, "All fields are required", Toast.LENGTH_SHORT).show();
              return;
          }
@@ -64,7 +66,7 @@ public class AddAddressActivity extends AppCompatActivity {
             }
             cursor.close();
 
-            dbHelper.insertAddress(displayNameText, ownerNameText, address1Text, address2Text, zipText);
+            dbHelper.insertAddress(displayNameText, ownerNameText, address1Text, address2Text, zipText, contactText);
             Toast.makeText(this, "Address saved", Toast.LENGTH_SHORT).show();
             finish();
         });

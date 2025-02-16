@@ -1,4 +1,3 @@
-// ProfileFragment.java
 package lk.jiat.orterclothing.ui.profile;
 
 import android.content.Context;
@@ -35,18 +34,28 @@ import lk.jiat.orterclothing.AddAddressActivity;
 import lk.jiat.orterclothing.EditProfileActivity;
 import lk.jiat.orterclothing.LoginActivity;
 import lk.jiat.orterclothing.R;
+import lk.jiat.orterclothing.DatabaseHelper; // Import the database helper
 import lk.jiat.orterclothing.databinding.FragmentProfileBinding;
 
 public class ProfileFragment extends Fragment {
 
     private FragmentProfileBinding binding;
     private RecyclerView recyclerView;
-
     private AddressAdapter addressAdapter;
     FirebaseAuth mAuth;
     FirebaseUser user;
-
     private List<UserAddress> addressList;
+    private DatabaseHelper dbHelper; // Add DatabaseHelper instance
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        dbHelper = new DatabaseHelper(context.getApplicationContext());  // Initialize DatabaseHelper here
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        db.close();
+
+    }
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
@@ -94,10 +103,11 @@ public class ProfileFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-
         addressList = new ArrayList<>();
-        SQLiteDatabase sqdb = getActivity().openOrCreateDatabase("address.db", Context.MODE_PRIVATE, null);
-        Cursor cursor = sqdb.rawQuery("SELECT display_name, owner_name, address1, address2, zip FROM addresses", null);
+        SQLiteDatabase sqdb = dbHelper.getReadableDatabase(); // Get readable database
+
+        // Updated query to include the contact column
+        Cursor cursor = sqdb.rawQuery("SELECT display_name, owner_name, address1, address2, zip, contact FROM addresses", null);
 
         if (cursor.moveToFirst()) {
             do {
@@ -106,21 +116,20 @@ public class ProfileFragment extends Fragment {
                 String addressLine1 = cursor.getString(2);
                 String addressLine2 = cursor.getString(3);
                 String zip = cursor.getString(4);
+                String contact = cursor.getString(5);  // Now safely getting the contact
 
                 addressLine2 = addressLine2 + ", " + zip;
-                UserAddress address = new UserAddress(addressName, owner, addressLine1, addressLine2);
+                UserAddress address = new UserAddress(addressName, owner, addressLine1, addressLine2, contact);
                 addressList.add(address);
             } while (cursor.moveToNext());
         }
 
         cursor.close();
+        sqdb.close();  // Close the database
 
         addressAdapter = new AddressAdapter(getContext(), addressList);
-
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-
         recyclerView.setLayoutManager(linearLayoutManager);
-
         recyclerView.setAdapter(addressAdapter);
 
 
@@ -157,5 +166,8 @@ public class ProfileFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+        if (dbHelper != null) {
+            dbHelper.close(); // Close the database helper when the fragment is destroyed
+        }
     }
 }

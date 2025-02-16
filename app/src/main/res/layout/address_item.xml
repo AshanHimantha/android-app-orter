@@ -36,14 +36,23 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/inter_semibold"
             android:text="Home"
-            android:textSize="16sp" />
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/textView44"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Ashan Himantha"
-            android:textColor="#737373" />
+            android:textColor="#737373"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/textView56"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="0701234567"
+            android:textColor="#737373"
+            android:textSize="12sp" />
 
         <TextView
             android:id="@+id/textView46"

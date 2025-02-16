@@ -7,11 +7,14 @@ public class UserAddress {
     private String addressLine2;
     private String owner;
 
-    public UserAddress( String addressName,String owner, String addressLine1, String addressLine2) {
+    private String contact;
+
+    public UserAddress( String addressName,String owner, String addressLine1, String addressLine2 , String contact) {
         this.addressName = addressName;
         this.owner = owner;
         this.addressLine1 = addressLine1;
         this.addressLine2 = addressLine2;
+        this.contact = contact;
     }
 
     public String getAddressName() {
@@ -44,6 +47,14 @@ public class UserAddress {
 
     public void setOwner(String owner) {
         this.owner = owner;
+    }
+
+    public String getContact() {
+        return contact;
+    }
+
+    public void setContact(String contact) {
+        this.contact = contact;
     }
 
 }

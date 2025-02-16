@@ -42,6 +42,7 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AdressVi
         holder.owner.setText(address.getOwner());
         holder.addressLine1.setText(address.getAddressLine1());
         holder.addressLine2.setText(address.getAddressLine2());
+        holder.contact.setText(address.getContact());
 
         // Update the background based on the selected position
         if (position == selectedPosition) {
@@ -98,6 +99,7 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AdressVi
         private TextView addressLine1;
         private TextView addressLine2;
         private ImageView delete;
+        private TextView contact;
 
         public AdressViewholder(@NonNull View itemView) {
             super(itemView);
@@ -105,6 +107,7 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AdressVi
             owner = itemView.findViewById(R.id.textView44);
             addressLine1 = itemView.findViewById(R.id.textView46);
             addressLine2 = itemView.findViewById(R.id.textView47);
+            contact = itemView.findViewById(R.id.textView56);
             delete = itemView.findViewById(R.id.imageView12);
         }
     }

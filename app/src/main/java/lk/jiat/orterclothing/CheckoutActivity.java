@@ -15,7 +15,6 @@ import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.fragment.app.FragmentContainerView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -33,6 +32,8 @@ public class CheckoutActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     private List<UserAddress> addressList;
     private AddressAdapter addressAdapter;
+    private DatabaseHelper dbHelper; // Add DatabaseHelper instance
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +45,9 @@ public class CheckoutActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        dbHelper = new DatabaseHelper(this); // Initialize the DatabaseHelper
+
 
         TextView addAddress = findViewById(R.id.textView51);
         addAddress.setOnClickListener(new View.OnClickListener() {
@@ -64,32 +68,32 @@ public class CheckoutActivity extends AppCompatActivity {
         MapsFragment mapsFragment = new MapsFragment();
 //        findViewById(R.id.fragmentContainerView2).setVisibility(View.GONE);
 
-ChipGroup chipGroup = findViewById(R.id.chipGroup);
-chipGroup.setOnCheckedChangeListener((group, checkedId) -> {
-    for (int i = 0; i < group.getChildCount(); i++) {
-        Chip chip = (Chip) group.getChildAt(i);
-        chip.setTextColor(ContextCompat.getColor(this, android.R.color.black));
-    }
-    if (checkedId == R.id.chip2) {
-        findViewById(R.id.constraintLayout2).setVisibility(View.VISIBLE);
+        ChipGroup chipGroup = findViewById(R.id.chipGroup);
+        chipGroup.setOnCheckedChangeListener((group, checkedId) -> {
+            for (int i = 0; i < group.getChildCount(); i++) {
+                Chip chip = (Chip) group.getChildAt(i);
+                chip.setTextColor(ContextCompat.getColor(this, android.R.color.black));
+            }
+            if (checkedId == R.id.chip2) {
+                findViewById(R.id.constraintLayout2).setVisibility(View.VISIBLE);
 //        findViewById(R.id.fragmentContainerView2).setVisibility(View.GONE);
-    } else if (checkedId == R.id.chip3) {
-        findViewById(R.id.constraintLayout2).setVisibility(View.GONE);
+            } else if (checkedId == R.id.chip3) {
+                findViewById(R.id.constraintLayout2).setVisibility(View.GONE);
 //        findViewById(R.id.fragmentContainerView2).setVisibility(View.VISIBLE);
-    } else {
-        findViewById(R.id.constraintLayout2).setVisibility(View.GONE);
+            } else {
+                findViewById(R.id.constraintLayout2).setVisibility(View.GONE);
 //        findViewById(R.id.fragmentContainerView2).setVisibility(View.GONE);
-    }
-    if (checkedId != View.NO_ID) {
-        Chip selectedChip = group.findViewById(checkedId);
-        if (selectedChip != null) {
-            runOnUiThread(() -> {
-                selectedChip.setTextColor(ContextCompat.getColor(this, android.R.color.white));
-                selectedChip.invalidate();
-            });
-        }
-    }
-});
+            }
+            if (checkedId != View.NO_ID) {
+                Chip selectedChip = group.findViewById(checkedId);
+                if (selectedChip != null) {
+                    runOnUiThread(() -> {
+                        selectedChip.setTextColor(ContextCompat.getColor(this, android.R.color.white));
+                        selectedChip.invalidate();
+                    });
+                }
+            }
+        });
     }
 
     @Override
@@ -100,8 +104,8 @@ chipGroup.setOnCheckedChangeListener((group, checkedId) -> {
 
     private void loadAddressList() {
         addressList.clear();
-        SQLiteDatabase sqdb = openOrCreateDatabase("address.db", Context.MODE_PRIVATE, null);
-        Cursor cursor = sqdb.rawQuery("SELECT display_name, owner_name, address1, address2, zip FROM addresses", null);
+        SQLiteDatabase sqdb = dbHelper.getReadableDatabase();
+        Cursor cursor = sqdb.rawQuery("SELECT display_name, owner_name, address1, address2, zip, contact FROM addresses", null);
 
         if (cursor.moveToFirst()) {
             do {
@@ -110,14 +114,24 @@ chipGroup.setOnCheckedChangeListener((group, checkedId) -> {
                 String addressLine1 = cursor.getString(2);
                 String addressLine2 = cursor.getString(3);
                 String zip = cursor.getString(4);
+                String contact = cursor.getString(5);
 
                 addressLine2 = addressLine2 + ", " + zip;
-                UserAddress address = new UserAddress(addressName, owner, addressLine1, addressLine2);
+                UserAddress address = new UserAddress(addressName, owner, addressLine1, addressLine2, contact);
                 addressList.add(address);
             } while (cursor.moveToNext());
         }
 
         cursor.close();
+        sqdb.close();
         addressAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (dbHelper != null) {
+            dbHelper.close();  // Close the database helper
+        }
     }
 }
