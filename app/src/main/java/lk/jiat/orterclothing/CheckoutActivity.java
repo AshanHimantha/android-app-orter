@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -23,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,6 +49,7 @@ public class CheckoutActivity extends AppCompatActivity {
     private DatabaseHelper dbHelper; // Add DatabaseHelper instance
     private static final int PAYHERE_REQUEST = 11001;
     private static final String TAG = "CheckoutActivity";
+    RecyclerView storeRecyclerView;
     private TextView resultTextView;  // Declare TextView for result display
 
     @Override
@@ -70,6 +73,9 @@ public class CheckoutActivity extends AppCompatActivity {
         TextView itemCount = findViewById(R.id.textView18);
         TextView shippingView = findViewById(R.id.textView30);
         TextView subTotalView = findViewById(R.id.textView15);
+
+        ConstraintLayout constraintLayout = findViewById(R.id.storeLayout);
+        constraintLayout.setVisibility(View.GONE);
 
         totalView.setText(total);
         itemCount.setText(items);
@@ -112,7 +118,6 @@ public class CheckoutActivity extends AppCompatActivity {
 
 
 
-
                         Log.d("Selected Address", addressList.get(addressAdapter.getSelectedPosition()).getAddressName());
                         InitRequest req = new InitRequest();
                         req.setMerchantId("1221046");       // Merchant ID
@@ -146,6 +151,8 @@ public class CheckoutActivity extends AppCompatActivity {
 
                     }
                 }else if (selectedChipId == R.id.chip3) {
+
+
                     Log.d("Selected Address", "Store Pickup");
                 }else {
                     Toast.makeText(CheckoutActivity.this, "Please select Delivery or Store pickup", Toast.LENGTH_SHORT).show();
@@ -158,11 +165,8 @@ public class CheckoutActivity extends AppCompatActivity {
 
 
 
-
-
+//load address list
         dbHelper = new DatabaseHelper(this); // Initialize the DatabaseHelper
-
-
         TextView addAddress = findViewById(R.id.textView51);
         addAddress.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -178,6 +182,45 @@ public class CheckoutActivity extends AppCompatActivity {
         recyclerView.setAdapter(addressAdapter);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
+//end load address list
+
+// load store list
+        List<Store> storeList = new ArrayList<>();
+        StoreAdapter storeAdapter = new StoreAdapter(storeList);
+        storeRecyclerView = findViewById(R.id.store3);
+        storeRecyclerView.setAdapter(storeAdapter);
+        LinearLayoutManager storeLinearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        storeRecyclerView.setLayoutManager(storeLinearLayoutManager);
+
+        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+
+        firestore.collection("store").get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                for (int i = 0; i < task.getResult().size(); i++) {
+
+                Store store = new Store(
+                    task.getResult().getDocuments().get(i).getString("name"),
+                    task.getResult().getDocuments().get(i).getString("contact"),
+                    task.getResult().getDocuments().get(i).getString("image"),
+                    task.getResult().getDocuments().get(i).getString("address1"),
+                    task.getResult().getDocuments().get(i).getString("address2"),
+                    task.getResult().getDocuments().get(i).getString("zip"),
+                    task.getResult().getDocuments().get(i).getString("latitude"),
+                    task.getResult().getDocuments().get(i).getString("longitude")
+
+                );
+                storeList.add(store);
+
+                }
+                storeAdapter.notifyDataSetChanged();
+            }
+        });
+
+
+
+
+
+
 
         MapsFragment mapsFragment = new MapsFragment();
 //        findViewById(R.id.fragmentContainerView2).setVisibility(View.GONE);
@@ -191,12 +234,23 @@ public class CheckoutActivity extends AppCompatActivity {
             if (checkedId == R.id.chip2) {
                 findViewById(R.id.constraintLayout2).setVisibility(View.VISIBLE);
 //        findViewById(R.id.fragmentContainerView2).setVisibility(View.GONE);
+                ConstraintLayout constraintLayout3 = findViewById(R.id.storeLayout);
+                constraintLayout3.setVisibility(View.GONE);
+
             } else if (checkedId == R.id.chip3) {
                 findViewById(R.id.constraintLayout2).setVisibility(View.GONE);
 //        findViewById(R.id.fragmentContainerView2).setVisibility(View.VISIBLE);
+
+
+                    ConstraintLayout constraintLayout3 = findViewById(R.id.storeLayout);
+                    constraintLayout3.setVisibility(View.VISIBLE);
+
             } else {
                 findViewById(R.id.constraintLayout2).setVisibility(View.GONE);
 //        findViewById(R.id.fragmentContainerView2).setVisibility(View.GONE);
+
+                ConstraintLayout constraintLayout3 = findViewById(R.id.storeLayout);
+                constraintLayout3.setVisibility(View.GONE);
             }
             if (checkedId != View.NO_ID) {
                 Chip selectedChip = group.findViewById(checkedId);
