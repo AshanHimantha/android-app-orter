@@ -1,7 +1,7 @@
 package lk.jiat.orterclothing;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -52,6 +52,7 @@ public class CheckoutActivity extends AppCompatActivity {
     RecyclerView storeRecyclerView;
     private TextView resultTextView;  // Declare TextView for result display
 
+    @SuppressLint("NotifyDataSetChanged")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -118,7 +119,18 @@ public class CheckoutActivity extends AppCompatActivity {
 
 
 
-                        Log.d("Selected Address", addressList.get(addressAdapter.getSelectedPosition()).getAddressName());
+
+
+
+
+
+
+
+
+
+
+
+//                        Log.d("Selected Address", addressList.get(addressAdapter.getSelectedPosition()).getAddressName());
                         InitRequest req = new InitRequest();
                         req.setMerchantId("1221046");       // Merchant ID
                         req.setCurrency("LKR");             // Currency code LKR/USD/GBP/EUR/AUD
@@ -137,10 +149,6 @@ public class CheckoutActivity extends AppCompatActivity {
 
                         // Optional Params
                         // req.setNotifyUrl("xxxx");           // Notify Url
-                        req.getCustomer().getDeliveryAddress().setAddress("No.2, Kandy Road");
-                        req.getCustomer().getDeliveryAddress().setCity("Kadawatha");
-                        req.getCustomer().getDeliveryAddress().setCountry("Sri Lanka");
-                        req.getItems().add(new Item(null, "Door bell wireless", 1, 1000.0));
 
                         Intent intent = new Intent(CheckoutActivity.this, PHMainActivity.class);
                         intent.putExtra(PHConstants.INTENT_EXTRA_DATA, req);
@@ -222,8 +230,8 @@ public class CheckoutActivity extends AppCompatActivity {
 
 
 
-        MapsFragment mapsFragment = new MapsFragment();
-//        findViewById(R.id.fragmentContainerView2).setVisibility(View.GONE);
+
+
 
         ChipGroup chipGroup = findViewById(R.id.chipGroup);
         chipGroup.setOnCheckedChangeListener((group, checkedId) -> {
@@ -233,13 +241,13 @@ public class CheckoutActivity extends AppCompatActivity {
             }
             if (checkedId == R.id.chip2) {
                 findViewById(R.id.constraintLayout2).setVisibility(View.VISIBLE);
-//        findViewById(R.id.fragmentContainerView2).setVisibility(View.GONE);
+
                 ConstraintLayout constraintLayout3 = findViewById(R.id.storeLayout);
                 constraintLayout3.setVisibility(View.GONE);
 
             } else if (checkedId == R.id.chip3) {
                 findViewById(R.id.constraintLayout2).setVisibility(View.GONE);
-//        findViewById(R.id.fragmentContainerView2).setVisibility(View.VISIBLE);
+
 
 
                     ConstraintLayout constraintLayout3 = findViewById(R.id.storeLayout);
@@ -247,7 +255,7 @@ public class CheckoutActivity extends AppCompatActivity {
 
             } else {
                 findViewById(R.id.constraintLayout2).setVisibility(View.GONE);
-//        findViewById(R.id.fragmentContainerView2).setVisibility(View.GONE);
+
 
                 ConstraintLayout constraintLayout3 = findViewById(R.id.storeLayout);
                 constraintLayout3.setVisibility(View.GONE);
@@ -270,6 +278,7 @@ public class CheckoutActivity extends AppCompatActivity {
         loadAddressList();
     }
 
+  @SuppressLint("NotifyDataSetChanged")
   private void loadAddressList() {
       addressList.clear();
       SQLiteDatabase sqdb = dbHelper.getReadableDatabase();
@@ -304,6 +313,7 @@ public class CheckoutActivity extends AppCompatActivity {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

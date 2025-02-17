@@ -1,8 +1,11 @@
 package lk.jiat.orterclothing;
 
+import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -32,6 +35,21 @@ public class StoreAdapter extends RecyclerView.Adapter<StoreAdapter.ViewHolder> 
         holder.storeName.setText(store.getStoreName());
         holder.addressLine1.setText(store.getAddress1());
         holder.addressLine2.setText(store.getAddress2() + ", " + store.getZipCode());
+        holder.location.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(v.getContext(), ViewMapActivity.class);
+                intent.putExtra("storeName", store.getStoreName());
+                intent.putExtra("latitude", Double.parseDouble(store.getLatitude()));
+                intent.putExtra("longitude", Double.parseDouble(store.getLongitude()));
+                intent.putExtra("contact", store.getStoreContact());
+                intent.putExtra("image", store.getStoreImage());
+                v.getContext().startActivity(intent);
+
+
+            }
+        });
 
         if (store.getStoreImage() != null && !store.getStoreImage().isEmpty()) {
             Glide.with(holder.itemView.getContext())
@@ -74,12 +92,16 @@ public class StoreAdapter extends RecyclerView.Adapter<StoreAdapter.ViewHolder> 
         TextView addressLine1;
         TextView addressLine2;
 
+        Button location;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             storeImage = itemView.findViewById(R.id.proImage);
             storeName = itemView.findViewById(R.id.textView59);
             addressLine1 = itemView.findViewById(R.id.textView60);
             addressLine2 = itemView.findViewById(R.id.textView61);
+            location = itemView.findViewById(R.id.button15);
+
         }
     }
 }
