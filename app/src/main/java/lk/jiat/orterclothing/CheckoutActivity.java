@@ -66,6 +66,8 @@ public class CheckoutActivity extends AppCompatActivity {
     private DatabaseHelper dbHelper;
     private TextView total;
 
+    private String orderId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -255,12 +257,12 @@ public class CheckoutActivity extends AppCompatActivity {
                 .post(body)
                 .build();
 
-        Log.d("CheckoutActivity", "Sending request: " + requestBody.toString());
+
 
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                Log.e("CheckoutActivity", "Network error: " + e.getMessage(), e);
+
                 runOnUiThread(() ->
                         Toast.makeText(CheckoutActivity.this, "Network error", Toast.LENGTH_SHORT).show()
                 );
@@ -269,39 +271,30 @@ public class CheckoutActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String responseBody = response.body() != null ? response.body().string() : "No response body";
-                Log.d("CheckoutActivity", "Response code: " + response.code());
-                Log.d("CheckoutActivity", "Response headers: " + response.headers());
-                Log.d("CheckoutActivity", "Response body: " + responseBody);
+
 
                 if (response.isSuccessful()) {
                     try {
                         JSONObject orderResponse = new JSONObject(responseBody);
-                        Log.d("CheckoutActivity", "Parsed order response: " + orderResponse.toString(2));
+
 
                         // Log specific order details
                         if (orderResponse.has("data")) {
                             JSONObject data = orderResponse.getJSONObject("data");
                             if (data.has("order")) {
                                 JSONObject order = data.getJSONObject("order");
-                                Log.d("CheckoutActivity", String.format(
-                                        "Order created - Number: %s, Status: %s, Payment Status: %s",
-                                        order.getString("order_number"),
-                                        order.getString("status"),
-                                        order.getString("payment_status")
-                                ));
+
                             }
                         }
 
                         runOnUiThread(() -> initPayHerePayment(orderResponse));
                     } catch (JSONException e) {
-                        Log.e("CheckoutActivity", "Error parsing response: " + e.getMessage(), e);
                         runOnUiThread(() ->
                                 Toast.makeText(CheckoutActivity.this, "Error processing response", Toast.LENGTH_SHORT).show()
                         );
                     }
                 } else {
-                    Log.e("CheckoutActivity", "Request failed - Code: " + response.code());
-                    Log.e("CheckoutActivity", "Error response: " + responseBody);
+
 
                     runOnUiThread(() ->
                             Toast.makeText(CheckoutActivity.this, "Failed to create order", Toast.LENGTH_SHORT).show()
@@ -316,6 +309,8 @@ public class CheckoutActivity extends AppCompatActivity {
             JSONObject data = orderDetails.getJSONObject("data");
             JSONObject order = data.getJSONObject("order");
             JSONObject summary = data.getJSONObject("summary");
+
+            orderId = order.getString("id");
 
             InitRequest req = new InitRequest();
             req.setMerchantId("1221046");
@@ -375,6 +370,10 @@ public class CheckoutActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PAYHERE_REQUEST && data != null && data.hasExtra(PHConstants.INTENT_EXTRA_RESULT)) {
             PHResponse<StatusResponse> response = (PHResponse<StatusResponse>) data.getSerializableExtra(PHConstants.INTENT_EXTRA_RESULT);
+
+            Log.d("CheckoutActivityPay", "Payment response: " + response.toString());
+
+
             handlePaymentResponse(resultCode, response);
         }
     }
@@ -382,15 +381,67 @@ public class CheckoutActivity extends AppCompatActivity {
     private void handlePaymentResponse(int resultCode, PHResponse<StatusResponse> response) {
         if (resultCode == Activity.RESULT_OK) {
             if (response != null && response.isSuccess()) {
+               sendPaymentStatusUpdate(String.valueOf(response.getData().getPaymentNo()), "paid");
                 Toast.makeText(this, "Payment successful", Toast.LENGTH_SHORT).show();
                 finish();
             } else {
+                sendPaymentStatusUpdate("null", "failed");
                 Toast.makeText(this, "Payment failed", Toast.LENGTH_SHORT).show();
             }
         } else if (resultCode == Activity.RESULT_CANCELED) {
             Toast.makeText(this, "Payment cancelled", Toast.LENGTH_SHORT).show();
         }
     }
+
+private void sendPaymentStatusUpdate(String payNo ,String status) {
+    try {
+        JSONObject requestBody = new JSONObject();
+
+
+//4916217501611292
+        // Extract order ID from the PayHere response payment number
+        requestBody.put("order_id", orderId);
+        requestBody.put("transaction_id", payNo);
+        requestBody.put("payment_status", status);
+        requestBody.put("firebase_uid", FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        user.getIdToken(true).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                String token = task.getResult().getToken();
+
+                RequestBody body = RequestBody.create(requestBody.toString(), JSON);
+                Request request = new Request.Builder()
+                    .url(API_BASE_URL + "/orders/payment")
+                    .addHeader("Accept", "application/json")
+                    .addHeader("Authorization", "Bearer " + token)
+                    .post(body)
+                    .build();
+
+                client.newCall(request).enqueue(new Callback() {
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+                        runOnUiThread(() -> Toast.makeText(CheckoutActivity.this,
+                                "Failed to update payment status", Toast.LENGTH_SHORT).show());
+                    }
+
+                    @Override
+                    public void onResponse(Call call, Response response) throws IOException {
+                        if (!response.isSuccessful()) {
+                            runOnUiThread(() -> Toast.makeText(CheckoutActivity.this,
+                                    "Error updating payment status", Toast.LENGTH_SHORT).show());
+                        }
+                    }
+                });
+            } else {
+                runOnUiThread(() -> Toast.makeText(CheckoutActivity.this,
+                        "Failed to get authentication token", Toast.LENGTH_SHORT).show());
+            }
+        });
+    } catch (JSONException e) {
+        Toast.makeText(this, "Error creating payment update request", Toast.LENGTH_SHORT).show();
+    }
+}
 
 
     @Override
