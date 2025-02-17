@@ -1,5 +1,6 @@
 package lk.jiat.orterclothing;
 
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
@@ -8,13 +9,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -24,8 +23,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,239 +44,405 @@ import lk.payhere.androidsdk.PHResponse;
 import lk.payhere.androidsdk.model.InitRequest;
 import lk.payhere.androidsdk.model.Item;
 import lk.payhere.androidsdk.model.StatusResponse;
-
-
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class CheckoutActivity extends AppCompatActivity {
+    private static final String API_BASE_URL = "http://10.0.2.2:8000/api";
+    private static final int PAYHERE_REQUEST = 11001;
+    private final OkHttpClient client = new OkHttpClient();
+    private final MediaType JSON = MediaType.get("application/json; charset=utf-8");
 
     RecyclerView recyclerView;
+    RecyclerView storeRecyclerView;
+    StoreAdapter storeAdapter;
     private List<UserAddress> addressList;
     private AddressAdapter addressAdapter;
-    private DatabaseHelper dbHelper; // Add DatabaseHelper instance
-    private static final int PAYHERE_REQUEST = 11001;
-    private static final String TAG = "CheckoutActivity";
-    RecyclerView storeRecyclerView;
-    private TextView resultTextView;  // Declare TextView for result display
+    private DatabaseHelper dbHelper;
+    private TextView total;
 
-    @SuppressLint("NotifyDataSetChanged")
+    private String orderId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_checkout);
+        setupWindowInsets();
+        initializeViews();
+        setupIntentData();
+        setupBackButton();
+        setupAddressList();
+        setupStoreList();
+        setupChipGroup();
+        setupConfirmButton();
+    }
+
+    private void setupWindowInsets() {
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+    }
 
+    private void initializeViews() {
+        total = findViewById(R.id.textView20);
+        recyclerView = findViewById(R.id.addressCheckout);
+        storeRecyclerView = findViewById(R.id.store3);
+        dbHelper = new DatabaseHelper(this);
+    }
+
+    private void setupIntentData() {
         Intent intent = getIntent();
-        String total = intent.getStringExtra("total");
+        String totalAmount = intent.getStringExtra("total");
         String items = intent.getStringExtra("itemCount");
         String shipping = intent.getStringExtra("shipping");
         String subTotal = intent.getStringExtra("subtotal");
 
-        TextView totalView = findViewById(R.id.textView20);
-        TextView itemCount = findViewById(R.id.textView18);
-        TextView shippingView = findViewById(R.id.textView30);
-        TextView subTotalView = findViewById(R.id.textView15);
+        ((TextView) findViewById(R.id.textView20)).setText(totalAmount);
+        ((TextView) findViewById(R.id.textView18)).setText(items);
+        ((TextView) findViewById(R.id.textView30)).setText(shipping);
+        ((TextView) findViewById(R.id.textView15)).setText(subTotal);
 
-        ConstraintLayout constraintLayout = findViewById(R.id.storeLayout);
-        constraintLayout.setVisibility(View.GONE);
+        findViewById(R.id.storeLayout).setVisibility(View.GONE);
+    }
 
-        totalView.setText(total);
-        itemCount.setText(items);
-        shippingView.setText(shipping);
-        subTotalView.setText(subTotal);
+    private void setupBackButton() {
+        findViewById(R.id.button14).setOnClickListener(v -> finish());
+    }
 
-
-
-        Button back = findViewById(R.id.button14);
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-
-        Button confirm = findViewById(R.id.button4);
-        confirm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-
-                ChipGroup chipGroup = findViewById(R.id.chipGroup);
-                int selectedChipId = chipGroup.getCheckedChipId();
-
-                if (selectedChipId == View.NO_ID) {
-                    Toast.makeText(CheckoutActivity.this, "Please select Delivery or Store pickup", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                Chip selectedChip = findViewById(selectedChipId);
-                String deliveryMethod = selectedChip.getText().toString();
-
-                if (selectedChipId == R.id.chip2) {
-
-                    if (addressAdapter.getSelectedPosition() == -1) {
-                        Toast.makeText(CheckoutActivity.this, "Please select a delivery address", Toast.LENGTH_SHORT).show();
-                        return;
-                    } else {
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//                        Log.d("Selected Address", addressList.get(addressAdapter.getSelectedPosition()).getAddressName());
-                        InitRequest req = new InitRequest();
-                        req.setMerchantId("1221046");       // Merchant ID
-                        req.setCurrency("LKR");             // Currency code LKR/USD/GBP/EUR/AUD
-                        req.setAmount(1000.00);             // Final Amount to be charged
-                        req.setOrderId("230000123");        // Unique Reference ID
-                        req.setItemsDescription("Door bell wireless");  // Item description title
-                        req.setCustom1("This is the custom message 1");
-                        req.setCustom2("This is the custom message 2");
-                        req.getCustomer().setFirstName("Saman");
-                        req.getCustomer().setLastName("Perera");
-                        req.getCustomer().setEmail("samanp@gmail.com");
-                        req.getCustomer().setPhone("+94771234567");
-                        req.getCustomer().getAddress().setAddress("No.1, Galle Road");
-                        req.getCustomer().getAddress().setCity("Colombo");
-                        req.getCustomer().getAddress().setCountry("Sri Lanka");
-
-                        // Optional Params
-                        // req.setNotifyUrl("xxxx");           // Notify Url
-
-                        Intent intent = new Intent(CheckoutActivity.this, PHMainActivity.class);
-                        intent.putExtra(PHConstants.INTENT_EXTRA_DATA, req);
-
-                        PHConfigs.setBaseUrl(PHConfigs.SANDBOX_URL);
-                        startActivityForResult(intent, PAYHERE_REQUEST);
-
-
-                    }
-                }else if (selectedChipId == R.id.chip3) {
-
-
-                    Log.d("Selected Address", "Store Pickup");
-                }else {
-                    Toast.makeText(CheckoutActivity.this, "Please select Delivery or Store pickup", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-
-            }
-        });
-
-
-
-//load address list
-        dbHelper = new DatabaseHelper(this); // Initialize the DatabaseHelper
-        TextView addAddress = findViewById(R.id.textView51);
-        addAddress.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(CheckoutActivity.this, AddAddressActivity.class);
-                startActivity(intent);
-            }
-        });
-
+    private void setupAddressList() {
         addressList = new ArrayList<>();
         addressAdapter = new AddressAdapter(this, addressList);
-        recyclerView = findViewById(R.id.addressCheckout);
         recyclerView.setAdapter(addressAdapter);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        recyclerView.setLayoutManager(linearLayoutManager);
-//end load address list
+        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 
-// load store list
+        findViewById(R.id.textView51).setOnClickListener(v ->
+                startActivity(new Intent(CheckoutActivity.this, AddAddressActivity.class))
+        );
+    }
+
+    private void setupStoreList() {
         List<Store> storeList = new ArrayList<>();
-        StoreAdapter storeAdapter = new StoreAdapter(storeList);
-        storeRecyclerView = findViewById(R.id.store3);
+        storeAdapter = new StoreAdapter(storeList);
         storeRecyclerView.setAdapter(storeAdapter);
-        LinearLayoutManager storeLinearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        storeRecyclerView.setLayoutManager(storeLinearLayoutManager);
+        storeRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 
-        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
-
-        firestore.collection("store").get().addOnCompleteListener(task -> {
+        FirebaseFirestore.getInstance().collection("store").get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                for (int i = 0; i < task.getResult().size(); i++) {
-
-                Store store = new Store(
-                    task.getResult().getDocuments().get(i).getString("name"),
-                    task.getResult().getDocuments().get(i).getString("contact"),
-                    task.getResult().getDocuments().get(i).getString("image"),
-                    task.getResult().getDocuments().get(i).getString("address1"),
-                    task.getResult().getDocuments().get(i).getString("address2"),
-                    task.getResult().getDocuments().get(i).getString("zip"),
-                    task.getResult().getDocuments().get(i).getString("latitude"),
-                    task.getResult().getDocuments().get(i).getString("longitude")
-
-                );
-                storeList.add(store);
-
-                }
+                task.getResult().getDocuments().forEach(document -> {
+                    Store store = new Store(
+                            document.getString("name"),
+                            document.getString("contact"),
+                            document.getString("image"),
+                            document.getString("address1"),
+                            document.getString("address2"),
+                            document.getString("zip"),
+                            document.getString("latitude"),
+                            document.getString("longitude")
+                    );
+                    storeList.add(store);
+                });
                 storeAdapter.notifyDataSetChanged();
             }
         });
+    }
 
-
-
-
-
-
-
-
-
-
+    private void setupChipGroup() {
         ChipGroup chipGroup = findViewById(R.id.chipGroup);
         chipGroup.setOnCheckedChangeListener((group, checkedId) -> {
-            for (int i = 0; i < group.getChildCount(); i++) {
-                Chip chip = (Chip) group.getChildAt(i);
-                chip.setTextColor(ContextCompat.getColor(this, android.R.color.black));
+            updateChipColors(group, checkedId);
+            updateLayoutVisibility(checkedId);
+        });
+    }
+
+    private void updateChipColors(ChipGroup group, int checkedId) {
+        for (int i = 0; i < group.getChildCount(); i++) {
+            Chip chip = (Chip) group.getChildAt(i);
+            chip.setTextColor(ContextCompat.getColor(this, android.R.color.black));
+        }
+        if (checkedId != View.NO_ID) {
+            Chip selectedChip = group.findViewById(checkedId);
+            if (selectedChip != null) {
+                selectedChip.setTextColor(ContextCompat.getColor(this, android.R.color.white));
             }
-            if (checkedId == R.id.chip2) {
-                findViewById(R.id.constraintLayout2).setVisibility(View.VISIBLE);
+        }
+    }
 
-                ConstraintLayout constraintLayout3 = findViewById(R.id.storeLayout);
-                constraintLayout3.setVisibility(View.GONE);
+    private void updateLayoutVisibility(int checkedId) {
+        findViewById(R.id.constraintLayout2).setVisibility(
+                checkedId == R.id.chip2 ? View.VISIBLE : View.GONE
+        );
+        findViewById(R.id.storeLayout).setVisibility(
+                checkedId == R.id.chip3 ? View.VISIBLE : View.GONE
+        );
+    }
 
-            } else if (checkedId == R.id.chip3) {
-                findViewById(R.id.constraintLayout2).setVisibility(View.GONE);
+    private void setupConfirmButton() {
+        findViewById(R.id.button4).setOnClickListener(v -> {
+            ChipGroup chipGroup = findViewById(R.id.chipGroup);
+            int selectedChipId = chipGroup.getCheckedChipId();
 
+            if (selectedChipId == View.NO_ID) {
+                Toast.makeText(this, "Please select Delivery or Store pickup", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            user.getIdToken(true).addOnSuccessListener(result -> {
+                String token = "Bearer " + result.getToken();
+                createOrder(token, selectedChipId);
+            });
+        });
+    }
 
-                    ConstraintLayout constraintLayout3 = findViewById(R.id.storeLayout);
-                    constraintLayout3.setVisibility(View.VISIBLE);
+    private void createOrder(String token, int selectedChipId) {
+        try {
+            JSONObject requestBody = new JSONObject();
+            requestBody.put("payment_method", "payhere");
 
+            if (selectedChipId == R.id.chip2) {
+                if (addressAdapter.getSelectedPosition() == -1) {
+                    Toast.makeText(this, "Please select a delivery address", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                addDeliveryDetails(requestBody);
             } else {
-                findViewById(R.id.constraintLayout2).setVisibility(View.GONE);
-
-
-                ConstraintLayout constraintLayout3 = findViewById(R.id.storeLayout);
-                constraintLayout3.setVisibility(View.GONE);
+                if (storeAdapter.getSelectedStore() == null) {
+                    Toast.makeText(this, "Please select a store", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                addPickupDetails(requestBody);
             }
-            if (checkedId != View.NO_ID) {
-                Chip selectedChip = group.findViewById(checkedId);
-                if (selectedChip != null) {
-                    runOnUiThread(() -> {
-                        selectedChip.setTextColor(ContextCompat.getColor(this, android.R.color.white));
-                        selectedChip.invalidate();
-                    });
+
+            sendOrderRequest(token, requestBody);
+        } catch (JSONException e) {
+            Toast.makeText(this, "Error creating request", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void addDeliveryDetails(JSONObject requestBody) throws JSONException {
+        UserAddress selectedAddress = addressList.get(addressAdapter.getSelectedPosition());
+        requestBody.put("delivery_type", "delivery");
+        requestBody.put("delivery_name", selectedAddress.getFName() + " " + selectedAddress.getLName());
+        requestBody.put("delivery_phone", selectedAddress.getContact());
+        requestBody.put("delivery_address", selectedAddress.getAddressLine1());
+        requestBody.put("delivery_city", selectedAddress.getAddressLine2());
+        requestBody.put("firebase_uid", FirebaseAuth.getInstance().getCurrentUser().getUid());
+        requestBody.put("payment_method", "card");
+    }
+
+    private void addPickupDetails(JSONObject requestBody) throws JSONException {
+        Store selectedStore = storeAdapter.getSelectedStore();
+        requestBody.put("delivery_type", "pickup");
+        requestBody.put("branch_id", 1);
+        requestBody.put("delivery_name", FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
+        requestBody.put("delivery_phone", "");
+        requestBody.put("firebase_uid", FirebaseAuth.getInstance().getCurrentUser().getUid());
+        requestBody.put("payment_method", "card");
+    }
+
+    private void sendOrderRequest(String token, JSONObject requestBody) {
+        RequestBody body = RequestBody.create(requestBody.toString(), JSON);
+        Request request = new Request.Builder()
+                .url(API_BASE_URL + "/orders")
+                .addHeader("Authorization", token)
+                .addHeader("Accept", "application/json")
+                .post(body)
+                .build();
+
+
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+                runOnUiThread(() ->
+                        Toast.makeText(CheckoutActivity.this, "Network error", Toast.LENGTH_SHORT).show()
+                );
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String responseBody = response.body() != null ? response.body().string() : "No response body";
+
+
+                if (response.isSuccessful()) {
+                    try {
+                        JSONObject orderResponse = new JSONObject(responseBody);
+
+
+                        // Log specific order details
+                        if (orderResponse.has("data")) {
+                            JSONObject data = orderResponse.getJSONObject("data");
+                            if (data.has("order")) {
+                                JSONObject order = data.getJSONObject("order");
+
+                            }
+                        }
+
+                        runOnUiThread(() -> initPayHerePayment(orderResponse));
+                    } catch (JSONException e) {
+                        runOnUiThread(() ->
+                                Toast.makeText(CheckoutActivity.this, "Error processing response", Toast.LENGTH_SHORT).show()
+                        );
+                    }
+                } else {
+
+
+                    runOnUiThread(() ->
+                            Toast.makeText(CheckoutActivity.this, "Failed to create order", Toast.LENGTH_SHORT).show()
+                    );
                 }
             }
         });
     }
+
+    private void initPayHerePayment(JSONObject orderDetails) {
+        try {
+            JSONObject data = orderDetails.getJSONObject("data");
+            JSONObject order = data.getJSONObject("order");
+            JSONObject summary = data.getJSONObject("summary");
+
+            orderId = order.getString("id");
+
+            InitRequest req = new InitRequest();
+            req.setMerchantId("1221046");
+            req.setCurrency("LKR");
+            req.setAmount(summary.getDouble("total"));
+            req.setOrderId(order.getString("order_number"));
+            req.setItemsDescription("Payment for Order " + order.getString("order_number"));
+
+            // Set custom fields
+            req.setCustom1(order.getString("delivery_type"));
+            req.setCustom2(order.getString("payment_method"));
+
+            // Customer details
+            String[] names = order.getString("delivery_name").split(" ", 2);
+            req.getCustomer().setFirstName(names[0]);
+            req.getCustomer().setLastName(names.length > 1 ? names[1] : "");
+            req.getCustomer().setEmail("customer@email.com");
+            req.getCustomer().setPhone(order.getString("delivery_phone"));
+
+            // Billing address
+            req.getCustomer().getAddress().setAddress(order.getString("delivery_address"));
+            req.getCustomer().getAddress().setCity(order.getString("delivery_city"));
+            req.getCustomer().getAddress().setCountry("Sri Lanka");
+
+            // Delivery address
+            req.getCustomer().getDeliveryAddress().setAddress(order.getString("delivery_address"));
+            req.getCustomer().getDeliveryAddress().setCity(order.getString("delivery_city"));
+            req.getCustomer().getDeliveryAddress().setCountry("Sri Lanka");
+
+            // Add items
+            JSONArray items = order.getJSONArray("items");
+            for (int i = 0; i < items.length(); i++) {
+                JSONObject item = items.getJSONObject(i);
+                req.getItems().add(new Item(
+                        null,
+                        item.getString("product_name"),
+                        item.getInt("quantity"),
+                        Double.parseDouble(item.getString("selling_price"))
+                ));
+            }
+
+            Intent intent = new Intent(this, PHMainActivity.class);
+            intent.putExtra(PHConstants.INTENT_EXTRA_DATA, req);
+            PHConfigs.setBaseUrl(PHConfigs.SANDBOX_URL);
+            startActivityForResult(intent, PAYHERE_REQUEST);
+
+            Log.d("CheckoutActivity", "Payment initialization request: " + req.toString());
+
+        } catch (JSONException e) {
+            Log.e("CheckoutActivity", "Error initializing payment: " + e.getMessage());
+            Toast.makeText(this, "Error initializing payment", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PAYHERE_REQUEST && data != null && data.hasExtra(PHConstants.INTENT_EXTRA_RESULT)) {
+            PHResponse<StatusResponse> response = (PHResponse<StatusResponse>) data.getSerializableExtra(PHConstants.INTENT_EXTRA_RESULT);
+
+            Log.d("CheckoutActivityPay", "Payment response: " + response.toString());
+
+
+            handlePaymentResponse(resultCode, response);
+        }
+    }
+
+    private void handlePaymentResponse(int resultCode, PHResponse<StatusResponse> response) {
+        if (resultCode == Activity.RESULT_OK) {
+            if (response != null && response.isSuccess()) {
+               sendPaymentStatusUpdate(String.valueOf(response.getData().getPaymentNo()), "paid");
+                Toast.makeText(this, "Payment successful", Toast.LENGTH_SHORT).show();
+                finish();
+            } else {
+                sendPaymentStatusUpdate("null", "failed");
+                Toast.makeText(this, "Payment failed", Toast.LENGTH_SHORT).show();
+            }
+        } else if (resultCode == Activity.RESULT_CANCELED) {
+            Toast.makeText(this, "Payment cancelled", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+private void sendPaymentStatusUpdate(String payNo ,String status) {
+    try {
+        JSONObject requestBody = new JSONObject();
+
+
+//4916217501611292
+        // Extract order ID from the PayHere response payment number
+        requestBody.put("order_id", orderId);
+        requestBody.put("transaction_id", payNo);
+        requestBody.put("payment_status", status);
+        requestBody.put("firebase_uid", FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        user.getIdToken(true).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                String token = task.getResult().getToken();
+
+                RequestBody body = RequestBody.create(requestBody.toString(), JSON);
+                Request request = new Request.Builder()
+                    .url(API_BASE_URL + "/orders/payment")
+                    .addHeader("Accept", "application/json")
+                    .addHeader("Authorization", "Bearer " + token)
+                    .post(body)
+                    .build();
+
+                client.newCall(request).enqueue(new Callback() {
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+                        runOnUiThread(() -> Toast.makeText(CheckoutActivity.this,
+                                "Failed to update payment status", Toast.LENGTH_SHORT).show());
+                    }
+
+                    @Override
+                    public void onResponse(Call call, Response response) throws IOException {
+                        if (!response.isSuccessful()) {
+                            runOnUiThread(() -> Toast.makeText(CheckoutActivity.this,
+                                    "Error updating payment status", Toast.LENGTH_SHORT).show());
+                        }
+                    }
+                });
+            } else {
+                runOnUiThread(() -> Toast.makeText(CheckoutActivity.this,
+                        "Failed to get authentication token", Toast.LENGTH_SHORT).show());
+            }
+        });
+    } catch (JSONException e) {
+        Toast.makeText(this, "Error creating payment update request", Toast.LENGTH_SHORT).show();
+    }
+}
+
 
     @Override
     protected void onResume() {
@@ -278,67 +450,36 @@ public class CheckoutActivity extends AppCompatActivity {
         loadAddressList();
     }
 
-  @SuppressLint("NotifyDataSetChanged")
-  private void loadAddressList() {
-      addressList.clear();
-      SQLiteDatabase sqdb = dbHelper.getReadableDatabase();
-      Cursor cursor = sqdb.rawQuery("SELECT display_name, f_name, l_name, address1, address2, zip, contact FROM addresses", null);
+    @SuppressLint("NotifyDataSetChanged")
+    private void loadAddressList() {
+        addressList.clear();
+        SQLiteDatabase sqdb = dbHelper.getReadableDatabase();
+        Cursor cursor = sqdb.rawQuery("SELECT display_name, f_name, l_name, address1, address2, zip, contact FROM addresses", null);
 
-      if (cursor.moveToFirst()) {
-          do {
-              String addressName = cursor.getString(0);
-              String firstName = cursor.getString(1);
-              String lastName = cursor.getString(2);
-              String addressLine1 = cursor.getString(3);
-              String addressLine2 = cursor.getString(4);
-              String zip = cursor.getString(5);
-              String contact = cursor.getString(6);
+        if (cursor.moveToFirst()) {
+            do {
+                UserAddress address = new UserAddress(
+                        cursor.getString(0),
+                        cursor.getString(1),
+                        cursor.getString(2),
+                        cursor.getString(3),
+                        cursor.getString(4) + ", " + cursor.getString(5),
+                        cursor.getString(6)
+                );
+                addressList.add(address);
+            } while (cursor.moveToNext());
+        }
 
-              addressLine2 = addressLine2 + ", " + zip;
-              UserAddress address = new UserAddress(addressName, firstName, lastName, addressLine1, addressLine2, contact);
-              addressList.add(address);
-          } while (cursor.moveToNext());
-      }
-
-      cursor.close();
-      sqdb.close();
-      addressAdapter.notifyDataSetChanged();
-  }
+        cursor.close();
+        sqdb.close();
+        addressAdapter.notifyDataSetChanged();
+    }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         if (dbHelper != null) {
-            dbHelper.close();  // Close the database helper
-        }
-    }
-
-    @SuppressLint("SetTextI18n")
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PAYHERE_REQUEST && data != null && data.hasExtra(PHConstants.INTENT_EXTRA_RESULT)) {
-            PHResponse<StatusResponse> response = (PHResponse<StatusResponse>) data.getSerializableExtra(PHConstants.INTENT_EXTRA_RESULT);
-            if (resultCode == Activity.RESULT_OK) {
-                String msg;
-                if (response != null) {
-                    if (response.isSuccess()) {
-                        msg = "Payment Success: " + response.getData().toString();
-                    } else {
-                        msg = "Payment Failed: " + response.toString();
-                    }
-                } else {
-                    msg = "Payment Result: No response from PayHere";
-                }
-                Log.d(TAG, msg);
-
-            } else if (resultCode == Activity.RESULT_CANCELED) {
-                if (response != null) {
-                    resultTextView.setText("Payment Canceled: " + response.toString());
-                } else {
-                    resultTextView.setText("Payment Canceled: User canceled the request");
-                }
-            }
+            dbHelper.close();
         }
     }
 }
