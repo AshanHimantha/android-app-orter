@@ -241,11 +241,14 @@ public class CheckoutActivity extends AppCompatActivity {
     private void addPickupDetails(JSONObject requestBody) throws JSONException {
         Store selectedStore = storeAdapter.getSelectedStore();
         requestBody.put("delivery_type", "pickup");
-        requestBody.put("branch_id", 1);
+
+        requestBody.put("branch_name", selectedStore.getStoreName());
         requestBody.put("delivery_name", FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
-        requestBody.put("delivery_phone", "");
+        requestBody.put("delivery_phone", "0779678082");
         requestBody.put("firebase_uid", FirebaseAuth.getInstance().getCurrentUser().getUid());
         requestBody.put("payment_method", "card");
+        requestBody.put("delivery_address","Store pickup");
+        requestBody.put("delivery_city", "Store pickup");
     }
 
     private void sendOrderRequest(String token, JSONObject requestBody) {
@@ -256,7 +259,6 @@ public class CheckoutActivity extends AppCompatActivity {
                 .addHeader("Accept", "application/json")
                 .post(body)
                 .build();
-
 
 
         client.newCall(request).enqueue(new Callback() {
@@ -295,7 +297,7 @@ public class CheckoutActivity extends AppCompatActivity {
                     }
                 } else {
 
-
+Log.e("CheckoutActivity", "Failed to create order: " + responseBody);
                     runOnUiThread(() ->
                             Toast.makeText(CheckoutActivity.this, "Failed to create order", Toast.LENGTH_SHORT).show()
                     );
@@ -318,27 +320,20 @@ public class CheckoutActivity extends AppCompatActivity {
             req.setAmount(summary.getDouble("total"));
             req.setOrderId(order.getString("order_number"));
             req.setItemsDescription("Payment for Order " + order.getString("order_number"));
-
-            // Set custom fields
             req.setCustom1(order.getString("delivery_type"));
             req.setCustom2(order.getString("payment_method"));
-
-            // Customer details
             String[] names = order.getString("delivery_name").split(" ", 2);
             req.getCustomer().setFirstName(names[0]);
             req.getCustomer().setLastName(names.length > 1 ? names[1] : "");
-            req.getCustomer().setEmail("customer@email.com");
+            req.getCustomer().setEmail(FirebaseAuth.getInstance().getCurrentUser().getEmail());
             req.getCustomer().setPhone(order.getString("delivery_phone"));
-
-            // Billing address
             req.getCustomer().getAddress().setAddress(order.getString("delivery_address"));
             req.getCustomer().getAddress().setCity(order.getString("delivery_city"));
             req.getCustomer().getAddress().setCountry("Sri Lanka");
-
-            // Delivery address
             req.getCustomer().getDeliveryAddress().setAddress(order.getString("delivery_address"));
             req.getCustomer().getDeliveryAddress().setCity(order.getString("delivery_city"));
             req.getCustomer().getDeliveryAddress().setCountry("Sri Lanka");
+            req.setNotifyUrl("https://testapi.ashanhimantha.com/api/payhere/notify");
 
             // Add items
             JSONArray items = order.getJSONArray("items");
@@ -381,67 +376,56 @@ public class CheckoutActivity extends AppCompatActivity {
     private void handlePaymentResponse(int resultCode, PHResponse<StatusResponse> response) {
         if (resultCode == Activity.RESULT_OK) {
             if (response != null && response.isSuccess()) {
-               sendPaymentStatusUpdate(String.valueOf(response.getData().getPaymentNo()), "paid");
                 Toast.makeText(this, "Payment successful", Toast.LENGTH_SHORT).show();
-                finish();
+                Intent intent = new Intent(this, MainActivity.class);
+                startActivity(intent);
             } else {
-                sendPaymentStatusUpdate("null", "failed");
+                sendPaymentStatusUpdate();
                 Toast.makeText(this, "Payment failed", Toast.LENGTH_SHORT).show();
             }
         } else if (resultCode == Activity.RESULT_CANCELED) {
+            sendPaymentStatusUpdate();
+            Log.e("payment", orderId);
             Toast.makeText(this, "Payment cancelled", Toast.LENGTH_SHORT).show();
         }
     }
 
-private void sendPaymentStatusUpdate(String payNo ,String status) {
-    try {
-        JSONObject requestBody = new JSONObject();
 
+private void sendPaymentStatusUpdate() {
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            user.getIdToken(true).addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    String token = task.getResult().getToken();
 
-//4916217501611292
-        // Extract order ID from the PayHere response payment number
-        requestBody.put("order_id", orderId);
-        requestBody.put("transaction_id", payNo);
-        requestBody.put("payment_status", status);
-        requestBody.put("firebase_uid", FirebaseAuth.getInstance().getCurrentUser().getUid());
+                    Request request = new Request.Builder()
+                        .url(API_BASE_URL + "/orders/" + orderId)
+                        .addHeader("Accept", "application/json")
+                        .addHeader("Authorization", "Bearer " + token)
+                        .delete()
+                        .build();
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        user.getIdToken(true).addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                String token = task.getResult().getToken();
-
-                RequestBody body = RequestBody.create(requestBody.toString(), JSON);
-                Request request = new Request.Builder()
-                    .url(API_BASE_URL + "/orders/payment")
-                    .addHeader("Accept", "application/json")
-                    .addHeader("Authorization", "Bearer " + token)
-                    .post(body)
-                    .build();
-
-                client.newCall(request).enqueue(new Callback() {
-                    @Override
-                    public void onFailure(Call call, IOException e) {
-                        runOnUiThread(() -> Toast.makeText(CheckoutActivity.this,
-                                "Failed to update payment status", Toast.LENGTH_SHORT).show());
-                    }
-
-                    @Override
-                    public void onResponse(Call call, Response response) throws IOException {
-                        if (!response.isSuccessful()) {
+                    client.newCall(request).enqueue(new Callback() {
+                        @Override
+                        public void onFailure(Call call, IOException e) {
                             runOnUiThread(() -> Toast.makeText(CheckoutActivity.this,
-                                    "Error updating payment status", Toast.LENGTH_SHORT).show());
+                                    "Failed to cancel order", Toast.LENGTH_SHORT).show());
                         }
-                    }
-                });
-            } else {
-                runOnUiThread(() -> Toast.makeText(CheckoutActivity.this,
-                        "Failed to get authentication token", Toast.LENGTH_SHORT).show());
-            }
-        });
-    } catch (JSONException e) {
-        Toast.makeText(this, "Error creating payment update request", Toast.LENGTH_SHORT).show();
-    }
-}
+
+                        @Override
+                        public void onResponse(Call call, Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                runOnUiThread(() -> Toast.makeText(CheckoutActivity.this,
+                                        "Error cancelling order", Toast.LENGTH_SHORT).show());
+                            }
+                        }
+                    });
+                } else {
+                    runOnUiThread(() -> Toast.makeText(CheckoutActivity.this,
+                            "Failed to get authentication token", Toast.LENGTH_SHORT).show());
+                }
+            });
+        }
+
 
 
     @Override

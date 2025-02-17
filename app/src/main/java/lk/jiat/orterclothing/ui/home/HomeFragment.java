@@ -245,8 +245,10 @@ Glide.with(this)
                         JsonArray dataArray = jsonObject.getAsJsonArray("data");
 
                         // Loop through API data
-                        for (JsonElement item : dataArray) {
-                            JsonObject productObject = item.getAsJsonObject();
+                     for (JsonElement item : dataArray) {
+                         JsonObject productObject = item.getAsJsonObject();
+
+
 
                             String id = productObject.get("id").getAsString();
                             String productName = productObject.get("product_name").getAsString();
@@ -255,8 +257,8 @@ Glide.with(this)
                             String collectionName = productObject.get("collection_name").getAsString();
 
                             productList.add(new Product(id, productName, imageUrl, price, collectionName));
-                        }
 
+                     }
                         // Update ViewModel with new product list
                         homeViewModel.setProductList(productList);
                     }
