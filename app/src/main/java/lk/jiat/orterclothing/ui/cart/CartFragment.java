@@ -14,6 +14,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -83,7 +84,7 @@ public class CartFragment extends Fragment {
         cartAdapter = new CartAdapter(cartItemList, totalText, subtotalText, itemCountText, shippingText,checkoutButton, EmptyCartText);
 
         recyclerView.setAdapter(cartAdapter);
-        recyclerView.setAdapter(cartAdapter);
+        setupSwipeToDelete();
 
         EmptyCartText.setVisibility(View.GONE);
         checkoutButton.setEnabled(false);
@@ -105,6 +106,9 @@ public class CartFragment extends Fragment {
             }
         });
 
+
+
+
         return root;
     }
 
@@ -113,6 +117,55 @@ public class CartFragment extends Fragment {
         super.onResume();
         loadCartItems(); // Load cart items when the fragment is resumed
     }
+
+
+private void setupSwipeToDelete() {
+    ItemTouchHelper.SimpleCallback swipeCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+        @Override
+        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+            return false;
+        }
+
+        @Override
+        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+            int position = viewHolder.getAdapterPosition();
+            CartItem cartItem = cartItemList.get(position);
+
+            if (!cartAdapter.isUpdating()) {
+                Toast.makeText(requireContext(),
+                        "Removing " + cartItem.getProduct().getName(),
+                        Toast.LENGTH_SHORT).show();
+
+                // Trigger existing remove functionality through the remove button
+                CartAdapter.CartViewHolder holder = (CartAdapter.CartViewHolder) viewHolder;
+                holder.removeButton.performClick();
+            } else {
+                // If an update is in progress, revert the swipe
+
+                Toast.makeText(requireContext(), "Please wait...", Toast.LENGTH_SHORT).show();
+            }
+            cartAdapter.notifyItemChanged(position);
+        }
+
+        @Override
+        public void clearView(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
+            super.clearView(recyclerView, viewHolder);
+            // Reset any view changes here if needed
+            viewHolder.itemView.setAlpha(1.0f);
+        }
+
+        @Override
+        public void onChildDraw(@NonNull android.graphics.Canvas c, @NonNull RecyclerView recyclerView,
+                @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY,
+                int actionState, boolean isCurrentlyActive) {
+            // Add swipe animation effects here if needed
+            viewHolder.itemView.setAlpha(1.0f - Math.abs(dX) / (float) viewHolder.itemView.getWidth());
+            super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+        }
+    };
+
+    new ItemTouchHelper(swipeCallback).attachToRecyclerView(recyclerView);
+}
 
     private void loadCartItems() {
         progressBar.setVisibility(View.VISIBLE);
