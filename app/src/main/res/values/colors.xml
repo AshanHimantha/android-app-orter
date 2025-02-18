@@ -7,25 +7,24 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
 
-<color name="pending">#59FFFF00</color>
-<color name="confirmed">#59EEFF41</color>
-<color name="shipped">#1A536DFE</color>
-<color name="delivered">#59FFAB40</color>
-<color name="cancelled">#59FF5252</color>
-<color name="returned">#597C4DFF</color>
-<color name="processing">#1AFF6E40</color>
-<color name="completed">#5AB2FF59</color>
+<color name="pending">#15FFE14D</color>
+<color name="confirmed">#1540E07A</color>
+<color name="shipped">#156BA5F7</color>
+<color name="delivered">#1556C072</color>
+<color name="cancelled">#15F06B63</color>
+<color name="returned">#159747BA</color>
+<color name="processing">#15FF9033</color>
+<color name="completed">#1533A594</color>
 
 
-    <color name="pendingText">#FFFF00</color>
-    <color name="confirmedText">#EEFF41</color>
-    <color name="shippedText">#536DFE</color>
-    <color name="deliveredText">#FFAB40</color>
-    <color name="cancelledText">#FF5252</color>
-    <color name="returnedText">#7C4DFF</color>
-    <color name="processingText">#FF6E40</color>
-    <color name="completedText">#B2FF59</color>
-
+<color name="pendingText">#FFD700</color>
+<color name="confirmedText">#00C853</color>
+<color name="shippedText">#4285F4</color>
+<color name="deliveredText">#34A853</color>
+<color name="cancelledText">#EA4335</color>
+<color name="returnedText">#7B1FA2</color>
+<color name="processingText">#FF6D00</color>
+<color name="completedText">#00796B</color>
 
 
 
