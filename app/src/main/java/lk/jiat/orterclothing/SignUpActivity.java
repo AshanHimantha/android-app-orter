@@ -26,7 +26,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
@@ -73,15 +72,10 @@ public class SignUpActivity extends AppCompatActivity {
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
         // Initialize UI elements
-        TextInputLayout nameInputLayout = findViewById(R.id.nameField);
-        TextInputLayout emailInputLayout = findViewById(R.id.emailField);
-        TextInputLayout passwordInputLayout = findViewById(R.id.passwordField);
-        TextInputLayout confirmPasswordInputLayout = findViewById(R.id.confirmPasswordField);
-
-        nameField = nameInputLayout.getEditText();
-        emailField = emailInputLayout.getEditText();
-        passwordField = passwordInputLayout.getEditText();
-        confirmPasswordField = confirmPasswordInputLayout.getEditText();
+        nameField = findViewById(R.id.nameField);
+        emailField = findViewById(R.id.emailField);
+        passwordField = findViewById(R.id.passwordField);
+        confirmPasswordField = findViewById(R.id.confirmPasswordField);
 
         btnEmailSignUp = findViewById(R.id.buttonSignUp);
         btnGoogleSignUp = findViewById(R.id.buttonGoogle);
@@ -93,10 +87,10 @@ public class SignUpActivity extends AppCompatActivity {
         btnEmailSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (nameField == null || nameField.getText().toString().isEmpty()
-                        || emailField == null || emailField.getText().toString().isEmpty()
-                        || passwordField == null || passwordField.getText().toString().isEmpty()
-                        || confirmPasswordField == null || confirmPasswordField.getText().toString().isEmpty())
+                if (nameField.getText().toString().isEmpty()
+                        || emailField.getText().toString().isEmpty()
+                        || passwordField.getText().toString().isEmpty()
+                        || confirmPasswordField.getText().toString().isEmpty())
                 {
                     Toast.makeText(SignUpActivity.this, "Please fill all the fields.", Toast.LENGTH_SHORT).show();
                     return;
@@ -252,10 +246,10 @@ public class SignUpActivity extends AppCompatActivity {
             Toast.makeText(SignUpActivity.this, "Sign Up Successful",
                     Toast.LENGTH_SHORT).show();
 
-            // Navigate to next activity or login activity
-            Intent intent = new Intent(SignUpActivity.this, LoginActivity.class);
+
+            Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
             startActivity(intent);
-            finish(); // Close the SignUpActivity
+            finish();
         } else {
             // If sign in fails, display a message to the user.
             Log.w(TAG, "createUserWithEmail: failure");

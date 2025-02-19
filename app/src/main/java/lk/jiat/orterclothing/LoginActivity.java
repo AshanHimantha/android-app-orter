@@ -106,28 +106,33 @@ public class LoginActivity extends AppCompatActivity {
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
         // Initialize UI elements
-        TextInputLayout emailInputLayout = findViewById(R.id.emailField);
-        TextInputLayout passwordInputLayout = findViewById(R.id.passwordField);
+        EditText emailInputLayout = findViewById(R.id.editTextText4);
+        EditText passwordInputLayout = findViewById(R.id.editTextTextPassword);
 
-        if (emailInputLayout != null) {
-            emailField = emailInputLayout.getEditText();
-        }
-        if (passwordInputLayout != null) {
-            passwordField = passwordInputLayout.getEditText();
-        }
+    if (emailInputLayout != null) {
+        emailField = emailInputLayout;
+    }
+    if (passwordInputLayout != null) {
+        passwordField = passwordInputLayout;
+    }
 
         btnEmailSignIn = findViewById(R.id.button2);
-//        btnEmailSignUp = findViewById(R.id.btn);
         btnGoogleSignIn = findViewById(R.id.button6);
         btnFacebookSignIn = findViewById(R.id.button7);
-//        btnSignOut = findViewById(R.id.navigate);
+
 
         // Set onClick listeners
         btnEmailSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (emailField != null && passwordField != null) {  // Check for null
-                    signIn(emailField.getText().toString(), passwordField.getText().toString());
+                  String email = emailField.getText().toString().trim();
+                    String password = passwordField.getText().toString();
+                    if (!email.isEmpty() && !password.isEmpty()) {
+                        signIn(email, password);
+                    } else {
+                        Toast.makeText(LoginActivity.this, "Please enter email and password", Toast.LENGTH_SHORT).show();
+                    }
                 } else {
                     Log.e(TAG, "Email or password EditText is null!");
                     Toast.makeText(LoginActivity.this, "Email or password field missing.", Toast.LENGTH_SHORT).show();
@@ -135,12 +140,6 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-//        btnEmailSignUp.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                createAccount(emailField.getText().toString(), passwordField.getText().toString());
-//            }
-//        });
 
         btnGoogleSignIn.setOnClickListener(new View.OnClickListener() {
             @Override

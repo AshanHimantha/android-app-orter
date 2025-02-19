@@ -90,5 +90,10 @@
     <string name="warning_address">Enter the correct delivery address to ensure smooth delivery.</string>
     <string name="google_maps_key">AIzaSyBgGSaQntWd-I_YKkI5E7Vd5pE73hY5HhA</string>
 
+    <string name="enter_email">Enter your email</string>
+    <string name="enter_password">Enter your password</string>
+    <string name="enter_full_name">Enter your full name</string>
+    <string name="enter_confirm_password">Enter your confirm password</string>
+
 
 </resources>
