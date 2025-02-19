@@ -86,7 +86,7 @@ public class CheckoutActivity extends AppCompatActivity {
     private void setupWindowInsets() {
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0);
             return insets;
         });
     }
@@ -158,7 +158,47 @@ public class CheckoutActivity extends AppCompatActivity {
         ChipGroup chipGroup = findViewById(R.id.chipGroup);
         chipGroup.setOnCheckedChangeListener((group, checkedId) -> {
             updateChipColors(group, checkedId);
-            updateLayoutVisibility(checkedId);
+
+            // Check if store pickup is selected (chip3)
+            if (checkedId == R.id.chip3) {
+                FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+                db.collection("user")
+                        .document(currentUser.getUid())
+                        .get()
+                        .addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                if (task.getResult().exists() && task.getResult().get("mobile") != null) {
+                                    // User has mobile number, show store layout
+                                    updateLayoutVisibility(checkedId);
+                                } else {
+                                    // No mobile number found
+                                    runOnUiThread(() -> {
+                                        Toast.makeText(CheckoutActivity.this,
+                                                "Please add your mobile number in profile first",
+                                                Toast.LENGTH_LONG).show();
+                                        // Reset chip selection
+                                        chipGroup.clearCheck();
+                                        // Optionally navigate to profile
+                                        Intent intent = new Intent(CheckoutActivity.this, EditProfileActivity.class);
+                                        startActivity(intent);
+                                    });
+                                }
+                            } else {
+                                // Error checking mobile
+                                runOnUiThread(() -> {
+                                    Toast.makeText(CheckoutActivity.this,
+                                            "Error checking profile information",
+                                            Toast.LENGTH_SHORT).show();
+                                    chipGroup.clearCheck();
+                                });
+                            }
+                        });
+            } else {
+                // For other chip selections, just update layout
+                updateLayoutVisibility(checkedId);
+            }
         });
     }
 
@@ -241,7 +281,6 @@ public class CheckoutActivity extends AppCompatActivity {
     private void addPickupDetails(JSONObject requestBody) throws JSONException {
         Store selectedStore = storeAdapter.getSelectedStore();
         requestBody.put("delivery_type", "pickup");
-
         requestBody.put("branch_name", selectedStore.getStoreName());
         requestBody.put("delivery_name", FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
         requestBody.put("delivery_phone", "0779678082");

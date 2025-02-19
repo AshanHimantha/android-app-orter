@@ -67,10 +67,13 @@ public class EditProfileActivity extends AppCompatActivity {
                 if (name.getText().toString().isEmpty()) {
                     name.setError("Name is required");
                     return;
-                } else if (contact.getText().toString().isEmpty()) {
-                    contact.setError("Contact is required");
-                    return;
-                } else {
+             } else if (contact.getText().toString().isEmpty()) {
+                 contact.setError("Contact is required");
+                 return;
+             } else if (!contact.getText().toString().matches("^(?:\\+94|0)?(?:7[0-9]{8})$")) {
+                 contact.setError("Invalid mobile number");
+                 return;
+             } else {
 
 
                     UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()

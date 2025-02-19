@@ -100,6 +100,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+                    app:layout_constraintWidth_max="400dp"
                     app:strokeColor="#E9E9E9"
                     app:strokeWidth="1dp" />
 
@@ -123,6 +124,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/button6"
+                    app:layout_constraintWidth_max="400dp"
                     app:strokeColor="#E9E9E9"
                     app:strokeWidth="1dp" />
 
@@ -130,22 +132,20 @@
                     android:id="@+id/textView106"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="32dp"
                     android:layout_marginTop="24dp"
                     android:fontFamily="@font/inter"
                     android:text="@string/email"
-                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/editTextText4"
                     app:layout_constraintTop_toBottomOf="@+id/textView11" />
 
                 <TextView
                     android:id="@+id/textView107"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="32dp"
                     android:layout_marginTop="8dp"
                     android:fontFamily="@font/inter"
                     android:text="@string/password"
-                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/editTextTextPassword"
                     app:layout_constraintTop_toBottomOf="@+id/editTextText4" />
 
                 <TextView
@@ -234,7 +234,8 @@
                     android:textSize="14sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView106" />
+                    app:layout_constraintTop_toBottomOf="@+id/textView106"
+                    app:layout_constraintWidth_max="400dp" />
 
                 <EditText
                     android:id="@+id/editTextTextPassword"
@@ -254,7 +255,8 @@
                     android:textSize="14sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView107" />
+                    app:layout_constraintTop_toBottomOf="@+id/textView107"
+                    app:layout_constraintWidth_max="400dp" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

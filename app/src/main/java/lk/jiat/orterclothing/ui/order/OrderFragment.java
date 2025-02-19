@@ -89,10 +89,13 @@ public class OrderFragment extends Fragment implements OrderAdapter.OnOrderClick
             orderList.clear();
             orderList.addAll(allOrders);
         } else {
-            if (checkedId == R.id.chipPending) filterStatus = "pending";
-            else if (checkedId == R.id.chipProcessing) filterStatus = "processing";
+            if (checkedId == R.id.chipProcessing) filterStatus = "processing";
             else if (checkedId == R.id.chipShipped) filterStatus = "shipped";
             else if (checkedId == R.id.chipDelivered) filterStatus = "delivered";
+            else if (checkedId == R.id.chipConfirmed) filterStatus = "confirmed";
+            else if (checkedId == R.id.chipCancelled) filterStatus = "cancelled";
+            else if (checkedId == R.id.chipReturned) filterStatus = "returned";
+            else if (checkedId == R.id.chipCompleted) filterStatus = "completed";
 
             orderList.clear();
             for (Order order : allOrders) {

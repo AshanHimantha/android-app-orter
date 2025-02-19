@@ -40,19 +40,19 @@
                     app:chipStrokeColor="#E9E9E9"
                     app:chipStrokeWidth="1dp" />
 
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chipPending"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checkable="true"
-                    android:minWidth="70dp"
-                    android:text="Pending"
-                    android:textAlignment="center"
-                    android:textColor="@color/chip_text_color"
-                    app:chipBackgroundColor="@color/chip_background_selector"
-                    app:chipStrokeColor="#E9E9E9"
-                    app:chipStrokeWidth="1dp" />
+<!--                <com.google.android.material.chip.Chip-->
+<!--                    android:id="@+id/chipPending"-->
+<!--                    style="@style/Widget.MaterialComponents.Chip.Choice"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:checkable="true"-->
+<!--                    android:minWidth="70dp"-->
+<!--                    android:text="Pending"-->
+<!--                    android:textAlignment="center"-->
+<!--                    android:textColor="@color/chip_text_color"-->
+<!--                    app:chipBackgroundColor="@color/chip_background_selector"-->
+<!--                    app:chipStrokeColor="#E9E9E9"-->
+<!--                    app:chipStrokeWidth="1dp" />-->
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chipConfirmed"
@@ -97,6 +97,35 @@
                     app:chipStrokeWidth="1dp" />
 
                 <com.google.android.material.chip.Chip
+                    android:id="@+id/chipProcessing"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkable="true"
+                    android:minWidth="70dp"
+                    android:text="Processing"
+                    android:textAlignment="center"
+                    android:textColor="@color/chip_text_color"
+                    app:chipBackgroundColor="@color/chip_background_selector"
+                    app:chipStrokeColor="#E9E9E9"
+                    app:chipStrokeWidth="1dp" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipCompleted"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkable="true"
+                    android:minWidth="70dp"
+                    android:text="Completed"
+                    android:textAlignment="center"
+                    android:textColor="@color/chip_text_color"
+                    app:chipBackgroundColor="@color/chip_background_selector"
+                    app:chipStrokeColor="#E9E9E9"
+                    app:chipStrokeWidth="1dp" />
+
+
+                <com.google.android.material.chip.Chip
                     android:id="@+id/chipCancelled"
                     style="@style/Widget.MaterialComponents.Chip.Choice"
                     android:layout_width="wrap_content"
@@ -124,33 +153,6 @@
                     app:chipStrokeColor="#E9E9E9"
                     app:chipStrokeWidth="1dp" />
 
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chipProcessing"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checkable="true"
-                    android:minWidth="70dp"
-                    android:text="Processing"
-                    android:textAlignment="center"
-                    android:textColor="@color/chip_text_color"
-                    app:chipBackgroundColor="@color/chip_background_selector"
-                    app:chipStrokeColor="#E9E9E9"
-                    app:chipStrokeWidth="1dp" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chipCompleted"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checkable="true"
-                    android:minWidth="70dp"
-                    android:text="Completed"
-                    android:textAlignment="center"
-                    android:textColor="@color/chip_text_color"
-                    app:chipBackgroundColor="@color/chip_background_selector"
-                    app:chipStrokeColor="#E9E9E9"
-                    app:chipStrokeWidth="1dp" />
             </com.google.android.material.chip.ChipGroup>
 
         </LinearLayout>
@@ -159,9 +161,11 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/orderRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginBottom="90dp"
         android:paddingTop="10dp"
-        android:paddingBottom="100dp"
+        android:paddingBottom="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/horizontalScrollView" />

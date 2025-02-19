@@ -7,7 +7,7 @@
     android:layout_marginStart="10dp"
     android:layout_marginEnd="10dp"
     android:layout_marginBottom="5dp"
-    android:background="@drawable/light_border"
+    android:background="@drawable/low_light_border"
     android:padding="8dp">
 
     <com.makeramen.roundedimageview.RoundedImageView
@@ -27,7 +27,7 @@
         android:layout_width="255dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:fontFamily="@font/inter_semibold"
+        android:fontFamily="@font/inter_medium"
         android:text="Introvert Oversized tee"
         android:textColor="#141414"
         android:textSize="16sp"

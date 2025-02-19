@@ -5,6 +5,9 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -61,6 +64,15 @@ public class OrderDetailedActivity extends AppCompatActivity {
     private String ID;
     private TextView addressText;
 
+    private ProgressBar progressBar;
+
+    private Button btnBack;
+
+    private TextView pickupText;
+    private TextView pickupId;
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,12 +92,18 @@ public class OrderDetailedActivity extends AppCompatActivity {
         setupRecyclerView();
         fetchOrderDetails();
 
+        progressBar = findViewById(R.id.progressBar2);
+        progressBar.setVisibility(ProgressBar.VISIBLE);
+        LinearLayout linearLayout = findViewById(R.id.linearLayout7);
+        linearLayout.setVisibility(LinearLayout.GONE);
+
+
 
         orderID = findViewById(R.id.textView68);
         cname = findViewById(R.id.textView88);
 //                email = findViewById(R.id.textView94);
         address = findViewById(R.id.textView96);
-                phone = findViewById(R.id.textView98);
+        phone = findViewById(R.id.textView91);
         total = findViewById(R.id.textView101);
         status = findViewById(R.id.textView77);
         date = findViewById(R.id.textView104);
@@ -94,7 +112,17 @@ public class OrderDetailedActivity extends AppCompatActivity {
         items1 = findViewById(R.id.textView81);
         shipping = findViewById(R.id.textView83);
         addressText = findViewById(R.id.textView95);
+        pickupText = findViewById(R.id.textView92);
+        pickupId = findViewById(R.id.textView93);
 
+
+        pickupText.setVisibility(TextView.GONE);
+        pickupId.setVisibility(TextView.GONE);
+
+        btnBack = findViewById(R.id.button17);
+        btnBack.setOnClickListener(v -> {
+            finish();
+        });
 
 
     }
@@ -128,6 +156,13 @@ public class OrderDetailedActivity extends AppCompatActivity {
             @SuppressLint("SetTextI18n")
             @Override
             public void onResponse(Call call, Response response) throws IOException {
+
+                runOnUiThread(() -> {
+                    progressBar.setVisibility(ProgressBar.GONE);
+                    LinearLayout linearLayout = findViewById(R.id.linearLayout7);
+                    linearLayout.setVisibility(LinearLayout.VISIBLE);
+                });
+
                 if (!response.isSuccessful()) {
                     runOnUiThread(() ->
                             Toast.makeText(OrderDetailedActivity.this,
@@ -149,7 +184,6 @@ public class OrderDetailedActivity extends AppCompatActivity {
                                 cname.setText(deliveryDetails.getString("name"));
                                 address.setText(deliveryDetails.getString("address") + ", " + deliveryDetails.getString("city"));
                                 total.setText("Rs. " + data.getString("total"));
-                                status.setText(data.getString("orderStatus").substring(0, 1).toUpperCase() + data.getString("orderStatus").substring(1));
                                 try {
                                     SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
                                     SimpleDateFormat outputFormat = new SimpleDateFormat("MMMM dd, yyyy", Locale.getDefault());
@@ -163,11 +197,39 @@ public class OrderDetailedActivity extends AppCompatActivity {
                                 subtotal.setText("Rs. " + data.getString("subTotal"));
                                 items1.setText(data.getJSONArray("items").length() + " item");
                                 shipping.setText("Rs. " + data.getString("shippingFee"));
+                                phone.setText(deliveryDetails.getString("phone"));
+                                pickupId.setText(data.getString("pickupId"));
+
+
+                          String orderStatus = data.getString("orderStatus");
+                          status.setText(orderStatus.substring(0, 1).toUpperCase() + orderStatus.substring(1));
+                          switch (orderStatus.toLowerCase()) {
+                              case "completed":
+                                  status.setTextColor(getResources().getColor(R.color.black)); // Replace with your color resource
+                                  break;
+                              case "pending":
+                                  status.setTextColor(getResources().getColor(R.color.pendingText)); // Replace with your color resource
+                                  break;
+                              case "cancelled":
+                                  status.setTextColor(getResources().getColor(R.color.cancelledText)); // Replace with your color resource
+                                  break;
+                              case "shipped":
+                                  status.setTextColor(getResources().getColor(R.color.shippedText)); // Replace with your color resource
+                                  break;
+                              case "processing":
+                                  status.setTextColor(getResources().getColor(R.color.processingText)); // Replace with your color resource
+                                  break;
+                              default:
+                                  status.setTextColor(getResources().getColor(R.color.confirmedText)); // Replace with your default color resource
+                                  break;
+                          }
 
 
                                 if (data.getString("deliveryType").equals("pickup")) {
                                    address.setVisibility(TextView.GONE);
                                    addressText.setVisibility(TextView.GONE);
+                                   pickupText.setVisibility(TextView.VISIBLE);
+                                   pickupId.setVisibility(TextView.VISIBLE);
                                 }
 
                             } catch (JSONException e) {
