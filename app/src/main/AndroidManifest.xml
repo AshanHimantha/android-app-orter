@@ -41,6 +41,9 @@
             android:name=".EditProfileActivity"
             android:exported="false" />
         <activity
+            android:name=".OrderDetailedActivity"
+            android:exported="false" />
+        <activity
             android:name=".LatestProductActivity"
             android:exported="false" />
         <activity

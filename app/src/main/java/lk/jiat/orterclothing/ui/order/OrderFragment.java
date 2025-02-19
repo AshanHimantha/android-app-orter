@@ -163,7 +163,7 @@ public class OrderFragment extends Fragment implements OrderAdapter.OnOrderClick
                                 }
                             }
                         } else {
-                            Toast.makeText(getContext(), "Error: " + response.code(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "Error: " + response, Toast.LENGTH_SHORT).show();
                         }
                     } catch (Exception e) {
                         Log.e("OrderFragment", "Error parsing data: " + e.getMessage());
