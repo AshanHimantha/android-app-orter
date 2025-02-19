@@ -5,11 +5,6 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-<<<<<<< HEAD
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-=======
->>>>>>> 8df22a4a67e6d2c7632c597099c6c7f051eb41d7
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -65,15 +60,6 @@ public class OrderDetailedActivity extends AppCompatActivity {
 
     private String ID;
     private TextView addressText;
-<<<<<<< HEAD
-    private TextView pickupText;
-    private TextView pickupid;
-
-    ProgressBar progressBar;
-    LinearLayout mainLayout;
-
-=======
->>>>>>> 8df22a4a67e6d2c7632c597099c6c7f051eb41d7
 
 
     @Override
@@ -99,11 +85,7 @@ public class OrderDetailedActivity extends AppCompatActivity {
         cname = findViewById(R.id.textView88);
 //                email = findViewById(R.id.textView94);
         address = findViewById(R.id.textView96);
-<<<<<<< HEAD
-        phone = findViewById(R.id.textView91);
-=======
                 phone = findViewById(R.id.textView98);
->>>>>>> 8df22a4a67e6d2c7632c597099c6c7f051eb41d7
         total = findViewById(R.id.textView101);
         status = findViewById(R.id.textView77);
         date = findViewById(R.id.textView104);
@@ -112,17 +94,6 @@ public class OrderDetailedActivity extends AppCompatActivity {
         items1 = findViewById(R.id.textView81);
         shipping = findViewById(R.id.textView83);
         addressText = findViewById(R.id.textView95);
-<<<<<<< HEAD
-        pickupText = findViewById(R.id.textView92);
-        pickupid = findViewById(R.id.textView93);
-        findViewById(R.id.button17).setOnClickListener(v -> finish());
-        progressBar = findViewById(R.id.progressBar2);
-        progressBar.setVisibility(ProgressBar.VISIBLE);
-        mainLayout = findViewById(R.id.linearLayout7);
-        mainLayout.setVisibility(LinearLayout.GONE);
-
-=======
->>>>>>> 8df22a4a67e6d2c7632c597099c6c7f051eb41d7
 
 
 
@@ -149,10 +120,6 @@ public class OrderDetailedActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call call, IOException e) {
                 runOnUiThread(() ->
-<<<<<<< HEAD
-
-=======
->>>>>>> 8df22a4a67e6d2c7632c597099c6c7f051eb41d7
                         Toast.makeText(OrderDetailedActivity.this,
                                 "Failed to load order details", Toast.LENGTH_SHORT).show()
                 );
@@ -161,16 +128,7 @@ public class OrderDetailedActivity extends AppCompatActivity {
             @SuppressLint("SetTextI18n")
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-<<<<<<< HEAD
-
-                runOnUiThread(() -> progressBar.setVisibility(ProgressBar.GONE));
-                runOnUiThread(() -> mainLayout.setVisibility(LinearLayout.VISIBLE));
-
                 if (!response.isSuccessful()) {
-
-=======
-                if (!response.isSuccessful()) {
->>>>>>> 8df22a4a67e6d2c7632c597099c6c7f051eb41d7
                     runOnUiThread(() ->
                             Toast.makeText(OrderDetailedActivity.this,
                                     "Error: " + response.code(), Toast.LENGTH_SHORT).show()
@@ -186,23 +144,11 @@ public class OrderDetailedActivity extends AppCompatActivity {
                         JSONArray items = data.getJSONArray("items");
                         runOnUiThread(() -> {
                             try {
-<<<<<<< HEAD
-
-
-                                orderID.setText(data.getString("orderNumber"));
-                                JSONObject deliveryDetails = data.getJSONObject("deliveryDetails");
-                                cname.setText(deliveryDetails.getString("name"));
-                                phone.setText(deliveryDetails.getString("phone"));
-                                address.setText(deliveryDetails.getString("address") + ", " + deliveryDetails.getString("city"));
-                                total.setText("Rs. " + data.getString("total"));
-                                pickupid.setText(data.getString("pickupId"));
-=======
                                 orderID.setText(data.getString("orderNumber"));
                                 JSONObject deliveryDetails = data.getJSONObject("deliveryDetails");
                                 cname.setText(deliveryDetails.getString("name"));
                                 address.setText(deliveryDetails.getString("address") + ", " + deliveryDetails.getString("city"));
                                 total.setText("Rs. " + data.getString("total"));
->>>>>>> 8df22a4a67e6d2c7632c597099c6c7f051eb41d7
                                 status.setText(data.getString("orderStatus").substring(0, 1).toUpperCase() + data.getString("orderStatus").substring(1));
                                 try {
                                     SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
@@ -222,16 +168,6 @@ public class OrderDetailedActivity extends AppCompatActivity {
                                 if (data.getString("deliveryType").equals("pickup")) {
                                    address.setVisibility(TextView.GONE);
                                    addressText.setVisibility(TextView.GONE);
-<<<<<<< HEAD
-                                   pickupText.setVisibility(TextView.VISIBLE);
-
-                                }else {
-                                    address.setVisibility(TextView.VISIBLE);
-                                    addressText.setVisibility(TextView.VISIBLE);
-                                    pickupText.setVisibility(TextView.GONE);
-                                    pickupid.setVisibility(TextView.GONE);
-=======
->>>>>>> 8df22a4a67e6d2c7632c597099c6c7f051eb41d7
                                 }
 
                             } catch (JSONException e) {

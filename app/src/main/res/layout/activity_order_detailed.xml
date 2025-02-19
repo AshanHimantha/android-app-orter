@@ -8,30 +8,11 @@
     android:background="#F0F0F0"
     tools:context=".OrderDetailedActivity">
 
-<<<<<<< HEAD
-    <ProgressBar
-        android:id="@+id/progressBar2"
-        style="@android:style/Widget.Material.Light.ProgressBar.Small.Title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <LinearLayout
-        android:id="@+id/linearLayout7"
-=======
-    <LinearLayout
->>>>>>> 8df22a4a67e6d2c7632c597099c6c7f051eb41d7
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="#F6F6F6"
         android:orientation="vertical"
-<<<<<<< HEAD
-        android:visibility="gone"
-=======
->>>>>>> 8df22a4a67e6d2c7632c597099c6c7f051eb41d7
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
@@ -192,10 +173,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/inter_semibold"
-<<<<<<< HEAD
-=======
                     android:text="Ashan Himantha"
->>>>>>> 8df22a4a67e6d2c7632c597099c6c7f051eb41d7
                     android:textColor="#050505" />
 
                 <TextView
@@ -213,10 +191,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/inter_semibold"
-<<<<<<< HEAD
-=======
                     android:text="No:26,Wagollawaththa,Mawathagama, 60060"
->>>>>>> 8df22a4a67e6d2c7632c597099c6c7f051eb41d7
                     android:textColor="#050505" />
 
                 <TextView
