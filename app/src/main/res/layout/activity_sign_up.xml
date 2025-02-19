@@ -29,7 +29,8 @@ tools:context=".SignUpActivity">
         android:layout_height="wrap_content"
         android:background="#FFFFFF"
         android:backgroundTint="#FFFFFF"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingBottom="80dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -87,7 +88,7 @@ tools:context=".SignUpActivity">
                 app:cornerRadius="5dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/confirmPasswordField"
+                app:layout_constraintTop_toBottomOf="@+id/editTextText12"
                 app:layout_constraintWidth_max="400dp" />
 
             <LinearLayout
@@ -291,7 +292,7 @@ tools:context=".SignUpActivity">
                 app:layout_constraintTop_toBottomOf="@+id/passwordField" />
 
             <EditText
-                android:id="@+id/confirmPasswordField"
+                android:id="@+id/editTextText12"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_marginStart="32dp"

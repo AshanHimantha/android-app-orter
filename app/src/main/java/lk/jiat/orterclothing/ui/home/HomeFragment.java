@@ -14,10 +14,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -26,6 +28,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -60,24 +63,23 @@ public class HomeFragment extends Fragment {
     private Handler handler;
     private Runnable runnable;
     private int currentIndex = 0;
-    private List<String> imageUrls = Arrays.asList(
-            "https://firebasestorage.googleapis.com/v0/b/orterclothing-5d6b9.firebasestorage.app/o/412629477_923051502766690_5664355034986246408_n.jpg?alt=media&token=31fd4321-ff92-4f8f-a763-aa31846af020",
-            "https://firebasestorage.googleapis.com/v0/b/orterclothing-5d6b9.firebasestorage.app/o/div10.jpg?alt=media&token=6dac3cf0-2d1d-489b-9643-cb1496c05485",
-            "https://firebasestorage.googleapis.com/v0/b/orterclothing-5d6b9.firebasestorage.app/o/div8.jpg?alt=media&token=44d3622a-123e-4920-8114-044099a6737e"
-    );
+    private List<String> imageUrls;
 
     private Animation fadeIn;
     private RecyclerView recyclerView;
     private ProductAdapter productAdapter;
     private HomeViewModel homeViewModel;
-    private static final String API_URL = "http://10.0.2.2:8000/api/stock-list";
+    private static final String API_URL = "https://testapi.ashanhimantha.com/api/stock-list";
     private RecyclerView categoryRecyclerView;
     private CategoryAdapter categoryAdapter;
     private List<Category> categoryList;
 
+    private NestedScrollView nestedScrollView;
+
+   private ProgressBar progressBar;
     private TextView latestItems;
     private final OkHttpClient client = new OkHttpClient();
-    private final String BACKEND_URL = "http://10.0.2.2:8000/api/verify";
+    private final String BACKEND_URL = "https://testapi.ashanhimantha.com/api/verify";
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -85,6 +87,10 @@ public class HomeFragment extends Fragment {
 
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+        nestedScrollView = binding.getRoot().findViewById(R.id.nestedScrollView);
+        progressBar = binding.getRoot().findViewById(R.id.progressBar);
+        nestedScrollView.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
 
         // Load the fade-in animation
         fadeIn = AnimationUtils.loadAnimation(getContext(), R.anim.fade_in);
@@ -94,7 +100,36 @@ public class HomeFragment extends Fragment {
 
         // Initialize ViewModel
         homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
+        imageUrls = new ArrayList<>();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("banners").get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
 
+
+
+                task.getResult().forEach(document -> {
+                    String imageUrl = document.getString("image");
+                    if (imageUrl != null && !imageUrl.isEmpty()) {
+                        imageUrls.add(imageUrl);
+                    }
+                });
+            }
+
+            // Start image rotation only after loading images
+            if (!imageUrls.isEmpty()) {
+                handler.post(runnable);
+            }
+        });
+
+// Move handler initialization after imageUrls setup
+        handler = new Handler(Looper.getMainLooper());
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                loadImageWithAnimation();
+                handler.postDelayed(this, 10000);
+            }
+        };
 
         TextView seeallCategory = binding.getRoot().findViewById(R.id.textView10);
         seeallCategory.setOnClickListener(new View.OnClickListener() {
@@ -135,18 +170,11 @@ public class HomeFragment extends Fragment {
         // Load products if not already loaded
         if (homeViewModel.getProductList().getValue().isEmpty()) {
             loadProducts();
+        }else {
+
+            nestedScrollView.setVisibility(View.VISIBLE);
+            progressBar.setVisibility(View.GONE);
         }
-
-        // Image Slider Handler
-        handler = new Handler(Looper.getMainLooper());
-        runnable = new Runnable() {
-            @Override
-            public void run() {
-                loadImageWithAnimation();
-                handler.postDelayed(this, 5000);
-            }
-        };
-
 
 
         handler.post(runnable);
@@ -208,11 +236,19 @@ public class HomeFragment extends Fragment {
     }
 
     private void loadImageWithAnimation() {
-        currentIndex = (currentIndex + 1) % imageUrls.size();
-Glide.with(this)
-    .load(imageUrls.get(currentIndex))
-    .into(binding.imageView6);
+        // Check if list is empty or null
+        if (imageUrls == null || imageUrls.isEmpty()) {
+            // Load a default image or return
+            Glide.with(this)
+                    .load(R.drawable.div2)
+                    .into(binding.imageView6);
+            return;
+        }
 
+        currentIndex = (currentIndex + 1) % imageUrls.size();
+        Glide.with(this)
+                .load(imageUrls.get(currentIndex))
+                .into(binding.imageView6);
         binding.imageView6.startAnimation(fadeIn);
     }
 
@@ -236,6 +272,17 @@ Glide.with(this)
                 if (response.isSuccessful() && response.body() != null) {
                     String responseBody = response.body().string();
                     Log.d("API_RESPONSE", responseBody);
+
+          getActivity().runOnUiThread(() -> {
+
+
+                  Animation scaleUp = AnimationUtils.loadAnimation(getContext(), R.anim.scale_up);
+                  nestedScrollView.startAnimation(scaleUp);
+                  nestedScrollView.setVisibility(View.VISIBLE);
+                  progressBar.setVisibility(View.GONE);
+
+
+          });
 
                     // Parse JSON using Gson
                     Gson gson = new Gson();

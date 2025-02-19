@@ -2,9 +2,12 @@ package lk.jiat.orterclothing;
 
 import android.animation.ObjectAnimator;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -22,9 +25,26 @@ public class GetStartedActivity extends AppCompatActivity {
         setContentView(R.layout.activity_get_started);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            v.setPadding(systemBars.left, 0, systemBars.right, 0);
             return insets;
         });
+
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            findViewById(R.id.frameLayout).setPadding(0, 0, 0, 0);
+
+         ScrollView scrollView = findViewById(R.id.getstarted);
+         if (scrollView != null) {
+             Log.d("GetStartedActivity", "ScrollView found, calling fullScroll");
+             scrollView.fullScroll(View.FOCUS_DOWN);
+         } else {
+             Log.d("GetStartedActivity", "ScrollView not found");
+         }
+          if (scrollView != null) {
+              scrollView.fullScroll(View.FOCUS_DOWN);
+          }
+        } else {
+            findViewById(R.id.frameLayout).setPadding(0, 220, 0, 0);
+        }
 
         getWindow().getDecorView().setSystemUiVisibility(
                 View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
