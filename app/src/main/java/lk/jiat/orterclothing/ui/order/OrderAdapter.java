@@ -1,6 +1,7 @@
 package lk.jiat.orterclothing.ui.order;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import lk.jiat.orterclothing.OrderDetailedActivity;
 import lk.jiat.orterclothing.R;
 
 public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHolder> {
@@ -120,7 +122,9 @@ holder.orderStatus.setTextColor(context.getResources().getColor(textColorResId))
         });
 
         holder.viewDetails.setOnClickListener(v -> {
-            if (listener != null) listener.onViewDetailsClick(order);
+            Intent intent = new Intent(context, OrderDetailedActivity.class);
+            intent.putExtra("id", order.getOrderID());
+            context.startActivity(intent);
         });
     }
 
