@@ -67,6 +67,8 @@ public class SingleProductActivity extends AppCompatActivity {
     private int xlQuantity = 0;
     private int xxlQuantity = 0;
 
+    private Button shareButton;
+
 
     private final OkHttpClient client = new OkHttpClient();
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
@@ -94,15 +96,31 @@ v.setPadding(0, 0, 0, systemBars.bottom);
         image2 = findViewById(R.id.image2);
         image3 = findViewById(R.id.image3);
 
+        // Get product ID from the intent
+
+
         Intent intent = getIntent();
         productId = intent.getStringExtra("product");
+        Log.d("SingleProductActivity", "Product ID: " + productId);
 
-        // Load product details
-        if (productId != null) {
-            loadProductDetails(productId);
-        } else {
-            Toast.makeText(this, "Product ID not found.", Toast.LENGTH_SHORT).show();
-        }
+        shareButton = findViewById(R.id.button8);
+       shareButton.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View v) {
+               Intent shareIntent = new Intent();
+               shareIntent.setAction(Intent.ACTION_SEND);
+               shareIntent.putExtra(Intent.EXTRA_TEXT, "Check out this product on Orter Clothing: https://frontend.ashanhimantha.com/product-view/" + productId);
+               shareIntent.setType("text/plain");
+               startActivity(Intent.createChooser(shareIntent, "Share via"));
+           }
+       });
+
+       // Load product details
+       if (productId != null) {
+           loadProductDetails(productId);
+       } else {
+           Toast.makeText(SingleProductActivity.this, "Product ID not found.", Toast.LENGTH_SHORT).show();
+       }
 
         Button back = findViewById(R.id.button3);
         back.setOnClickListener(new View.OnClickListener() {
@@ -181,7 +199,7 @@ v.setPadding(0, 0, 0, systemBars.bottom);
     }
 
     private void loadProductDetails(String productId) {
-        String url = "http://10.0.2.2:8000/api/stocks/" + productId;
+        String url = "https://testapi.ashanhimantha.com/api/stocks/" + productId;
 
         Request request = new Request.Builder()
                 .url(url)
@@ -407,7 +425,7 @@ v.setPadding(0, 0, 0, systemBars.bottom);
             });
 
             FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-            String url = "http://10.0.2.2:8000/api/carts";
+            String url = "https://testapi.ashanhimantha.com/api/carts";
             JSONObject jsonObject = new JSONObject();
             try {
 
