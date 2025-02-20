@@ -36,7 +36,10 @@
             app:layout_constraintTop_toTopOf="parent"
             app:navGraph="@navigation/mobile_navigation" />
 
+
+
         <LinearLayout
+            android:id="@+id/linearLayout9"
             android:layout_width="0dp"
             android:layout_height="90dp"
             android:background="@drawable/header_border"
@@ -72,6 +75,7 @@
                 android:background="@drawable/search"
                 android:gravity="start" />
         </LinearLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.navigation.NavigationView
@@ -83,5 +87,17 @@
         app:itemIconTint="@color/black"
         app:itemTextAppearance="@style/TextAppearance.AppCompat.Small"
         app:itemTextColor="#090909"
-        app:menu="@menu/activity_main_drawer" />
+        app:menu="@menu/activity_main_drawer" >
+    </com.google.android.material.navigation.NavigationView>
+
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/search_drawer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="end"
+        android:fitsSystemWindows="true">
+        <include
+            android:id="@+id/search_drawer_content"
+            layout="@layout/drawer_search"/>
+    </com.google.android.material.navigation.NavigationView>
 </androidx.drawerlayout.widget.DrawerLayout>

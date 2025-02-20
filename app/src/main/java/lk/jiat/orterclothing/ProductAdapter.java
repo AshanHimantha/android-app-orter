@@ -27,6 +27,11 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         this.productList = productList;
     }
 
+    public void updateList(List<Product> newList) {
+        productList = newList;
+        notifyDataSetChanged();
+    }
+
     @NonNull
     @Override
     public ProductViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -62,6 +67,8 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             }
         });
     }
+
+
 
     static class ProductViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;

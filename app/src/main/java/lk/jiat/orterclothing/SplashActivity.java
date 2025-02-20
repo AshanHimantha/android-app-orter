@@ -20,12 +20,11 @@ package lk.jiat.orterclothing;
          import androidx.core.view.ViewCompat;
          import androidx.core.view.WindowInsetsCompat;
 
-         import com.bumptech.glide.Glide;
-         import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
+         import com.airbnb.lottie.LottieAnimationView;
          import com.google.firebase.auth.FirebaseAuth;
          import com.google.firebase.auth.FirebaseUser;
 
-         import pl.droidsonroids.gif.GifImageView;
+
 
          public class SplashActivity extends AppCompatActivity {
              private static final String TAG = "SplashActivity";
@@ -51,12 +50,7 @@ package lk.jiat.orterclothing;
              }
 
              private void initViews() {
-                 GifImageView gifImageView = findViewById(R.id.gifImageView);
-                 Glide.with(this)
-                         .asGif()
-                         .load(R.drawable.truck)
-                         .transition(DrawableTransitionOptions.withCrossFade())
-                         .into(gifImageView);
+                 LottieAnimationView animationView = findViewById(R.id.lottieAnimationView);
 
                  progressBar = findViewById(R.id.progressBar);
                  progressBar.setIndeterminate(false);

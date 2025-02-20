@@ -276,6 +276,8 @@ public class CheckoutActivity extends AppCompatActivity {
         requestBody.put("delivery_city", selectedAddress.getAddressLine2());
         requestBody.put("firebase_uid", FirebaseAuth.getInstance().getCurrentUser().getUid());
         requestBody.put("payment_method", "card");
+        requestBody.put("email", FirebaseAuth.getInstance().getCurrentUser().getEmail());
+
     }
 
     private void addPickupDetails(JSONObject requestBody) throws JSONException {
@@ -288,6 +290,7 @@ public class CheckoutActivity extends AppCompatActivity {
         requestBody.put("payment_method", "card");
         requestBody.put("delivery_address","Store pickup");
         requestBody.put("delivery_city", "Store pickup");
+        requestBody.put("email", FirebaseAuth.getInstance().getCurrentUser().getEmail());
     }
 
     private void sendOrderRequest(String token, JSONObject requestBody) {
@@ -336,9 +339,9 @@ public class CheckoutActivity extends AppCompatActivity {
                     }
                 } else {
 
-Log.e("CheckoutActivity", "Failed to create order: " + responseBody);
+                Log.e("CheckoutActivity", "Failed to create order: " + responseBody);
                     runOnUiThread(() ->
-                            Toast.makeText(CheckoutActivity.this, "Failed to create order", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(CheckoutActivity.this, "Failed to create order"+response.code(), Toast.LENGTH_SHORT).show()
                     );
                 }
             }

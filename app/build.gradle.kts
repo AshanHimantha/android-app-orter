@@ -54,7 +54,6 @@ dependencies {
     implementation("com.github.bumptech.glide:glide:4.16.0")
     implementation("com.github.bumptech.glide:okhttp3-integration:4.16.0")
     annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
-    implementation("pl.droidsonroids.gif:android-gif-drawable:1.2.27")
     implementation("com.makeramen:roundedimageview:2.3.0")
 
     implementation(platform("com.google.firebase:firebase-bom:33.8.0"))
@@ -65,7 +64,6 @@ dependencies {
 
     implementation("com.squareup.okhttp3:okhttp:4.9.3")
     implementation("com.google.code.gson:gson:2.8.9")
-    implementation("com.android.volley:volley:1.2.1")
     implementation("com.github.PayHereDevs:payhere-android-sdk:v3.0.17")
 
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
@@ -77,4 +75,8 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.0.1")
     implementation("com.google.android.gms:play-services-maps:18.2.0")
     implementation("com.google.android.gms:play-services-location:21.0.1")
+
+
+    implementation ("com.airbnb.android:lottie:6.0.0")
+
 }
