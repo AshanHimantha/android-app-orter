@@ -39,7 +39,7 @@ public class CategoryViewActivity extends AppCompatActivity {
     private String categoryName;
     private String categoryDescription;
 
-    private static final String API_BASE_URL = "http://10.0.2.2:8000/api"; // Adjust if needed
+    private static final String API_BASE_URL = "https://testapi.ashanhimantha.com/api"; // Adjust if needed
     private final OkHttpClient client = new OkHttpClient();
 
     @Override

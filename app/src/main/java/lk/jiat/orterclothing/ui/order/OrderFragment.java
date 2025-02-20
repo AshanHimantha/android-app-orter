@@ -14,6 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -38,7 +40,7 @@ public class OrderFragment extends Fragment implements OrderAdapter.OnOrderClick
     private List<Order> orderList;
     private List<Order> allOrders;
     private ChipGroup filterChipGroup;
-    private static final String API_URL = "http://10.0.2.2:8000/api/user/orders?firebase_uid=MCKHkk1OgsU0mGz1cbhwkDwvrLl2";
+    private static final String API_URL = "https://testapi.ashanhimantha.com/api/user/orders?firebase_uid=";
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -111,7 +113,7 @@ public class OrderFragment extends Fragment implements OrderAdapter.OnOrderClick
         OkHttpClient client = new OkHttpClient();
 
         Request request = new Request.Builder()
-                .url(API_URL)
+             .url(API_URL + FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .get()
                 .build();
 

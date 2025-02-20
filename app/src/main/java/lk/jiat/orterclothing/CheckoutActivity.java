@@ -53,7 +53,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class CheckoutActivity extends AppCompatActivity {
-    private static final String API_BASE_URL = "http://10.0.2.2:8000/api";
+    private static final String API_BASE_URL = "https://testapi.ashanhimantha.com/api";
     private static final int PAYHERE_REQUEST = 11001;
     private final OkHttpClient client = new OkHttpClient();
     private final MediaType JSON = MediaType.get("application/json; charset=utf-8");

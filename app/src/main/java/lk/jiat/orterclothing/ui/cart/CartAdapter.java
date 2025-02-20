@@ -81,7 +81,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
                     notifyItemRemoved(i);
 
                     client.newCall(new Request.Builder()
-                            .url("http://10.0.2.2:8000/api/carts/" + cartItem.getId())
+                            .url("https://testapi.ashanhimantha.com/api/carts/" + cartItem.getId())
                             .header("Authorization", "Bearer " + FirebaseAuth.getInstance().getCurrentUser().getIdToken(false).getResult().getToken())
                             .delete()
                             .build()).enqueue(new Callback() {
@@ -130,7 +130,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
                 setUpdating(true); // Set updating to true
 
                 client.newCall(new Request.Builder()
-                        .url("http://10.0.2.2:8000/api/carts/" + cartItem.getId() + "/increase")
+                        .url("https://testapi.ashanhimantha.com/api/carts/" + cartItem.getId() + "/increase")
                         .header("Authorization", "Bearer " + FirebaseAuth.getInstance().getCurrentUser().getIdToken(false).getResult().getToken())
                         .patch(RequestBody.create(null, new byte[0]))
                         .build()).enqueue(new Callback() {
@@ -186,7 +186,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
                 if (newQuantity > 0) {
                     setUpdating(true); // Set updating to true
                     client.newCall(new Request.Builder()
-                            .url("http://10.0.2.2:8000/api/carts/" + cartItem.getId() + "/decrease")
+                            .url("https://testapi.ashanhimantha.com/api/carts/" + cartItem.getId() + "/decrease")
                             .header("Authorization", "Bearer " + FirebaseAuth.getInstance().getCurrentUser().getIdToken(false).getResult().getToken())
                             .patch(RequestBody.create(null, new byte[0]))
                             .build()).enqueue(new Callback() {

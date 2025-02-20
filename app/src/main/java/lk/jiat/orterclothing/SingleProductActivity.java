@@ -9,6 +9,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -69,6 +71,9 @@ public class SingleProductActivity extends AppCompatActivity {
 
     private Button shareButton;
 
+    private ScrollView scrollView;
+    private ProgressBar progressBar;
+
 
     private final OkHttpClient client = new OkHttpClient();
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
@@ -95,6 +100,12 @@ v.setPadding(0, 0, 0, systemBars.bottom);
         image1 = findViewById(R.id.image1);
         image2 = findViewById(R.id.image2);
         image3 = findViewById(R.id.image3);
+
+        scrollView = findViewById(R.id.main);
+        progressBar = findViewById(R.id.progressBar3);
+
+        progressBar.setVisibility(View.VISIBLE);
+        scrollView.setVisibility(View.GONE);
 
         // Get product ID from the intent
 
@@ -215,7 +226,20 @@ v.setPadding(0, 0, 0, systemBars.bottom);
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
+
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        progressBar.setVisibility(View.GONE);
+                        scrollView.setVisibility(View.VISIBLE);
+                    }
+                });
                 if (response.isSuccessful()) {
+
+
+
+
                     final String responseBody = response.body().string();
 
                     mainHandler.post(() -> { // Use Handler to update UI on the main thread

@@ -342,7 +342,7 @@ public class LoginActivity extends AppCompatActivity {
     private void verifyUser(String idToken) {
         new Thread(() -> {
             try {
-                URL url = new URL("http://10.0.2.2:8000/api/verify");
+                URL url = new URL("https://testapi.ashanhimantha.com/api/verify");
                 RequestBody body = RequestBody.create("{}", MediaType.get("application/json; charset=utf-8"));
                 Request request = new Request.Builder()
                         .url(url)

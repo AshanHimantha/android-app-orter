@@ -45,7 +45,7 @@ public class CartFragment extends Fragment {
     private RecyclerView recyclerView;
     private CartAdapter cartAdapter;
     private List<CartItem> cartItemList;
-    private static final String API_URL = "http://10.0.2.2:8000/api/user-cart";
+    private static final String API_URL = "https://testapi.ashanhimantha.com/api/user-cart";
     private final OkHttpClient client = new OkHttpClient();
 
     private TextView totalText;
