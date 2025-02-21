@@ -6,8 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center"
-    android:background="#F3F4F6"
-    android:backgroundTint="#F3F4F6">
+    android:background="#FDFDFD"
+    android:backgroundTint="#FDFDFD">
 
     <EditText
         android:id="@+id/editTextText"
@@ -97,8 +97,7 @@
         android:layout_height="70dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/header_border" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/textView48"

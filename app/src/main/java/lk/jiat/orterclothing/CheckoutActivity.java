@@ -408,9 +408,7 @@ public class CheckoutActivity extends AppCompatActivity {
         if (requestCode == PAYHERE_REQUEST && data != null && data.hasExtra(PHConstants.INTENT_EXTRA_RESULT)) {
             PHResponse<StatusResponse> response = (PHResponse<StatusResponse>) data.getSerializableExtra(PHConstants.INTENT_EXTRA_RESULT);
 
-            Log.d("CheckoutActivityPay", "Payment response: " + response.toString());
-
-
+            Log.d("CheckoutActivityPay", "Payment response: " + response.toString()); 
             handlePaymentResponse(resultCode, response);
         }
     }

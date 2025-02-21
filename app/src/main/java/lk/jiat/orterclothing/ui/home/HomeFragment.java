@@ -29,6 +29,7 @@ import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -231,7 +232,7 @@ public class HomeFragment extends Fragment {
                 }
             });
         }
-
+        verifyFCMToken();
         return root;
     }
 
@@ -357,9 +358,9 @@ public class HomeFragment extends Fragment {
                             Log.d("auth", "User verified successfully");
                             SharedPreferences sharedPreferences = getContext().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
                             sharedPreferences.edit().putBoolean("is_verified", true).apply();
-
                             Log.d("shared", "is_verified set to true");
                             Log.e("shared", sharedPreferences.getBoolean("is_verified", false) + "");
+
 
                         } else {
                             String responseBody = response.body() != null ? response.body().string() : "No body";
@@ -378,7 +379,59 @@ public class HomeFragment extends Fragment {
             }
         }).start();
     }
+    private void verifyFCMToken() {
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(task -> {
+                    if (!task.isSuccessful()) {
+                        return;
+                    }
+                    String token = task.getResult();
+                    Log.d("FCM", "Token: " + token);
 
+                    // Send this token to your server
+                    sendTokenToServer(token);
+                });
+    }
 
+    private void sendTokenToServer(String token) {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser != null) {
+            currentUser.getIdToken(true).addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    String idToken = task.getResult().getToken();
+                    OkHttpClient client = new OkHttpClient();
+                    RequestBody body = RequestBody.create(
+                            "{\"fcm_token\":\"" + token + "\"}",
+                            MediaType.parse("application/json; charset=utf-8")
+                    );
+                    Request request = new Request.Builder()
+                            .url("https://testapi.ashanhimantha.com/api/user/fcm-token")
+                            .post(body)
+                            .header("Authorization", "Bearer " + idToken)
+                            .header("Content-Type", "application/json; charset=utf-8")
+                            .build();
+
+                    client.newCall(request).enqueue(new Callback() {
+                        @Override
+                        public void onFailure(Call call, IOException e) {
+                            Log.e("FCM", "Failed to send token to server", e);
+                        }
+
+                        @Override
+                        public void onResponse(Call call, Response response) throws IOException {
+                            if (response.isSuccessful()) {
+                                Log.d("FCM", "Token sent successfully");
+                                SharedPreferences sharedPreferences = getContext().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+                                sharedPreferences.edit().putString("fcm_token", token).apply();
+                            } else {
+                                Log.e("FCM", "Failed to send token to server. Response code: " + response);
+                            }
+                        }
+                    });
+                } else {
+                    Log.e("FCM", "Error getting ID token", task.getException());
+                }
+            });
+        }
+    }
 }
-

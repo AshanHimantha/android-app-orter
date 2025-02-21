@@ -83,21 +83,23 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
+        android:background="#FFFEFE"
         android:textAlignment="center"
         app:itemIconTint="@color/black"
         app:itemTextAppearance="@style/TextAppearance.AppCompat.Small"
         app:itemTextColor="#090909"
-        app:menu="@menu/activity_main_drawer" >
-    </com.google.android.material.navigation.NavigationView>
+        app:menu="@menu/activity_main_drawer"></com.google.android.material.navigation.NavigationView>
 
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/search_drawer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="end"
+        android:background="#FFFFFF"
         android:fitsSystemWindows="true">
+
         <include
             android:id="@+id/search_drawer_content"
-            layout="@layout/drawer_search"/>
+            layout="@layout/drawer_search" />
     </com.google.android.material.navigation.NavigationView>
 </androidx.drawerlayout.widget.DrawerLayout>
