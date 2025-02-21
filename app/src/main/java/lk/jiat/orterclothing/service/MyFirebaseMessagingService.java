@@ -1,4 +1,5 @@
 package lk.jiat.orterclothing.service;
+
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -15,82 +16,129 @@ import com.google.firebase.messaging.RemoteMessage;
 import java.util.Map;
 
 import lk.jiat.orterclothing.MainActivity;
+import lk.jiat.orterclothing.OrderDetailedActivity;
 import lk.jiat.orterclothing.R;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
+    private static final String TAG = "FCMService";
+
     @Override
     public void onMessageReceived(@NonNull RemoteMessage message) {
         super.onMessageReceived(message);
 
-        if (message.getData().size() > 0) {
-            // Handle data message for order updates
-            Map<String, String> data = message.getData();
-            String title = data.get("title");
-            String body = data.get("body");
-            String orderId = data.get("orderId");
-            String status = data.get("status");
+        try {
+            Log.d(TAG, "Message data: " + message.getData());
 
-            Log.d("FCM", "Received order update: " + orderId + " - " + status);
-            createOrderNotification(title, body, orderId, status);
-        } else if (message.getNotification() != null) {
-            // Handle simple notification
-            createNotification(
-                    message.getNotification().getTitle(),
-                    message.getNotification().getBody()
-            );
+            // Handle data message
+            if (message.getData().size() > 0) {
+                Map<String, String> data = message.getData();
+                String type = data.get("type");
+
+                if ("order_update".equals(type)) {
+                    // Handle order update notification
+                    createOrderNotification(
+                            message.getNotification().getTitle(),
+                            message.getNotification().getBody(),
+                            data.get("orderId"),
+                            data.get("orderNumber"),
+                            data.get("status")
+                    );
+                } else {
+                    // Handle regular notification
+                    createDefaultNotification(
+                            message.getNotification().getTitle(),
+                            message.getNotification().getBody()
+                    );
+                }
+            } else if (message.getNotification() != null) {
+                // Handle simple notification
+                createDefaultNotification(
+                        message.getNotification().getTitle(),
+                        message.getNotification().getBody()
+                );
+            }
+        } catch (Exception e) {
+           Log.e(TAG, "Error processing message: " + e.getMessage());
         }
     }
 
-    private void createOrderNotification(String title, String body, String orderId, String status) {
-        String channelId = "ORTER_ORDER_UPDATES";
+    private void createOrderNotification(String title, String body, String orderId, String orderNumber, String status) {
+        try {
+            String channelId = "ORTER_ORDER_UPDATES";
+            int notificationId = orderId != null ? orderId.hashCode() : (int) System.currentTimeMillis();
+
+            // Create intent for notification tap action
+            Intent intent = new Intent(this, OrderDetailedActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+            // Add order data to intent
+            if (orderId != null) {
+                intent.putExtra("id", orderId);
+            }
+            if (orderNumber != null) {
+                intent.putExtra("orderNumber", orderNumber);
+            }
+            if (status != null) {
+                intent.putExtra("status", status);
+            }
+
+            // Create pending intent
+            PendingIntent pendingIntent = PendingIntent.getActivity(
+                    this,
+                    notificationId,
+                    intent,
+                    PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT
+            );
+
+            // Build notification
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelId)
+                    .setSmallIcon(R.drawable.ic_stat_name)
+                    .setContentTitle(title != null ? title : "Order Update")
+                    .setContentText(body != null ? body : "")
+                    .setAutoCancel(true)
+                    .setContentIntent(pendingIntent)
+                    .setPriority(NotificationCompat.PRIORITY_HIGH);
+
+            NotificationManager manager = getSystemService(NotificationManager.class);
+
+            // Create notification channel for Android O and above
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                NotificationChannel channel = new NotificationChannel(
+                        channelId,
+                        "Order Updates",
+                        NotificationManager.IMPORTANCE_HIGH
+                );
+                channel.setDescription("Notifications for order updates");
+                channel.enableVibration(true);
+                manager.createNotificationChannel(channel);
+            }
+
+            // Show notification
+            manager.notify(notificationId, builder.build());
+
+        } catch (Exception e) {
+            Log.e(TAG, "Error creating order notification: " + e.getMessage());
+        }
+    }
+
+    private void createDefaultNotification(String title, String body) {
+        String channelId = "ORTER_NOTIFICATION";
+        int notificationId = 0;
 
         Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra("orderId", orderId);
-        intent.putExtra("status", status);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
         PendingIntent pendingIntent = PendingIntent.getActivity(
                 this,
-                orderId.hashCode(),
+                notificationId,
                 intent,
-                PendingIntent.FLAG_IMMUTABLE
+                PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT
         );
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelId)
-                .setSmallIcon(R.drawable.orterlogo)
-                .setContentTitle(title)
-                .setContentText(body)
-                .setAutoCancel(true)
-                .setContentIntent(pendingIntent)
-                .setPriority(NotificationCompat.PRIORITY_HIGH);
-
-        NotificationManager manager = getSystemService(NotificationManager.class);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(
-                    channelId,
-                    "Order Updates",
-                    NotificationManager.IMPORTANCE_HIGH
-            );
-            channel.enableVibration(true);
-            manager.createNotificationChannel(channel);
-        }
-
-        manager.notify(orderId.hashCode(), builder.build());
-    }
-
-    private void createNotification(String title, String body) {
-        String channelId = "ORTER_NOTIFICATION";
-
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,
-                PendingIntent.FLAG_IMMUTABLE);
-
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelId)
-                .setSmallIcon(R.drawable.orterlogo)
-                .setContentTitle(title)
-                .setContentText(body)
+                .setSmallIcon(R.drawable.ic_stat_name)
+                .setContentTitle(title != null ? title : "Notification")
+                .setContentText(body != null ? body : "")
                 .setAutoCancel(true)
                 .setContentIntent(pendingIntent)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
@@ -100,18 +148,20 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(
                     channelId,
-                    "Orter Notifications",
+                    "General Notifications",
                     NotificationManager.IMPORTANCE_DEFAULT
             );
+            channel.setDescription("General app notifications");
             manager.createNotificationChannel(channel);
         }
 
-        manager.notify(0, builder.build());
+        manager.notify(notificationId, builder.build());
     }
 
     @Override
     public void onNewToken(@NonNull String token) {
         super.onNewToken(token);
-        Log.d("FCM", "New token: " + token);
+        Log.d(TAG, "New FCM token: " + token);
+        // TODO: Send token to your server
     }
 }
