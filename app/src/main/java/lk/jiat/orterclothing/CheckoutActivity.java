@@ -130,7 +130,7 @@ public class CheckoutActivity extends AppCompatActivity {
 
     private void setupStoreList() {
         List<Store> storeList = new ArrayList<>();
-        storeAdapter = new StoreAdapter(storeList);
+        storeAdapter = new StoreAdapter(this,storeList);
         storeRecyclerView.setAdapter(storeAdapter);
         storeRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 

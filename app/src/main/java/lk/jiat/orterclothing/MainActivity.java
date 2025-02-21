@@ -20,20 +20,13 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 
 import androidx.core.view.GravityCompat;
-import androidx.core.view.WindowCompat;
-import androidx.core.view.WindowInsetsControllerCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -41,6 +34,7 @@ import java.util.List;
 
 import lk.jiat.orterclothing.databinding.ActivityMainBinding;
 import lk.jiat.orterclothing.model.Product;
+import lk.jiat.orterclothing.ui.explore.ExploreFragment;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -55,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ProductAdapter productAdapter;
     private View searchDrawerContent;
     private SearchView searchView;
+    private BottomNavigationView navView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         initializeViews();
         setupNavigationDrawer();
         setupSearchDrawer();
-//        setupBottomNavigation();
+        setupBottomNavigation();
     }
 
     private void initializeViews() {
@@ -74,7 +69,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         products = new ArrayList<>();
     }
 
+    private void setupBottomNavigation() {
+
+        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
+                R.id.navigation_home, R.id.navigation_cart, R.id.navigation_explore, R.id.orders_nav, R.id.profile_nav)
+                .build();
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main2);
+        NavigationUI.setupWithNavController(binding.navView, navController);
+    }
+
     private void setupNavigationDrawer() {
+        navView = findViewById(R.id.nav_view);
         NavigationView navigationView = findViewById(R.id.nav_view2);
         navigationView.setNavigationItemSelectedListener(this);
 
@@ -83,9 +88,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-//        if (savedInstanceState == null) {
-//            navigationView.setCheckedItem(R.id.test1);
-//        }
 
         TextView menuButton = findViewById(R.id.textView39);
         menuButton.setOnClickListener(v -> {
@@ -197,10 +199,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (id == R.id.test1) {
             startActivity(new Intent(this, LatestProductActivity.class));
         } else if (id == R.id.test2) {
-            startActivity(new Intent(this, CategoryViewActivity.class));
-        } else if (id == R.id.test3) {
-            startActivity(new Intent(this, SplashActivity.class));
-        }
+
+      NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main2);
+        NavigationUI.setupWithNavController(binding.navView, navController);
+        navView.setSelectedItemId(R.id.navigation_explore);
+
+     }
+//        else if (id == R.id.test3) {
+//            startActivity(new Intent(this, SplashActivity.class));
+//        }
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }

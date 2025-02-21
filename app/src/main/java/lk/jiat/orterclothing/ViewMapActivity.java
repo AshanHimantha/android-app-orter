@@ -1,6 +1,7 @@
 package lk.jiat.orterclothing;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -37,12 +38,21 @@ public class ViewMapActivity extends AppCompatActivity {
         String contact = intent.getStringExtra("contact");
 
 
-
+        Button call = findViewById(R.id.button18);
         TextView storeNameView = findViewById(R.id.textView63);
         storeNameView.setText(storeName);
         Glide.with(this).load(image).into((ImageView) findViewById(R.id.proImage3));
         TextView contactView = findViewById(R.id.textView64);
         contactView.setText(contact);
+
+        call.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_DIAL);
+                intent.setData(Uri.parse("tel:" + contact));
+                startActivity(intent);
+            }
+        });
 
         MapsFragment mapsFragment = new MapsFragment();
         Bundle bundle = new Bundle();

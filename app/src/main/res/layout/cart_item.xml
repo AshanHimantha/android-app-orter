@@ -8,7 +8,7 @@
     android:layout_marginEnd="10dp"
     android:layout_marginBottom="5dp"
     android:background="@drawable/low_light_border"
-    android:padding="8dp">
+    android:padding="15dp">
 
     <com.makeramen.roundedimageview.RoundedImageView
         android:id="@+id/imageView5"
@@ -38,14 +38,16 @@
         android:id="@+id/textView21"
         android:layout_width="141dp"
         android:layout_height="22dp"
-        android:layout_marginStart="28dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="3dp"
         android:fontFamily="@font/inter"
         android:text="2600"
         android:textAlignment="gravity"
         android:textColor="#1D1D1D"
-        android:textSize="16sp"
+        android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="@+id/imageView5"
-        app:layout_constraintStart_toEndOf="@+id/imageView5" />
+        app:layout_constraintStart_toEndOf="@+id/imageView5"
+        app:layout_constraintTop_toBottomOf="@+id/textView23" />
 
     <TextView
         android:id="@+id/textView28"
@@ -62,18 +64,18 @@
     <TextView
         android:id="@+id/textView23"
         android:layout_width="wrap_content"
-        android:layout_height="22dp"
+        android:layout_height="0dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="5dp"
         android:background="@drawable/category_bg"
-        android:backgroundTint="#161616"
-        android:fontFamily="@font/inter_semibold"
+        android:backgroundTint="#CECECE"
+        android:fontFamily="@font/inter_medium"
         android:padding="2dp"
         android:paddingStart="4dp"
         android:paddingEnd="4dp"
         android:text="T-SHIRTS"
-        android:textColor="#FFFFFF"
-        android:textSize="12sp"
+        android:textColor="#000000"
+        android:textSize="10sp"
         app:layout_constraintStart_toEndOf="@+id/imageView5"
         app:layout_constraintTop_toBottomOf="@+id/textView9" />
 
@@ -101,7 +103,7 @@
             android:layout_width="20dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@drawable/category_rounded_corners"
+            android:background="@drawable/light_border"
             android:fontFamily="@font/inter_bold"
             android:gravity="center"
             android:text="-"
@@ -122,7 +124,7 @@
             android:layout_width="20dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@drawable/category_rounded_corners"
+            android:background="@drawable/light_border"
             android:fontFamily="@font/inter_bold"
             android:gravity="center"
             android:text="+"
@@ -131,15 +133,18 @@
 
     <TextView
         android:id="@+id/textView27"
-        android:layout_width="24dp"
-        android:layout_height="22dp"
-        android:layout_marginStart="3dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
         android:layout_marginTop="5dp"
         android:background="@drawable/category_bg"
-        android:backgroundTint="#161616"
+        android:backgroundTint="#232323"
         android:fontFamily="@font/inter_bold"
         android:gravity="center"
-        android:padding="1dp"
+        android:paddingStart="6dp"
+        android:paddingTop="2dp"
+        android:paddingEnd="6dp"
+        android:paddingBottom="2dp"
         android:text="S"
         android:textColor="#FFFFFF"
         android:textSize="10sp"
