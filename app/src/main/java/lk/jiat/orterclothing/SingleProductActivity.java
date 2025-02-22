@@ -84,8 +84,8 @@ public class SingleProductActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_single_product);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-v.setPadding(0, 0, 0, systemBars.bottom);
+        Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+        v.setPadding(0, 0, 0, systemBars.bottom);
             return insets;
         });
 
@@ -508,7 +508,7 @@ v.setPadding(0, 0, 0, systemBars.bottom);
                         Log.e("SingleProductActivity", "HTTP error: " + response.code());
                         Log.e("SingleProductActivity", "Response: " + response.body().string());
                         mainHandler.post(() ->
-                                Toast.makeText(SingleProductActivity.this, "Failed to add to cart (HTTP " + response.code() + ").", Toast.LENGTH_SHORT).show());
+                                Toast.makeText(SingleProductActivity.this, "Insufficient stock.", Toast.LENGTH_SHORT).show());
 
                         Button addToCartButton = findViewById(R.id.add_to_cart_button);
                         runOnUiThread(new Runnable() {

@@ -109,7 +109,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
 
 
 
-if (order.getUrl().equals("empty")) {
+if (order.getUrl().equals("empty") || order.getUrl().contains("withoutTracking") || status.equalsIgnoreCase("returned") || status.equalsIgnoreCase("cancelled")) {
     holder.trackOrder.setVisibility(View.GONE);
 } else {
     holder.trackOrder.setVisibility(View.VISIBLE);
