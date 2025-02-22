@@ -1,7 +1,7 @@
 package lk.jiat.orterclothing.model;
 
 public class Category {
-    private int iconResourceId; // Or a URL if you load from the internet
+    private int iconResourceId;
     private String name;
 
     private String description;

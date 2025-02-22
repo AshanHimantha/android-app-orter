@@ -46,7 +46,6 @@ import okhttp3.Response;
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private ActivityMainBinding binding;
     private DrawerLayout drawerLayout;
-    private RecyclerView recyclerView;
     private List<Product> products;
     private ProductAdapter productAdapter;
     private View searchDrawerContent;
@@ -64,6 +63,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setupSearchDrawer();
         setupBottomNavigation();
 
+
+        FirebaseMessaging.getInstance().subscribeToTopic("all")
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Log.d("FCM", "Subscribed to topic: all");
+                    } else {
+                        Log.e("FCM", "Failed to subscribe to topic: all");
+                    }
+                });
 
     }
 
@@ -103,7 +111,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void setupSearchDrawer() {
         TextView searchButton = findViewById(R.id.textView41);
-        recyclerView = searchDrawerContent.findViewById(R.id.search_results_recycler);
+        RecyclerView recyclerView = searchDrawerContent.findViewById(R.id.search_results_recycler);
         searchView = searchDrawerContent.findViewById(R.id.searchView);
 
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
@@ -147,6 +155,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         productAdapter.updateList(filteredList);
     }
+
+
 
     private void loadProducts() {
         OkHttpClient client = new OkHttpClient();

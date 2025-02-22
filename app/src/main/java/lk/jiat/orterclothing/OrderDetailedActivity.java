@@ -205,22 +205,22 @@ public class OrderDetailedActivity extends AppCompatActivity {
                           status.setText(orderStatus.substring(0, 1).toUpperCase() + orderStatus.substring(1));
                           switch (orderStatus.toLowerCase()) {
                               case "completed":
-                                  status.setTextColor(getResources().getColor(R.color.black)); // Replace with your color resource
+                                  status.setTextColor(getResources().getColor(R.color.black));
                                   break;
                               case "pending":
-                                  status.setTextColor(getResources().getColor(R.color.pendingText)); // Replace with your color resource
+                                  status.setTextColor(getResources().getColor(R.color.pendingText));
                                   break;
                               case "cancelled":
-                                  status.setTextColor(getResources().getColor(R.color.cancelledText)); // Replace with your color resource
+                                  status.setTextColor(getResources().getColor(R.color.cancelledText));
                                   break;
                               case "shipped":
-                                  status.setTextColor(getResources().getColor(R.color.shippedText)); // Replace with your color resource
+                                  status.setTextColor(getResources().getColor(R.color.shippedText));
                                   break;
                               case "processing":
-                                  status.setTextColor(getResources().getColor(R.color.processingText)); // Replace with your color resource
+                                  status.setTextColor(getResources().getColor(R.color.processingText));
                                   break;
                               default:
-                                  status.setTextColor(getResources().getColor(R.color.confirmedText)); // Replace with your default color resource
+                                  status.setTextColor(getResources().getColor(R.color.confirmedText));
                                   break;
                           }
 

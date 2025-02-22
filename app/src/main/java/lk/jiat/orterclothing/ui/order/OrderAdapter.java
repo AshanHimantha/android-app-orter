@@ -29,11 +29,6 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
     private List<Order> orderList;
     private OnOrderClickListener listener;
 
-    public interface OnOrderClickListener {
-        void onTrackOrderClick(Order order);
-        void onViewDetailsClick(Order order);
-    }
-
     public OrderAdapter(Context context, List<Order> orderList, OnOrderClickListener listener) {
         this.context = context;
         this.orderList = orderList;
@@ -63,57 +58,65 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
         }
 
         String status = order.getOrderStatus();
-String displayStatus = status.substring(0, 1).toUpperCase() + status.substring(1).toLowerCase();
-holder.orderStatus.setText(displayStatus);
+        String displayStatus = status.substring(0, 1).toUpperCase() + status.substring(1).toLowerCase();
+        holder.orderStatus.setText(displayStatus);
 
-int colorResId;
-int textColorResId;
-switch (status.toLowerCase()) {
-    case "pending":
-        colorResId = R.color.pending;
-        textColorResId = R.color.pendingText;
-        break;
-    case "confirmed":
-        colorResId = R.color.confirmed;
-        textColorResId = R.color.confirmedText;
-        break;
-    case "shipped":
-        colorResId = R.color.shipped;
-        textColorResId = R.color.shippedText;
-        break;
-    case "delivered":
-        colorResId = R.color.delivered;
-        textColorResId = R.color.deliveredText;
-        break;
-    case "cancelled":
-        colorResId = R.color.cancelled;
-        textColorResId = R.color.cancelledText;
-        break;
-    case "returned":
-        colorResId = R.color.returned;
-        textColorResId = R.color.returnedText;
-        break;
-    case "processing":
-        colorResId = R.color.processing;
-        textColorResId = R.color.processingText;
-        break;
-    case "completed":
-        colorResId = R.color.completed;
-        textColorResId = R.color.completedText;
-        break;
-    default:
-        colorResId = R.color.gray;
-        textColorResId = android.R.color.black;
-}
-holder.orderStatus.setChipBackgroundColorResource(colorResId);
-holder.orderStatus.setTextColor(context.getResources().getColor(textColorResId));
+        int colorResId;
+        int textColorResId;
+        switch (status.toLowerCase()) {
+            case "pending":
+                colorResId = R.color.pending;
+                textColorResId = R.color.pendingText;
+                break;
+            case "confirmed":
+                colorResId = R.color.confirmed;
+                textColorResId = R.color.confirmedText;
+                break;
+            case "shipped":
+                colorResId = R.color.shipped;
+                textColorResId = R.color.shippedText;
+                break;
+            case "delivered":
+                colorResId = R.color.delivered;
+                textColorResId = R.color.deliveredText;
+                break;
+            case "cancelled":
+                colorResId = R.color.cancelled;
+                textColorResId = R.color.cancelledText;
+                break;
+            case "returned":
+                colorResId = R.color.returned;
+                textColorResId = R.color.returnedText;
+                break;
+            case "processing":
+                colorResId = R.color.processing;
+                textColorResId = R.color.processingText;
+                break;
+            case "completed":
+                colorResId = R.color.completed;
+                textColorResId = R.color.completedText;
+                break;
+            default:
+                colorResId = R.color.gray;
+                textColorResId = android.R.color.black;
+        }
+        holder.orderStatus.setChipBackgroundColorResource(colorResId);
+        holder.orderStatus.setTextColor(context.getResources().getColor(textColorResId));
 
         holder.productName.setText(order.getProductName());
         holder.items.setText(order.getItems());
         holder.orderTotal.setText("Rs." + order.getOrderTotal());
 
+
+
+if (order.getUrl().equals("empty")) {
+    holder.trackOrder.setVisibility(View.GONE);
+} else {
+    holder.trackOrder.setVisibility(View.VISIBLE);
+}
+
         Glide.with(context)
-                .load("https://testapi.ashanhimantha.com/storage/"+ order.getProductImage())
+                .load("https://testapi.ashanhimantha.com/storage/" + order.getProductImage())
                 .placeholder(R.drawable.div4)
                 .into(holder.productImage);
 
@@ -131,6 +134,12 @@ holder.orderStatus.setTextColor(context.getResources().getColor(textColorResId))
     @Override
     public int getItemCount() {
         return orderList.size();
+    }
+
+    public interface OnOrderClickListener {
+        void onTrackOrderClick(Order order);
+
+        void onViewDetailsClick(Order order);
     }
 
     public static class OrderViewHolder extends RecyclerView.ViewHolder {

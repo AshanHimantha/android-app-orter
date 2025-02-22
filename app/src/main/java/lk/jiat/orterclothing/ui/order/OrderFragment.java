@@ -1,5 +1,6 @@
 package lk.jiat.orterclothing.ui.order;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -152,7 +153,8 @@ public class OrderFragment extends Fragment implements OrderAdapter.OnOrderClick
                                             orderObj.getString("orderTotal"),
                                             firstItem.getString("productName"),
                                             firstItem.getString("quantity") + " items",
-                                            firstItem.getString("productImage")
+                                            firstItem.getString("productImage"),
+                                            orderObj.getString("tracking")
                                     );
                                     orders.add(order);
                                 }
@@ -182,6 +184,11 @@ public class OrderFragment extends Fragment implements OrderAdapter.OnOrderClick
     @Override
     public void onTrackOrderClick(Order order) {
         Toast.makeText(getContext(), "Tracking order: " + order.getOrderNumber(), Toast.LENGTH_SHORT).show();
+
+        Intent intent = new Intent(getContext(), TrackOrderActivity.class);
+        intent.putExtra("tracking_url", order.getUrl());
+        startActivity(intent);
+
     }
 
     @Override

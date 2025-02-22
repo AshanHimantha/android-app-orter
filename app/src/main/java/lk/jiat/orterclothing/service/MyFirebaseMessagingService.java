@@ -71,7 +71,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             Intent intent = new Intent(this, OrderDetailedActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-            // Add order data to intent
+
             if (orderId != null) {
                 intent.putExtra("id", orderId);
             }
@@ -82,7 +82,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 intent.putExtra("status", status);
             }
 
-            // Create pending intent
+
             PendingIntent pendingIntent = PendingIntent.getActivity(
                     this,
                     notificationId,
@@ -90,7 +90,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT
             );
 
-            // Build notification
+
             NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelId)
                     .setSmallIcon(R.drawable.ic_stat_name)
                     .setContentTitle(title != null ? title : "Order Update")
@@ -101,7 +101,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
             NotificationManager manager = getSystemService(NotificationManager.class);
 
-            // Create notification channel for Android O and above
+
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 NotificationChannel channel = new NotificationChannel(
                         channelId,

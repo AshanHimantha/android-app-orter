@@ -11,7 +11,20 @@ public class Order {
     private String items;
     private String productImage;
 
-    public Order(String orderID, String orderNumber, String orderDate, String orderStatus, String orderTotal, String productName, String items, String productImage) {
+
+    private String url;
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+
+
+    public Order(String orderID, String orderNumber, String orderDate, String orderStatus, String orderTotal, String productName, String items, String productImage ,  String url) {
         this.orderID = orderID;
         this.orderNumber = orderNumber;
         this.orderDate = orderDate;
@@ -20,6 +33,7 @@ public class Order {
         this.productName = productName;
         this.items = items;
         this.productImage = productImage;
+        this.url = url;
     }
 
     public String getOrderNumber() {
