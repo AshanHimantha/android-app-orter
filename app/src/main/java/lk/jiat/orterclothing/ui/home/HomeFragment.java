@@ -1,4 +1,4 @@
-// HomeFragment.java
+
 package lk.jiat.orterclothing.ui.home;
 
 import android.content.Context;
@@ -388,8 +388,9 @@ public class HomeFragment extends Fragment {
                     String token = task.getResult();
                     Log.d("FCM", "Token: " + token);
 
-                    // Send this token to your server
+
                     sendTokenToServer(token);
+
                 });
     }
 
@@ -417,16 +418,20 @@ public class HomeFragment extends Fragment {
                             Log.e("FCM", "Failed to send token to server", e);
                         }
 
-                        @Override
-                        public void onResponse(Call call, Response response) throws IOException {
-                            if (response.isSuccessful()) {
-                                Log.d("FCM", "Token sent successfully");
-                                SharedPreferences sharedPreferences = getContext().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
-                                sharedPreferences.edit().putString("fcm_token", token).apply();
-                            } else {
-                                Log.e("FCM", "Failed to send token to server. Response code: " + response);
-                            }
-                        }
+                     @Override
+                     public void onResponse(Call call, Response response) throws IOException {
+                         if (response.isSuccessful()) {
+                             Log.d("FCM", "Token sent successfully");
+                             if (getContext() != null) {
+                                 SharedPreferences sharedPreferences = getContext().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+                                 sharedPreferences.edit().putString("fcm_token", token).apply();
+                             } else {
+                                 Log.e("FCM", "Context is null, cannot save token");
+                             }
+                         } else {
+                             Log.e("FCM", "Failed to send token to server. Response code: " + response);
+                         }
+                     }
                     });
                 } else {
                     Log.e("FCM", "Error getting ID token", task.getException());

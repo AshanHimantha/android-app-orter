@@ -1,5 +1,6 @@
 package lk.jiat.orterclothing.ui.order;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -36,11 +37,9 @@ import okhttp3.Response;
 public class OrderFragment extends Fragment implements OrderAdapter.OnOrderClickListener {
 
     private FragmentOrderBinding binding;
-    private RecyclerView recyclerView;
     private OrderAdapter orderAdapter;
     private List<Order> orderList;
     private List<Order> allOrders;
-    private ChipGroup filterChipGroup;
     private static final String API_URL = "https://testapi.ashanhimantha.com/api/user/orders?firebase_uid=";
 
     @Override
@@ -49,11 +48,7 @@ public class OrderFragment extends Fragment implements OrderAdapter.OnOrderClick
         binding = FragmentOrderBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        recyclerView = binding.orderRecyclerView;
-        if (recyclerView == null) {
-            Log.e("OrderFragment", "RecyclerView is null!");
-            return root;
-        }
+        RecyclerView recyclerView = binding.orderRecyclerView;
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         orderList = new ArrayList<>();
@@ -67,7 +62,7 @@ public class OrderFragment extends Fragment implements OrderAdapter.OnOrderClick
     }
 
     private void setupChipGroup() {
-        filterChipGroup = binding.filterChipGroup;
+        ChipGroup filterChipGroup = binding.filterChipGroup;
 
         // Apply colors to all chips
         for (int i = 0; i < filterChipGroup.getChildCount(); i++) {
@@ -86,6 +81,7 @@ public class OrderFragment extends Fragment implements OrderAdapter.OnOrderClick
         });
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private void filterOrders(int checkedId) {
         String filterStatus = "";
         if (checkedId == R.id.chipAll) {
@@ -113,9 +109,13 @@ public class OrderFragment extends Fragment implements OrderAdapter.OnOrderClick
     private void fetchOrders() {
         OkHttpClient client = new OkHttpClient();
 
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) return;
+        String token = user.getIdToken(false).getResult().getToken();
         Request request = new Request.Builder()
              .url(API_URL + FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .get()
+                .addHeader("Authorization", "Bearer " + token)
                 .build();
 
         client.newCall(request).enqueue(new Callback() {
@@ -127,19 +127,21 @@ public class OrderFragment extends Fragment implements OrderAdapter.OnOrderClick
                 );
             }
 
+            @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                Log.d("OrderFragment", "fetchOrders: " + response);
                 String responseData = response.body().string();
                 if (getActivity() == null) return;
 
-                getActivity().runOnUiThread(() -> {
+
                     try {
                         if (response.isSuccessful()) {
                             JSONObject jsonResponse = new JSONObject(responseData);
                             if (jsonResponse.getBoolean("status")) {
                                 JSONArray ordersArray = jsonResponse.getJSONArray("data");
                                 List<Order> orders = new ArrayList<>();
-
+Log.d("OrderFragment", "onResponse: " + ordersArray);
                                 for (int i = 0; i < ordersArray.length(); i++) {
                                     JSONObject orderObj = ordersArray.getJSONObject(i);
                                     JSONArray items = orderObj.getJSONArray("items");
@@ -158,7 +160,7 @@ public class OrderFragment extends Fragment implements OrderAdapter.OnOrderClick
                                     );
                                     orders.add(order);
                                 }
-
+                                getActivity().runOnUiThread(() -> {
                                 allOrders.clear();
                                 allOrders.addAll(orders);
                                 orderList.clear();
@@ -168,15 +170,14 @@ public class OrderFragment extends Fragment implements OrderAdapter.OnOrderClick
                                 if (orderList.isEmpty()) {
                                     Toast.makeText(getContext(), "No orders found", Toast.LENGTH_SHORT).show();
                                 }
+                            });
                             }
-                        } else {
-//                            Toast.makeText(getContext(), "Error: " + response, Toast.LENGTH_SHORT).show();
                         }
                     } catch (Exception e) {
                         Log.e("OrderFragment", "Error parsing data: " + e.getMessage());
                         Toast.makeText(getContext(), "Error parsing data", Toast.LENGTH_SHORT).show();
                     }
-                });
+
             }
         });
     }
