@@ -45,8 +45,9 @@
                     android:layout_height="match_parent"
                     app:singleSelection="true">
 
+                    <!-- All -->
                     <com.google.android.material.chip.Chip
-                        android:id="@+id/chip_all"
+                        android:id="@+id/chip_0_c"
                         style="@style/Widget.MaterialComponents.Chip.Choice"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -64,13 +65,14 @@
                         app:chipBackgroundColor="@color/chip_background_selector"
                         app:chipIconEnabled="true"
                         app:chipIconSize="15dp"
-                        app:chipIconTint="#F4F0F0"
+                        app:chipIconTint="#070707"
                         app:chipStrokeColor="#E9E9E9"
                         app:chipStrokeWidth="1dp"
                         app:iconStartPadding="10dp" />
 
+                    <!-- T-Shirts -->
                     <com.google.android.material.chip.Chip
-                        android:id="@+id/chip_tshirts"
+                        android:id="@+id/chip_16_c"
                         style="@style/Widget.MaterialComponents.Chip.Choice"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -94,8 +96,9 @@
                         app:chipStrokeWidth="1dp"
                         app:iconStartPadding="10dp" />
 
+                    <!-- Shirts -->
                     <com.google.android.material.chip.Chip
-                        android:id="@+id/chip_shirts"
+                        android:id="@+id/chip_2_c"
                         style="@style/Widget.MaterialComponents.Chip.Choice"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -119,8 +122,9 @@
                         app:chipStrokeWidth="1dp"
                         app:iconStartPadding="10dp" />
 
+                    <!-- Pants -->
                     <com.google.android.material.chip.Chip
-                        android:id="@+id/chip_pants"
+                        android:id="@+id/chip_3_c"
                         style="@style/Widget.MaterialComponents.Chip.Choice"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -144,8 +148,9 @@
                         app:chipStrokeWidth="1dp"
                         app:iconStartPadding="10dp" />
 
+                    <!-- Dresses -->
                     <com.google.android.material.chip.Chip
-                        android:id="@+id/chip_dresses"
+                        android:id="@+id/chip_6_c"
                         style="@style/Widget.MaterialComponents.Chip.Choice"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -169,8 +174,9 @@
                         app:chipStrokeWidth="1dp"
                         app:iconStartPadding="10dp" />
 
+                    <!-- Tops -->
                     <com.google.android.material.chip.Chip
-                        android:id="@+id/chip_tops"
+                        android:id="@+id/chip_7_c"
                         style="@style/Widget.MaterialComponents.Chip.Choice"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -194,8 +200,9 @@
                         app:chipStrokeWidth="1dp"
                         app:iconStartPadding="10dp" />
 
+                    <!-- Skirts -->
                     <com.google.android.material.chip.Chip
-                        android:id="@+id/chip_skirts"
+                        android:id="@+id/chip_8_c"
                         style="@style/Widget.MaterialComponents.Chip.Choice"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -219,8 +226,9 @@
                         app:chipStrokeWidth="1dp"
                         app:iconStartPadding="10dp" />
 
+                    <!-- Hoodies -->
                     <com.google.android.material.chip.Chip
-                        android:id="@+id/chip_hoodies"
+                        android:id="@+id/chip_11_c"
                         style="@style/Widget.MaterialComponents.Chip.Choice"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -244,8 +252,9 @@
                         app:chipStrokeWidth="1dp"
                         app:iconStartPadding="10dp" />
 
+                    <!-- Jackets -->
                     <com.google.android.material.chip.Chip
-                        android:id="@+id/chip_jackets"
+                        android:id="@+id/chip_12_c"
                         style="@style/Widget.MaterialComponents.Chip.Choice"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -269,8 +278,9 @@
                         app:chipStrokeWidth="1dp"
                         app:iconStartPadding="10dp" />
 
+                    <!-- Bags -->
                     <com.google.android.material.chip.Chip
-                        android:id="@+id/chip_bags"
+                        android:id="@+id/chip_14_c"
                         style="@style/Widget.MaterialComponents.Chip.Choice"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -294,6 +304,31 @@
                         app:chipStrokeWidth="1dp"
                         app:iconStartPadding="10dp" />
 
+                    <!-- Other -->
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chip_15_c"
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="2dp"
+                        android:checkable="true"
+                        android:checked="false"
+                        android:fontFamily="@font/inter"
+                        android:foregroundGravity="center_vertical"
+                        android:minWidth="90dp"
+                        android:text="Other"
+                        android:textAlignment="center"
+                        android:textColor="@color/chip_text_color"
+                        app:checkedIconTint="#F8F5F5"
+                        app:checkedIconVisible="true"
+                        app:chipBackgroundColor="@color/chip_background_selector"
+                        app:chipIcon="@drawable/bracelet"
+                        app:chipIconEnabled="true"
+                        app:chipIconSize="15dp"
+                        app:chipIconTint="#070707"
+                        app:chipStrokeColor="#E9E9E9"
+                        app:chipStrokeWidth="1dp"
+                        app:iconStartPadding="10dp" />
                     <com.google.android.material.chip.Chip
                         android:id="@+id/chip_other"
                         style="@style/Widget.MaterialComponents.Chip.Choice"

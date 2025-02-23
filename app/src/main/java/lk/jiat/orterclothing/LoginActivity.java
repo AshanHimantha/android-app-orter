@@ -3,7 +3,6 @@ package lk.jiat.orterclothing;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -23,20 +22,19 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
+
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.GetTokenResult;
+
 import com.google.firebase.auth.GoogleAuthProvider;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.Objects;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -53,10 +51,9 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private GoogleSignInClient mGoogleSignInClient;
     private EditText emailField, passwordField;
-    private Button btnEmailSignIn, btnEmailSignUp, btnGoogleSignIn, btnFacebookSignIn, btnSignOut; //added btnSignOut
 
     private CallbackManager callbackManager;
-    private static final String EMAIL = "email";
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -67,12 +64,9 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login); //Make sure this layout exist
 
         TextView signUpButton = findViewById(R.id.signUp);
-        signUpButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);  // Use LoginActivity.this
-                startActivity(intent);
-            }
+        signUpButton.setOnClickListener(v -> {
+            Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);  // Use LoginActivity.this
+            startActivity(intent);
         });
 
         callbackManager = CallbackManager.Factory.create();
@@ -80,15 +74,13 @@ public class LoginActivity extends AppCompatActivity {
         //Check for logged in User
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
-            user.getIdToken(true).addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
-                @Override
-                public void onComplete(@NonNull Task<GetTokenResult> task) {
-                    if (task.isSuccessful()) {
-                        String idToken = task.getResult().getToken();
-                        Log.d("AuthToken", idToken);
-                    } else {
-                        Log.w("AuthToken", "Failed to get token", task.getException());
-                    }
+            user.getIdToken(true).addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    String idToken = task.getResult().getToken();
+                    assert idToken != null;
+                    Log.d("AuthToken", idToken);
+                } else {
+                    Log.w("AuthToken", "Failed to get token", task.getException());
                 }
             });
         } else {
@@ -116,59 +108,40 @@ public class LoginActivity extends AppCompatActivity {
         passwordField = passwordInputLayout;
     }
 
-        btnEmailSignIn = findViewById(R.id.button2);
-        btnGoogleSignIn = findViewById(R.id.button6);
-        btnFacebookSignIn = findViewById(R.id.button7);
+        Button btnEmailSignIn = findViewById(R.id.button2);
+        Button btnGoogleSignIn = findViewById(R.id.button6);
+        Button btnFacebookSignIn = findViewById(R.id.button7);
 
 
         // Set onClick listeners
-        btnEmailSignIn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (emailField != null && passwordField != null) {  // Check for null
-                  String email = emailField.getText().toString().trim();
-                    String password = passwordField.getText().toString();
-                    if (!email.isEmpty() && !password.isEmpty()) {
-                        signIn(email, password);
-                    } else {
-                        Toast.makeText(LoginActivity.this, "Please enter email and password", Toast.LENGTH_SHORT).show();
-                    }
+        btnEmailSignIn.setOnClickListener(v -> {
+            if (emailField != null && passwordField != null) {  // Check for null
+              String email = emailField.getText().toString().trim();
+                String password = passwordField.getText().toString();
+                if (!email.isEmpty() && !password.isEmpty()) {
+                    signIn(email, password);
                 } else {
-                    Log.e(TAG, "Email or password EditText is null!");
-                    Toast.makeText(LoginActivity.this, "Email or password field missing.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, "Please enter email and password", Toast.LENGTH_SHORT).show();
                 }
+            } else {
+                Log.e(TAG, "Email or password EditText is null!");
+                Toast.makeText(LoginActivity.this, "Email or password field missing.", Toast.LENGTH_SHORT).show();
             }
         });
 
 
-        btnGoogleSignIn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                signInWithGoogle();
-            }
-        });
+        btnGoogleSignIn.setOnClickListener(v -> signInWithGoogle());
 
-        btnFacebookSignIn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                signInWithFacebook();
-            }
-        });
+        btnFacebookSignIn.setOnClickListener(v -> signInWithFacebook());
 
-//        btnSignOut.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(LoginActivity.this, MainActivity2.class);  // Use LoginActivity.this
-//                startActivity(intent);
-//            }
-//        });
+
     }
 
     private void signInWithFacebook() {
         LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("email", "public_profile"));
 
         LoginManager.getInstance().registerCallback(callbackManager,
-                new FacebookCallback<LoginResult>() {
+                new FacebookCallback<>() {
                     @Override
                     public void onSuccess(LoginResult loginResult) {
                         handleFacebookAccessToken(loginResult.getAccessToken());
@@ -192,19 +165,16 @@ public class LoginActivity extends AppCompatActivity {
     private void handleFacebookAccessToken(AccessToken token) {
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
         mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            Log.d(TAG, "signInWithCredential:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        Log.d(TAG, "signInWithCredential:success");
 
-                        } else {
-                            Log.w(TAG, "signInWithCredential:failure", task.getException());
-                            Toast.makeText(LoginActivity.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
 
-                        }
+                    } else {
+                        Log.w(TAG, "signInWithCredential:failure", task.getException());
+                        Toast.makeText(LoginActivity.this, "Authentication failed.",
+                                Toast.LENGTH_SHORT).show();
+
                     }
                 });
     }
@@ -223,13 +193,10 @@ public class LoginActivity extends AppCompatActivity {
             try {
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 firebaseAuthWithGoogle(account.getIdToken());
-                Log.d("Usertoken", account.getIdToken());
+                Log.d("Usertoken", Objects.requireNonNull(account.getIdToken()));
                 Log.d(TAG, "firebaseAuthWithGoogle:success");
 
 
-
-//                Intent intent = new Intent(LoginActivity.this,HomeActivity.class);
-//                startActivity(intent);
             } catch (ApiException e) {
                 Log.w(TAG, "Google sign in failed", e);
 
@@ -242,22 +209,17 @@ public class LoginActivity extends AppCompatActivity {
     private void firebaseAuthWithGoogle(String idToken) {
         AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
         mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            Log.d(TAG, "signInWithCredential:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        Log.d(TAG, "signInWithCredential:success");
 
+                        Intent intent = new Intent(LoginActivity.this,MainActivity.class);
+                        startActivity(intent);
+                    } else {
+                        Log.w(TAG, "signInWithCredential:failure", task.getException());
+                        Toast.makeText(LoginActivity.this, "Authentication failed.",  // Use LoginActivity.this
+                                Toast.LENGTH_SHORT).show();
 
-                            Intent intent = new Intent(LoginActivity.this,MainActivity.class);
-                            startActivity(intent);
-                        } else {
-                            Log.w(TAG, "signInWithCredential:failure", task.getException());
-                            Toast.makeText(LoginActivity.this, "Authentication failed.",  // Use LoginActivity.this
-                                    Toast.LENGTH_SHORT).show();
-
-                        }
                     }
                 });
     }
@@ -265,29 +227,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser != null) {
 
-        }
-    }
-
-    private void createAccount(String email, String password) {
-        mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            Log.d(TAG, "createUserWithEmail:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
-
-                        } else {
-                            Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                            Toast.makeText(LoginActivity.this, "Authentication failed.",  // Use LoginActivity.this
-                                    Toast.LENGTH_SHORT).show();
-
-                        }
-                    }
-                });
     }
 
     private void signIn(String email, String password) {
@@ -297,44 +237,27 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         mAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            Log.d(TAG, "signInWithEmail:success");
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        Log.d(TAG, "signInWithEmail:success");
 
-                            Intent intent = new Intent(LoginActivity.this,MainActivity.class);
-                            startActivity(intent);
-                            finish();
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            if (user != null) {
-                                user.getIdToken(true).addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<GetTokenResult> task) {
-                                        if (task.isSuccessful()) {
-                                            String idToken = task.getResult().getToken();
-                                            verifyUser(idToken);
-                                        } else {
-                                            Log.w(TAG, "Failed to get token", task.getException());
-                                        }
-                                    }
-                                });
-                            }
-                        } else {
-                            Log.w(TAG, "signInWithEmail:failure", task.getException());
-                            Toast.makeText(LoginActivity.this, "Sign in failed.", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(LoginActivity.this,MainActivity.class);
+                        startActivity(intent);
+                        finish();
+                        FirebaseUser user = mAuth.getCurrentUser();
+                        if (user != null) {
+                            user.getIdToken(true).addOnCompleteListener(task1 -> {
+                                if (task1.isSuccessful()) {
+                                    String idToken = task1.getResult().getToken();
+                                    verifyUser(idToken);
+                                } else {
+                                    Log.w(TAG, "Failed to get token", task1.getException());
+                                }
+                            });
                         }
-                    }
-                });
-    }
-
-    private void sendEmailVerification() {
-        final FirebaseUser user = mAuth.getCurrentUser();
-        user.sendEmailVerification()
-                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        // Email sent
+                    } else {
+                        Log.w(TAG, "signInWithEmail:failure", task.getException());
+                        Toast.makeText(LoginActivity.this, "Sign in failed.", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -353,12 +276,12 @@ public class LoginActivity extends AppCompatActivity {
 
                 client.newCall(request).enqueue(new Callback() {
                     @Override
-                    public void onFailure(Call call, IOException e) {
+                    public void onFailure(@NonNull Call call, @NonNull IOException e) {
                         Log.e("SplashActivity", "Error verifying user", e);
                     }
 
                     @Override
-                    public void onResponse(Call call, Response response) throws IOException {
+                    public void onResponse(@NonNull Call call, @NonNull Response response) {
                         if (response.isSuccessful()) {
                             Log.d("SplashActivity", "User verified successfully");
                         } else {
