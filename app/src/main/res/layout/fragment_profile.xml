@@ -7,7 +7,7 @@
     android:layout_gravity="center"
     android:background="#F3F4F6"
     android:backgroundTint="#F3F4F6"
-    tools:context=".ui.profile.ProfileFragment">
+    tools:context=".main_activity_ui.profile.ProfileFragment">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -24,7 +24,7 @@
                 android:layout_gravity="center"
                 android:background="#F3F4F6"
                 android:backgroundTint="#F3F4F6"
-                tools:context=".ui.profile.ProfileFragment">
+                tools:context=".main_activity_ui.profile.ProfileFragment">
 
                 <LinearLayout
                     android:id="@+id/linearLayout3"

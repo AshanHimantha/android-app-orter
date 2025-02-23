@@ -1,4 +1,4 @@
-package lk.jiat.orterclothing;
+package lk.jiat.orterclothing.adpters;
 
 
 import android.content.Context;
@@ -16,6 +16,8 @@ import com.bumptech.glide.Glide;
 
 import java.util.List;
 
+import lk.jiat.orterclothing.R;
+import lk.jiat.orterclothing.SingleProductActivity;
 import lk.jiat.orterclothing.model.Product;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder> {

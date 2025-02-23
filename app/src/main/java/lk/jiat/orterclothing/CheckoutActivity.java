@@ -35,8 +35,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import lk.jiat.orterclothing.ui.profile.AddressAdapter;
-import lk.jiat.orterclothing.ui.profile.UserAddress;
+import lk.jiat.orterclothing.adpters.StoreAdapter;
+import lk.jiat.orterclothing.model.Store;
+import lk.jiat.orterclothing.main_activity_ui.profile.AddressAdapter;
+import lk.jiat.orterclothing.main_activity_ui.profile.UserAddress;
 import lk.payhere.androidsdk.PHConfigs;
 import lk.payhere.androidsdk.PHConstants;
 import lk.payhere.androidsdk.PHMainActivity;

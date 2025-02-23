@@ -1,4 +1,4 @@
-package lk.jiat.orterclothing;
+package lk.jiat.orterclothing.model;
 
     public class Store {
         private String storeName;

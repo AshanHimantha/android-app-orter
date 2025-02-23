@@ -39,9 +39,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import lk.jiat.orterclothing.adpters.ProductAdapter;
 import lk.jiat.orterclothing.databinding.ActivityMainBinding;
 import lk.jiat.orterclothing.model.Product;
-import lk.jiat.orterclothing.ui.explore.ExploreFragment;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -219,8 +219,9 @@ try {
                                     String imageUrl = productObject.get("main_image").getAsString();
                                     int price = (int) Double.parseDouble(productObject.get("price").getAsString());
                                     String collectionName = productObject.get("collection_name").getAsString();
+                                    String category = productObject.get("category_id").getAsString();
 
-                                    products.add(new Product(id, productName, imageUrl, price, collectionName));
+                                    products.add(new Product(id, productName, imageUrl, price, collectionName,category));
                                 }
                                 productAdapter.notifyDataSetChanged();
                             }

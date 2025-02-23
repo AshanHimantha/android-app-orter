@@ -1,5 +1,5 @@
 
-package lk.jiat.orterclothing.ui.profile;
+package lk.jiat.orterclothing.main_activity_ui.profile;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;

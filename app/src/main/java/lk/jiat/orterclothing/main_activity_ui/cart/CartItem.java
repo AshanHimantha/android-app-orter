@@ -1,4 +1,4 @@
-package lk.jiat.orterclothing.ui.cart;
+package lk.jiat.orterclothing.main_activity_ui.cart;
 
 public class CartItem {
     private int id;

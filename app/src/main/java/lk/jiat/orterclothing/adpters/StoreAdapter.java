@@ -1,4 +1,4 @@
-package lk.jiat.orterclothing;
+package lk.jiat.orterclothing.adpters;
 
 import android.Manifest;
 import android.app.Activity;
@@ -25,6 +25,10 @@ import com.bumptech.glide.Glide;
 import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.util.List;
+
+import lk.jiat.orterclothing.R;
+import lk.jiat.orterclothing.model.Store;
+import lk.jiat.orterclothing.ViewMapActivity;
 
 public class StoreAdapter extends RecyclerView.Adapter<StoreAdapter.ViewHolder> {
 

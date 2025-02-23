@@ -1,4 +1,4 @@
-package lk.jiat.orterclothing.ui.home;
+package lk.jiat.orterclothing.main_activity_ui.home;
 
 // HomeViewModel.java
 import androidx.lifecycle.LiveData;

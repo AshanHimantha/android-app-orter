@@ -17,12 +17,24 @@ public class Product {
     @SerializedName("collection_name")
     private String collection;
 
-    public Product(String id, String name, String imageUrl, double price, String collection) {
+    private String category;
+
+
+    public Product(String id, String name, String imageUrl, double price, String collection , String category) {
         this.name = name;
         this.imageUrl = imageUrl;
         this.price = price;
         this.collection = collection;
         this.id = id;
+        this.category = category;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 
     public String getName() {

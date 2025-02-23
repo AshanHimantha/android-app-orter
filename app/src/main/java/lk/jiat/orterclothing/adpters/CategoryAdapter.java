@@ -1,4 +1,4 @@
-package lk.jiat.orterclothing;
+package lk.jiat.orterclothing.adpters;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +9,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
+import lk.jiat.orterclothing.CategoryViewActivity;
+import lk.jiat.orterclothing.R;
 import lk.jiat.orterclothing.model.Category;
 
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHolder> {

@@ -1,5 +1,5 @@
 
-package lk.jiat.orterclothing.ui.home;
+package lk.jiat.orterclothing.main_activity_ui.home;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -39,17 +39,16 @@ import com.google.gson.JsonObject;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-import lk.jiat.orterclothing.CategoryAdapter;
+import lk.jiat.orterclothing.adpters.CategoryAdapter;
 import lk.jiat.orterclothing.LatestProductActivity;
 import lk.jiat.orterclothing.R;
 import lk.jiat.orterclothing.databinding.FragmentHomeBinding;
 import lk.jiat.orterclothing.model.Category;
 import lk.jiat.orterclothing.model.Product;
-import lk.jiat.orterclothing.ProductAdapter; // Import the adapter
+import lk.jiat.orterclothing.adpters.ProductAdapter; // Import the adapter
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.MediaType;
@@ -330,8 +329,9 @@ public class HomeFragment extends Fragment {
                             String imageUrl = productObject.get("main_image").getAsString();
                             int price = (int) Double.parseDouble(productObject.get("price").getAsString());
                             String collectionName = productObject.get("collection_name").getAsString();
+                            String category = productObject.get("category_id").getAsString();
 
-                            productList.add(new Product(id, productName, imageUrl, price, collectionName));
+                            productList.add(new Product(id, productName, imageUrl, price, collectionName,category));
 
                         }
                         // Update ViewModel with new product list

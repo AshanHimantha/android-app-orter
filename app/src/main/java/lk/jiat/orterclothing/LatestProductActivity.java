@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import lk.jiat.orterclothing.adpters.ProductAdapter;
 import lk.jiat.orterclothing.model.Product;  // Make sure this import is correct
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -110,8 +111,9 @@ public class LatestProductActivity extends AppCompatActivity {
                             String imageUrl = productObject.get("main_image").getAsString();
                             int price = (int) Double.parseDouble(productObject.get("price").getAsString());
                             String collectionName = productObject.get("collection_name").getAsString();
+                            String category = productObject.get("category_id").getAsString();
 
-                            productList.add(new Product(id, productName, imageUrl, price, collectionName));
+                            productList.add(new Product(id, productName, imageUrl, price, collectionName,category));
                         }
 
                         // Update the adapter on the main thread

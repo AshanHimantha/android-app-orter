@@ -1,4 +1,4 @@
-package lk.jiat.orterclothing.ui.order;
+package lk.jiat.orterclothing.main_activity_ui.order;
 
 import android.content.Context;
 import android.content.Intent;

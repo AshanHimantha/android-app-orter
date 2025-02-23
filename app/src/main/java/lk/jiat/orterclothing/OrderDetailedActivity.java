@@ -34,7 +34,7 @@ import java.util.List;
 import java.util.Locale;
 
 import lk.jiat.orterclothing.model.OrderTableItem;
-import lk.jiat.orterclothing.ui.order.OrderItemAdapter;
+import lk.jiat.orterclothing.main_activity_ui.order.OrderItemAdapter;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;

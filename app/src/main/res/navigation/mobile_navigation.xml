@@ -7,29 +7,29 @@
 
     <fragment
         android:id="@+id/navigation_home"
-        android:name="lk.jiat.orterclothing.ui.home.HomeFragment"
+        android:name="lk.jiat.orterclothing.main_activity_ui.home.HomeFragment"
         android:label="@string/title_home"
         tools:layout="@layout/fragment_home" />
 
     <fragment
         android:id="@+id/navigation_cart"
-        android:name="lk.jiat.orterclothing.ui.cart.CartFragment"
+        android:name="lk.jiat.orterclothing.main_activity_ui.cart.CartFragment"
         android:label="@string/cart"
         tools:layout="@layout/fragment_cart" />
 
     <fragment
         android:id="@+id/navigation_explore"
-        android:name="lk.jiat.orterclothing.ui.explore.ExploreFragment"
+        android:name="lk.jiat.orterclothing.main_activity_ui.explore.ExploreFragment"
         android:label="@string/explore"
         tools:layout="@layout/fragment_explore" />
     <fragment
         android:id="@+id/orders_nav"
-        android:name="lk.jiat.orterclothing.ui.order.OrderFragment"
+        android:name="lk.jiat.orterclothing.main_activity_ui.order.OrderFragment"
         android:label="@string/order"
         tools:layout="@layout/fragment_order" />
     <fragment
         android:id="@+id/profile_nav"
-        android:name="lk.jiat.orterclothing.ui.profile.ProfileFragment"
+        android:name="lk.jiat.orterclothing.main_activity_ui.profile.ProfileFragment"
         android:label="@string/profile"
         tools:layout="@layout/fragment_profile" />
 </navigation>

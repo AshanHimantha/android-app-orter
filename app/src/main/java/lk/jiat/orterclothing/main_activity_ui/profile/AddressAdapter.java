@@ -1,4 +1,4 @@
-package lk.jiat.orterclothing.ui.profile;
+package lk.jiat.orterclothing.main_activity_ui.profile;
 
 
 

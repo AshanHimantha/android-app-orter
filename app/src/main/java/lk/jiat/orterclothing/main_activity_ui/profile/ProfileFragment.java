@@ -1,11 +1,10 @@
-package lk.jiat.orterclothing.ui.profile;
+package lk.jiat.orterclothing.main_activity_ui.profile;
 
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,7 +32,6 @@ import java.util.List;
 import lk.jiat.orterclothing.AddAddressActivity;
 import lk.jiat.orterclothing.EditProfileActivity;
 import lk.jiat.orterclothing.LoginActivity;
-import lk.jiat.orterclothing.R;
 import lk.jiat.orterclothing.DatabaseHelper; // Import the database helper
 import lk.jiat.orterclothing.databinding.FragmentProfileBinding;
 

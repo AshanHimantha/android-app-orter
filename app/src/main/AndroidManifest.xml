@@ -31,7 +31,7 @@
             android:name=".supportChat.CustomerSupportActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.order.TrackOrderActivity"
+            android:name=".main_activity_ui.order.TrackOrderActivity"
             android:exported="false" />
         <activity
             android:name=".ViewMapActivity"
