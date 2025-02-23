@@ -1,6 +1,7 @@
 
 package lk.jiat.orterclothing.ui.home;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -40,6 +41,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import lk.jiat.orterclothing.CategoryAdapter;
 import lk.jiat.orterclothing.LatestProductActivity;
@@ -67,21 +69,18 @@ public class HomeFragment extends Fragment {
     private List<String> imageUrls;
 
     private Animation fadeIn;
-    private RecyclerView recyclerView;
     private ProductAdapter productAdapter;
     private HomeViewModel homeViewModel;
     private static final String API_URL = "https://testapi.ashanhimantha.com/api/stock-list";
-    private RecyclerView categoryRecyclerView;
-    private CategoryAdapter categoryAdapter;
-    private List<Category> categoryList;
 
     private NestedScrollView nestedScrollView;
 
-   private ProgressBar progressBar;
+    private ProgressBar progressBar;
     private TextView latestItems;
     private final OkHttpClient client = new OkHttpClient();
     private final String BACKEND_URL = "https://testapi.ashanhimantha.com/api/verify";
 
+    @SuppressLint("NotifyDataSetChanged")
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -97,7 +96,7 @@ public class HomeFragment extends Fragment {
         fadeIn = AnimationUtils.loadAnimation(getContext(), R.anim.fade_in);
 
         // Initialize RecyclerView
-        recyclerView = binding.getRoot().findViewById(R.id.recyclerView);
+        RecyclerView recyclerView = binding.getRoot().findViewById(R.id.recyclerView);
 
         // Initialize ViewModel
         homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
@@ -105,7 +104,6 @@ public class HomeFragment extends Fragment {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("banners").get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-
 
 
                 task.getResult().forEach(document -> {
@@ -144,15 +142,15 @@ public class HomeFragment extends Fragment {
         });
 
 
-      TextView seeall = binding.getRoot().findViewById(R.id.textView8);
-      seeall.setOnClickListener(new View.OnClickListener() {
-          @Override
-          public void onClick(View v) {
-              // Change the Intent when textView39 is clicked
-              Intent intent = new Intent(getActivity(), LatestProductActivity.class);
-              startActivity(intent);
-          }
-      });
+        TextView seeall = binding.getRoot().findViewById(R.id.textView8);
+        seeall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Change the Intent when textView39 is clicked
+                Intent intent = new Intent(getActivity(), LatestProductActivity.class);
+                startActivity(intent);
+            }
+        });
 
         // Set Adapter
         productAdapter = new ProductAdapter(getContext(), new ArrayList<>());
@@ -169,9 +167,9 @@ public class HomeFragment extends Fragment {
         });
 
         // Load products if not already loaded
-        if (homeViewModel.getProductList().getValue().isEmpty()) {
+        if (Objects.requireNonNull(homeViewModel.getProductList().getValue()).isEmpty()) {
             loadProducts();
-        }else {
+        } else {
 
             nestedScrollView.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.GONE);
@@ -182,10 +180,10 @@ public class HomeFragment extends Fragment {
 
         binding.imageView6.setOnClickListener(v -> loadImageWithAnimation());
 
-        categoryRecyclerView = binding.getRoot().findViewById(R.id.recyclerView2);
+        RecyclerView categoryRecyclerView = binding.getRoot().findViewById(R.id.recyclerView2);
 
 
-        categoryList = new ArrayList<>();
+        List<Category> categoryList = new ArrayList<>();
         categoryList.add(new Category(R.drawable.tshirt, "T-Shirts", "Unisex T-Shirts Collection", "16"));
         categoryList.add(new Category(R.drawable.shirt, "Shirts", "Men's Shirts Collection", "2"));
         categoryList.add(new Category(R.drawable.trousers, "Pants", "Men's Pants Collection", "3"));
@@ -199,7 +197,7 @@ public class HomeFragment extends Fragment {
 
 
         // Create the adapter
-        categoryAdapter = new CategoryAdapter(categoryList);
+        CategoryAdapter categoryAdapter = new CategoryAdapter(categoryList);
 
         // Set the layout manager (horizontal)
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
@@ -218,9 +216,9 @@ public class HomeFragment extends Fragment {
                     SharedPreferences sharedPreferences = getContext().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
                     boolean isVerified = sharedPreferences.getBoolean("is_verified", false);
 
-                   if (!isVerified) {
+                    if (!isVerified) {
                         verifyUser(idToken);
-                    }else {
+                    } else {
                         Log.d("auth", "User already verified");
                     }
 
@@ -232,7 +230,32 @@ public class HomeFragment extends Fragment {
                 }
             });
         }
-        verifyFCMToken();
+
+
+  SharedPreferences sharedPreferences = getContext().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+  long tokenTime = sharedPreferences.getLong("fcm_token_time", 0);
+  long currentTime = System.currentTimeMillis();
+  long sevenDaysInMillis = 7 * 24 * 60 * 60 * 1000; // 7 days in milliseconds
+
+  if (tokenTime == 0 || (currentTime - tokenTime) > sevenDaysInMillis) {
+      verifyFCMToken();
+  }
+
+
+
+
+
+
+
+
+
+  SharedPreferences test = getContext().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+    Log.e("shared", test.getBoolean("is_verified", false) + "");
+    Log.e("shared", test.getString("fcm_token", "") + "");
+    Log.e("shared", test.getLong("fcm_token_time", 0) + "");
+
+
+
         return root;
     }
 
@@ -249,8 +272,13 @@ public class HomeFragment extends Fragment {
         currentIndex = (currentIndex + 1) % imageUrls.size();
         Glide.with(this)
                 .load(imageUrls.get(currentIndex))
+                .error(R.drawable.div2)
+                .placeholder(R.drawable.div2)
+                .centerCrop()
                 .into(binding.imageView6);
         binding.imageView6.startAnimation(fadeIn);
+
+
     }
 
     private void loadProducts() {
@@ -274,16 +302,16 @@ public class HomeFragment extends Fragment {
                     String responseBody = response.body().string();
                     Log.d("API_RESPONSE", responseBody);
 
-          getActivity().runOnUiThread(() -> {
+                    getActivity().runOnUiThread(() -> {
 
 
-                  Animation scaleUp = AnimationUtils.loadAnimation(getContext(), R.anim.scale_up);
-                  nestedScrollView.startAnimation(scaleUp);
-                  nestedScrollView.setVisibility(View.VISIBLE);
-                  progressBar.setVisibility(View.GONE);
+                        Animation scaleUp = AnimationUtils.loadAnimation(getContext(), R.anim.scale_up);
+                        nestedScrollView.startAnimation(scaleUp);
+                        nestedScrollView.setVisibility(View.VISIBLE);
+                        progressBar.setVisibility(View.GONE);
 
 
-          });
+                    });
 
                     // Parse JSON using Gson
                     Gson gson = new Gson();
@@ -293,9 +321,8 @@ public class HomeFragment extends Fragment {
                         JsonArray dataArray = jsonObject.getAsJsonArray("data");
 
                         // Loop through API data
-                     for (JsonElement item : dataArray) {
-                         JsonObject productObject = item.getAsJsonObject();
-
+                        for (JsonElement item : dataArray) {
+                            JsonObject productObject = item.getAsJsonObject();
 
 
                             String id = productObject.get("id").getAsString();
@@ -306,7 +333,7 @@ public class HomeFragment extends Fragment {
 
                             productList.add(new Product(id, productName, imageUrl, price, collectionName));
 
-                     }
+                        }
                         // Update ViewModel with new product list
                         homeViewModel.setProductList(productList);
                     }
@@ -316,14 +343,12 @@ public class HomeFragment extends Fragment {
     }
 
 
-
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         handler.removeCallbacks(runnable);
         binding = null;
     }
-
 
 
     // HomeFragment.java
@@ -379,6 +404,7 @@ public class HomeFragment extends Fragment {
             }
         }).start();
     }
+
     private void verifyFCMToken() {
         FirebaseMessaging.getInstance().getToken()
                 .addOnCompleteListener(task -> {
@@ -395,48 +421,58 @@ public class HomeFragment extends Fragment {
     }
 
     private void sendTokenToServer(String token) {
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        if (currentUser != null) {
-            currentUser.getIdToken(true).addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    String idToken = task.getResult().getToken();
-                    OkHttpClient client = new OkHttpClient();
-                    RequestBody body = RequestBody.create(
-                            "{\"fcm_token\":\"" + token + "\"}",
-                            MediaType.parse("application/json; charset=utf-8")
-                    );
-                    Request request = new Request.Builder()
-                            .url("https://testapi.ashanhimantha.com/api/user/fcm-token")
-                            .post(body)
-                            .header("Authorization", "Bearer " + idToken)
-                            .header("Content-Type", "application/json; charset=utf-8")
-                            .build();
 
-                    client.newCall(request).enqueue(new Callback() {
-                        @Override
-                        public void onFailure(Call call, IOException e) {
-                            Log.e("FCM", "Failed to send token to server", e);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+
+                FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+                if (currentUser != null) {
+                    currentUser.getIdToken(true).addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            String idToken = task.getResult().getToken();
+                            OkHttpClient client = new OkHttpClient();
+                            RequestBody body = RequestBody.create(
+                                    "{\"fcm_token\":\"" + token + "\"}",
+                                    MediaType.parse("application/json; charset=utf-8")
+                            );
+                            Request request = new Request.Builder()
+                                    .url("https://testapi.ashanhimantha.com/api/user/fcm-token")
+                                    .post(body)
+                                    .header("Authorization", "Bearer " + idToken)
+                                    .header("Content-Type", "application/json; charset=utf-8")
+                                    .build();
+
+                            client.newCall(request).enqueue(new Callback() {
+                                @Override
+                                public void onFailure(Call call, IOException e) {
+                                    Log.e("FCM", "Failed to send token to server", e);
+                                }
+
+                                @Override
+                                public void onResponse(Call call, Response response) throws IOException {
+                                    if (response.isSuccessful()) {
+                                        Log.d("FCM", "Token sent successfully");
+                                        if (getContext() != null) {
+                                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+                                            sharedPreferences.edit().putString("fcm_token", token).putLong("fcm_token_time", System.currentTimeMillis()).apply();
+
+                                        } else {
+                                            Log.e("FCM", "Context is null, cannot save token");
+                                        }
+                                    } else {
+                                        Log.e("FCM", "Failed to send token to server. Response code: " + response);
+                                    }
+                                }
+                            });
+                        } else {
+                            Log.e("FCM", "Error getting ID token", task.getException());
                         }
-
-                     @Override
-                     public void onResponse(Call call, Response response) throws IOException {
-                         if (response.isSuccessful()) {
-                             Log.d("FCM", "Token sent successfully");
-                             if (getContext() != null) {
-                                 SharedPreferences sharedPreferences = getContext().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
-                                 sharedPreferences.edit().putString("fcm_token", token).apply();
-                             } else {
-                                 Log.e("FCM", "Context is null, cannot save token");
-                             }
-                         } else {
-                             Log.e("FCM", "Failed to send token to server. Response code: " + response);
-                         }
-                     }
                     });
-                } else {
-                    Log.e("FCM", "Error getting ID token", task.getException());
                 }
-            });
-        }
+            }
+        }).start();
+
     }
 }

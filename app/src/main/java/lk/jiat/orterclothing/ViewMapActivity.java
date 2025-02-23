@@ -60,6 +60,11 @@ public class ViewMapActivity extends AppCompatActivity {
         bundle.putDouble("latitude", latitude);
         bundle.putDouble("longitude", longitude);
         bundle.putString("image", image);
+
+
+        TextView text = findViewById(R.id.textView64);
+        text.setText(contact);
+
      mapsFragment.setArguments(bundle);
      getSupportFragmentManager().beginTransaction()
          .replace(R.id.fragmentContainerView, mapsFragment)

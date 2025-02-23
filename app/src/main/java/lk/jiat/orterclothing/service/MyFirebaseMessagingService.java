@@ -9,6 +9,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -37,6 +38,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 if ("order_update".equals(type)) {
                     // Handle order update notification
                     createOrderNotification(
+
                             message.getNotification().getTitle(),
                             message.getNotification().getBody(),
                             data.get("orderId"),
@@ -97,7 +99,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     .setContentText(body != null ? body : "")
                     .setAutoCancel(true)
                     .setContentIntent(pendingIntent)
-                    .setPriority(NotificationCompat.PRIORITY_HIGH);
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+                    .setColor(ContextCompat.getColor(this, R.color.black));
 
             NotificationManager manager = getSystemService(NotificationManager.class);
 
@@ -141,7 +144,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 .setContentText(body != null ? body : "")
                 .setAutoCancel(true)
                 .setContentIntent(pendingIntent)
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setColor(ContextCompat.getColor(this, R.color.black));
 
         NotificationManager manager = getSystemService(NotificationManager.class);
 

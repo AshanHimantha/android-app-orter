@@ -76,6 +76,8 @@ public class StoreAdapter extends RecyclerView.Adapter<StoreAdapter.ViewHolder> 
             holder.itemView.setBackgroundResource(R.drawable.light_border);
         }
 
+        holder.contact.setText(store.getStoreContact());
+
         holder.itemView.setOnClickListener(v -> {
             selectedPosition = holder.getAdapterPosition();
             notifyDataSetChanged();
@@ -178,6 +180,7 @@ public class StoreAdapter extends RecyclerView.Adapter<StoreAdapter.ViewHolder> 
         TextView addressLine1;
         TextView addressLine2;
         Button location;
+        TextView contact;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -186,6 +189,8 @@ public class StoreAdapter extends RecyclerView.Adapter<StoreAdapter.ViewHolder> 
             addressLine1 = itemView.findViewById(R.id.textView60);
             addressLine2 = itemView.findViewById(R.id.textView61);
             location = itemView.findViewById(R.id.button15);
+            contact = itemView.findViewById(R.id.textView62);
+
         }
     }
 }

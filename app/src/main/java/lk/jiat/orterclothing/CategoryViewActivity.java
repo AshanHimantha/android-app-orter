@@ -33,11 +33,7 @@ import okhttp3.Response;
 
 public class CategoryViewActivity extends AppCompatActivity {
 
-    private RecyclerView categoryItemsRecyclerView;
-    private ProductAdapter productAdapter;  // Use the same adapter from HomeFragment
-    private String categoryId;
-    private String categoryName;
-    private String categoryDescription;
+    private ProductAdapter productAdapter;
 
     private static final String API_BASE_URL = "https://testapi.ashanhimantha.com/api"; // Adjust if needed
     private final OkHttpClient client = new OkHttpClient();
@@ -55,7 +51,7 @@ public class CategoryViewActivity extends AppCompatActivity {
         });
 
         // Initialize RecyclerView
-        categoryItemsRecyclerView = findViewById(R.id.categoryItems); // Correct ID
+        RecyclerView categoryItemsRecyclerView = findViewById(R.id.categoryItems); // Correct ID
         categoryItemsRecyclerView.setLayoutManager(new GridLayoutManager(this, 2)); // Adjust span count as needed
 
         // Initialize Adapter
@@ -65,9 +61,9 @@ public class CategoryViewActivity extends AppCompatActivity {
 
         // Get data from Intent
         Intent intent = getIntent();
-        categoryId = intent.getStringExtra("category_id");
-        categoryName = intent.getStringExtra("category_name");
-        categoryDescription = intent.getStringExtra("description");
+        String categoryId = intent.getStringExtra("category_id");
+        String categoryName = intent.getStringExtra("category_name");
+        String categoryDescription = intent.getStringExtra("description");
 
         // Set Title and Description in the layout
         TextView categoryTitleTextView = findViewById(R.id.textView33);

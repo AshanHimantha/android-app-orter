@@ -1,6 +1,8 @@
 package lk.jiat.orterclothing;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -10,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -21,6 +24,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
@@ -52,6 +57,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private SearchView searchView;
     private BottomNavigationView navView;
 
+    @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,6 +70,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setupBottomNavigation();
 
 
+
+
+try {
+    if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+        ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.POST_NOTIFICATIONS}, 1);
+
         FirebaseMessaging.getInstance().subscribeToTopic("all")
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -72,8 +84,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         Log.e("FCM", "Failed to subscribe to topic: all");
                     }
                 });
+    }
+} catch (Exception e) {
+    throw new RuntimeException(e);
+}
 
     }
+
+
+
+
 
     private void initializeViews() {
         drawerLayout = findViewById(R.id.drawer_layout);
@@ -159,8 +179,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
     private void loadProducts() {
-        OkHttpClient client = new OkHttpClient();
-        Request request = new Request.Builder()
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+
+                OkHttpClient client = new OkHttpClient();
+                Request request = new Request.Builder()
                 .url("https://testapi.ashanhimantha.com/api/stock-list")
                 .build();
 
@@ -205,6 +231,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
             }
         });
+
+
+            }
+        }).start();
     }
 
     @Override
