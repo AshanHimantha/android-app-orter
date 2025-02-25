@@ -27,9 +27,9 @@
         android:theme="@style/Theme.Orter"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
-        <activity
-            android:name=".supportChat.CustomerSupportActivity"
-            android:exported="false" />
+<!--        <activity-->
+<!--            android:name=".supportChat.CustomerSupportActivity"-->
+<!--            android:exported="false" />-->
         <activity
             android:name=".main_activity_ui.order.TrackOrderActivity"
             android:exported="false" />
@@ -47,7 +47,7 @@
         <activity
             android:name=".AddAddressActivity"
             android:exported="false"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="adjustResize|stateAlwaysHidden" />
         <activity
             android:name=".EditProfileActivity"
             android:exported="false" />

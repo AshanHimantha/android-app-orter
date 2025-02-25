@@ -119,7 +119,6 @@ public class HomeFragment extends Fragment {
             }
         });
 
-// Move handler initialization after imageUrls setup
         handler = new Handler(Looper.getMainLooper());
         runnable = new Runnable() {
             @Override
@@ -259,23 +258,28 @@ public class HomeFragment extends Fragment {
     }
 
     private void loadImageWithAnimation() {
-        // Check if list is empty or null
-        if (imageUrls == null || imageUrls.isEmpty()) {
-            // Load a default image or return
-            Glide.with(this)
-                    .load(R.drawable.div2)
-                    .into(binding.imageView6);
-            return;
-        }
 
-        currentIndex = (currentIndex + 1) % imageUrls.size();
-        Glide.with(this)
-                .load(imageUrls.get(currentIndex))
-                .error(R.drawable.div2)
-                .placeholder(R.drawable.div2)
-                .centerCrop()
-                .into(binding.imageView6);
-        binding.imageView6.startAnimation(fadeIn);
+
+        try {
+            // Check if list is empty or null
+            if (imageUrls == null || imageUrls.isEmpty()) {
+                Glide.with(this)
+                        .load(R.drawable.div2)
+                        .into(binding.imageView6);
+                return;
+            }
+
+            currentIndex = (currentIndex + 1) % imageUrls.size();
+            Glide.with(this)
+                    .load(imageUrls.get(currentIndex))
+                    .error(R.drawable.div2)
+                    .placeholder(R.drawable.div2)
+                    .centerCrop()
+                    .into(binding.imageView6);
+            binding.imageView6.startAnimation(fadeIn);
+        } catch (Exception e) {
+            Log.e("HomeFragment", "Error loading image: " + e.getMessage());
+        }
 
 
     }
@@ -346,12 +350,14 @@ public class HomeFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        handler.removeCallbacks(runnable);
+        if (handler != null) {
+            handler.removeCallbacks(runnable);
+        }
         binding = null;
+        super.onDestroyView();
     }
 
 
-    // HomeFragment.java
     private void verifyUser(String idToken) {
         Log.d("auth", "Verifying user with backend...");
         new Thread(() -> {
