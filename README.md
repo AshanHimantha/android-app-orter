@@ -177,6 +177,6 @@ The backend exposes several RESTful endpoints. Here are some of the key ones:
 
 ## 📧 Contact
 
-Ashan Himantha - [@Ashan_Himantha](https://twitter.com/Ashan_Himantha) - ashanhimantha321@gmail.com
+Ashan Himantha - - ashanhimantha321@gmail.com
 
 Project Link: [https://github.com/AshanHimantha/android-app-orter](https://github.com/AshanHimantha/android-app-orter)
