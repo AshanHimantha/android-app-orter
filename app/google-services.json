@@ -1,8 +1,8 @@
 {
   "project_info": {
-    "project_number": "537920191435",
-    "project_id": "orterclothing-5d6b9",
-    "storage_bucket": "orterclothing-5d6b9.firebasestorage.app"
+    "project_number": "",
+    "project_id": "",
+    "storage_bucket": ""
   },
   "client": [
     {
@@ -20,7 +20,7 @@
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDXoZunrm6d9zj7dkIPNPDEb13QneoUznE"
+          "current_key": ""
         }
       ],
       "services": {
@@ -57,7 +57,7 @@
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDXoZunrm6d9zj7dkIPNPDEb13QneoUznE"
+          "current_key": ""
         }
       ],
       "services": {
